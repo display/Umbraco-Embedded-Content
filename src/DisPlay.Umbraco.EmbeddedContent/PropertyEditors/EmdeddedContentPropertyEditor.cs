@@ -197,6 +197,8 @@
                 property.Config = propertyEditor.PreValueEditor.ConvertDbToEditor(propertyEditor.DefaultPreValues, preValues);
                 property.View = propertyEditor.ValueEditor.View;
                 property.HideLabel = propertyEditor.ValueEditor.HideLabel;
+                property.Validation.Mandatory = propertyType.Mandatory;
+                property.Validation.Pattern = propertyType.ValidationRegExp;
 
                 return property;
             }
