@@ -1,0 +1,16 @@
+.vs/
+.idea/
+
+/dist
+/node_modules
+/packages
+/tools
+
+bin/
+obj/
+
+.DS_Store
+*.orig
+*.log
+*.suo
+*.user

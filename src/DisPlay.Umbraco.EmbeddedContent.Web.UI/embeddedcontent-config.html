@@ -1,0 +1,49 @@
+<div class="embedded-content-config" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbeddedContentConfigController as ctrl" ng-show="ctrl.ready">
+  <div class="embedded-content__item" ng-repeat="item in ctrl.model">
+
+    <div class="embedded-content__control-bar">
+      <div class="embedded-content__item-title">
+        <i class="icon {{item.icon}}"></i>
+        <span>{{item.name}}</span>
+        <small class="embedded-content__content-type-name">{{item.documentTypeAlias}}</small>
+      </div>
+      <div class="embedded-content__has-config" ng-if="item.nameTemplate">
+        <localize key="grid_settingsApplied" />
+      </div>
+      <div class="embedded-content__tools">
+        <div class="embedded-content__tools-tool">
+          <i class="icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
+        </div>
+        <div class="embedded-content__tools-tool">
+          <i class="embedded-content__tools-icon icon-trash" ng-click="ctrl.togglePrompt(item)"></i>
+          <umb-confirm-action
+            ng-if="item.deletePrompt"
+            direction="left"
+            on-confirm="ctrl.remove($index)"
+            on-cancel="ctrl.hidePrompt(item)">
+          </umb-confirm-action>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="embedded-content__placeholder"
+        ng-class="{'embedded-content__placeholder--small': ctrl.model.length > 0}"
+        ng-click="ctrl.openContentTypeOverlay($event)">
+    <div class="embedded-content__add"><localize key="embeddedContent_addDocumentType" /></div>
+  </div>
+
+  <umb-overlay
+    ng-if="ctrl.contentTypeOverlay.show"
+    model="ctrl.contentTypeOverlay"
+    view="ctrl.contentTypeOverlay.view"
+    position="target">
+  </umb-overlay>
+
+  <umb-overlay
+    ng-if="ctrl.editSettingsOverlay.show"
+    model="ctrl.editSettingsOverlay"
+    view="ctrl.editSettingsOverlay.view"
+    position="right">
+  </umb-overlay>
+<div>

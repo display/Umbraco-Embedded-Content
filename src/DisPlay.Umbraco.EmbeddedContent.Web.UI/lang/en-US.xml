@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language>
+  <creator>
+    <name>DIS/PLAY</name>
+    <link>http://www.dis-play.dk</link>
+  </creator>
+  <area alias="embeddedContent">
+    <key alias="settings">Settings</key>
+    <key alias="addDocumentType">Add document type</key>
+    <key alias="addContent">Add content</key>
+    <key alias="chooseContentType">Choose type of content</key>
+  </area>
+</language>

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent", "src\DisPlay.Umbraco.EmbeddedContent\DisPlay.Umbraco.EmbeddedContent.csproj", "{1545C061-A049-41BF-B201-3A470FB96BCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "samples\Website\Website.csproj", "{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{56AB67CE-160E-4DFC-B361-04BDCDC5D34A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1545C061-A049-41BF-B201-3A470FB96BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1545C061-A049-41BF-B201-3A470FB96BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1545C061-A049-41BF-B201-3A470FB96BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1545C061-A049-41BF-B201-3A470FB96BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD} = {56AB67CE-160E-4DFC-B361-04BDCDC5D34A}
+	EndGlobalSection
+EndGlobal

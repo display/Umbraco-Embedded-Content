@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DisPlay.Umbraco.EmbeddedContent</id>
+    <title>Umbraco Embedded Content</title>
+    <description>DIS/PLAY Umbraco Embedded Content</description>
+    <authors>Rasmus John Pedersen</authors>
+    <version>$version$</version>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+        <dependency id="UmbracoCms" version="[7.4.0, 8.0.0)"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\dist\bin\**" target="lib\net452"/>
+    <file src="..\..\dist\App_Plugins\**" target="content\App_Plugins"/>
+    <file src="tools\install.ps1" target="tools\install.ps1"/>
+  </files>
+</package>
