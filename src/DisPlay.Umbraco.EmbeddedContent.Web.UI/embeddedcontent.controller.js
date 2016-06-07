@@ -135,6 +135,39 @@ class EmbdeddedContentController {
   togglePrompt(item) { item.deletePrompt = !item.deletePrompt; }
   hidePrompt(item) { item.deletePrompt = false; }
 
+  editSettings(item, event) {
+    let properties = [{
+      label: this.localizationService.localize('content_isPublished'),
+      alias: 'published',
+      view: 'boolean',
+      value: item.published ? '1' : '0'
+    }];
+
+    this.editSettingsOverlay = {
+      view: '/App_Plugins/DisPlay.Umbraco.EmbeddedContent/embeddedcontent-settings-overlay.html',
+      title: this.localizationService.localize('embeddedContent_settings'),
+      settings: properties,
+      event: event,
+      show: true,
+      submit: (model) => {
+        let settings = {};
+        model.settings.forEach(property => {
+          settings[property.alias] = property.value;
+        });
+
+        item.published = settings.published === '1';
+        delete settings.published;
+
+        this.editSettingsOverlay.show = false;
+        this.editSettingsOverlay = null;
+      },
+      close: () => {
+        this.editSettingsOverlay.show = false;
+        this.editSettingsOverlay = null;
+      }
+    };
+  }
+
   openContentTypeOverlay(event) {
     if(this.allowedDocumentTypes.length === 1) {
       this.add(this.allowedDocumentTypes[0]);

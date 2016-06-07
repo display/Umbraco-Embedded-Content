@@ -37,13 +37,7 @@
         </div>
         <div class="embedded-content__tools" ng-show="item.active">
           <div class="embedded-content__tools-tool">
-            <div class="onoffswitch" ng-hide="item.deletePrompt">
-              <input type="checkbox" class="onoffswitch-checkbox" id="onoff{{item.key}}" ng-model="item.published">
-              <label class="onoffswitch-label" for="onoff{{item.key}}"></label>
-            </div>
-          </div>
-          <div class="embedded-content__tools-tool" ng-if="item.settings">
-            <i class="embedded-content__tools-icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item)"></i>
+            <i class="embedded-content__tools-icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
           </div>
           <div class="embedded-content__tools-tool">
             <i class="embedded-content__tools-icon icon-trash" ng-click="ctrl.togglePrompt(item)"></i>
@@ -75,5 +69,12 @@
     model="ctrl.contentTypeOverlay"
     view="ctrl.contentTypeOverlay.view"
     position="target">
+  </umb-overlay>
+
+  <umb-overlay
+    ng-if="ctrl.editSettingsOverlay.show"
+    model="ctrl.editSettingsOverlay"
+    view="ctrl.editSettingsOverlay.view"
+    position="right">
   </umb-overlay>
 </div>

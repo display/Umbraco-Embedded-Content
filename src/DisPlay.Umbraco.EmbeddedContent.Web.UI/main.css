@@ -167,7 +167,6 @@
 }
 
 .embedded-content__item--active > .embedded-content__control-bar {
-  opacity: 1;
   background-color: #2e8aea;
   cursor: default;
   color: #fff;
@@ -238,55 +237,4 @@
 .embedded-content .ui-sortable-helper .embedded-content__tools,
 .embedded-content .ui-sortable-helper .embedded-content__add {
   display: none !important;
-}
-
-.onoffswitch {
-  position: relative;
-  width: 30px;
-  user-select: none;
-}
-
-.onoffswitch-checkbox {
-  display: none !important;
-}
-
-.onoffswitch-label {
-  display: block;
-  overflow: hidden;
-  cursor: pointer;
-  height: 15px;
-  padding: 0;
-  line-height: 15px;
-  border: 2px solid #ccc;
-  border-radius: 15px;
-  background-color: #fff;
-  transition: background-color 0.3s ease-in;
-}
-
-.onoffswitch-label::before {
-  content: "";
-  display: block;
-  width: 15px;
-  margin: 0;
-  background: #fff;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 11px;
-  border: 2px solid #ccc;
-  border-radius: 15px;
-  transition: all 0.3s ease-in 0s;
-}
-
-.onoffswitch-checkbox:checked + .onoffswitch-label {
-  background-color: #46a546;
-}
-
-.onoffswitch-checkbox:checked + .onoffswitch-label,
-.onoffswitch-checkbox:checked + .onoffswitch-label::before {
-  border-color: #46a546;
-}
-
-.onoffswitch-checkbox:checked + .onoffswitch-label::before {
-  right: 0;
 }
