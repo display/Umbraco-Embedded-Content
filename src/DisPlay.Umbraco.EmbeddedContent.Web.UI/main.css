@@ -67,6 +67,7 @@
 }
 
 .embedded-content__item-title {
+  cursor: pointer;
   padding-left: 5px;
 }
 
