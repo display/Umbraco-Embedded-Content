@@ -2,7 +2,7 @@
 'use strict';
 
 class EmbdeddedContentController {
-  constructor($scope, $timeout, $interpolate, $routeParams, localizationService, contentResource, contentTypeResource) {
+  constructor($scope, $timeout, $interpolate, $routeParams, angularHelper, localizationService, contentResource, contentTypeResource) {
     this.$scope = $scope;
     this.$interpolate = $interpolate;
     this.$routeParams = $routeParams;
@@ -14,6 +14,9 @@ class EmbdeddedContentController {
       this.contentReady = true;
       return;
     }
+    
+    this.currentForm = angularHelper.getCurrentForm($scope);
+    let currentForm = this.currentForm;
 
     let draggedRteSettings = {};
     this.sortableOptions = {
@@ -67,6 +70,8 @@ class EmbdeddedContentController {
           tinyMCE.execCommand('mceRemoveEditor', false, id);
           tinyMCE.init(draggedRteSettings[id]);
         });
+
+        currentForm.$setDirty();
       }
     };
 
@@ -93,6 +98,7 @@ class EmbdeddedContentController {
         name: documentType.name,
         properties: data.tabs[0].properties
       }));
+      this.currentForm.$setDirty();
     });
   }
 
@@ -126,7 +132,11 @@ class EmbdeddedContentController {
     return item;
   }
 
-  remove(index) { this.$scope.model.value.splice(index, 1); }
+  remove(index) {
+    this.$scope.model.value.splice(index, 1);
+    this.currentForm.$setDirty();
+  }
+
   activate(item) { item.active = true; }
   deactivate(item) { item.active = false; }
   togglePublished(item) { item.published = !item.published; }
@@ -155,6 +165,8 @@ class EmbdeddedContentController {
 
         item.published = settings.published === '1';
         delete settings.published;
+
+        this.currentForm.$setDirty();
 
         this.editSettingsOverlay.show = false;
         this.editSettingsOverlay = null;
