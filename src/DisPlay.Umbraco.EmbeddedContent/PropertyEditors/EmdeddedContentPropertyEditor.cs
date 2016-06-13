@@ -1,16 +1,18 @@
-﻿namespace DisPlay.EmbeddedContent.PropertyEditors
+﻿namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 {
     using System.Collections.Generic;
-    using Newtonsoft.Json;
-    using Umbraco.Core;
-    using Umbraco.Core.Models;
-    using Umbraco.Core.Models.Editors;
-    using Umbraco.Core.PropertyEditors;
-    using Umbraco.Core.Services;
-    using Umbraco.Web.PropertyEditors;
-    using Newtonsoft.Json.Linq;
     using System.Linq;
-    using Umbraco.Web.Models.ContentEditing;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core.Models.Editors;
+    using global::Umbraco.Core.PropertyEditors;
+    using global::Umbraco.Core.Services;
+    using global::Umbraco.Web.PropertyEditors;
+    using global::Umbraco.Web.Models.ContentEditing;
+
     using Models;
 
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
@@ -32,11 +34,6 @@
         {
             [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/EmbeddedContent/embeddedcontent-config.html", HideLabel = false)]
             public string[] EmbeddedContentConfig { get; set; }
-
-            public override IDictionary<string, object> ConvertDbToEditor(IDictionary<string, object> defaultPreVals, PreValueCollection persistedPreVals)
-            {
-                return base.ConvertDbToEditor(defaultPreVals, persistedPreVals);
-            }
         }
 
 
@@ -115,30 +112,29 @@
                 var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                 var config = JsonConvert.DeserializeObject<EmbeddedContentConfig[]>(configPreValue.Value);
 
-                var items = ((JArray)source).ToObject<EmbeddedContentItem[]>();
+                var items = source.ToObject<EmbeddedContentItem[]>();
 
                 return from item in items
                        let configDocType = config.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
                        where configDocType != null
                        let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias)
                        where contentType != null && contentType.CompositionPropertyGroups.Any()
-                       select new
+                       select new EmbeddedContentItemDisplay
                        {
-                           key = item.Key,
-                           contentTypeAlias = item.ContentTypeAlias,
-                           contentTypeName = contentType.Name,
-                           icon = contentType.Icon,
-                           name = item.Name,
-                           published = item.Published,
-                           properties = from pt in contentType.CompositionPropertyGroups.First().PropertyTypes
+                           Key = item.Key,
+                           ContentTypeAlias = item.ContentTypeAlias,
+                           ContentTypeName = contentType.Name,
+                           Icon = contentType.Icon,
+                           Name = item.Name,
+                           Published = item.Published,
+                           Properties = from pt in contentType.CompositionPropertyGroups.First().PropertyTypes
                                         orderby pt.SortOrder
-                                        let value = item.Properties[pt.Alias]
+                                        let value = GetPropertyValue(item.Properties, pt.Alias)
                                         let p = GetProperty(pt, value, dataTypeService)
                                         where p != null
                                         select p
                        };
             }
-
             public override object ConvertEditorToDb(ContentPropertyData editorValue, object currentValue)
             {
                 if (string.IsNullOrEmpty(editorValue.Value?.ToString()))
@@ -147,32 +143,47 @@
                 }
 
                 var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
-                var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(editorValue.Value.ToString());
+                var itemsDisplay = JsonConvert.DeserializeObject<EmbeddedContentItemDisplay[]>(editorValue.Value.ToString());
+                var items = new List<EmbeddedContentItem>();
 
-                foreach(var item in items)
+                foreach(var itemDisplay in itemsDisplay)
                 {
-                    var contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias);
+                    var item = new EmbeddedContentItem
+                    {
+                        ContentTypeAlias = itemDisplay.ContentTypeAlias,
+                        Key = itemDisplay.Key,
+                        Name = itemDisplay.Name,
+                        Published = itemDisplay.Published
+                    };
+
+                    var contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
                     foreach(var propertyType in contentType.CompositionPropertyGroups.First().PropertyTypes)
                     {
                         //TODO: Add support for upload
 
-                        var value = item.Properties[propertyType.Alias];
+                        var property = itemDisplay.Properties.FirstOrDefault(x => x.Alias == propertyType.Alias);
+                        if(property == null)
+                        {
+                            continue;
+                        }
+
                         PropertyEditor propertyEditor = PropertyEditorResolver.Current.GetByAlias(propertyType.PropertyEditorAlias);
 
                         var preValues = ApplicationContext.Current.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
                         var additionalData = new Dictionary<string, object>();
 
-                        var propData = new ContentPropertyData(value, preValues, additionalData);
+                        var propData = new ContentPropertyData(property.Value, preValues, additionalData);
 
 
                         item.Properties[propertyType.Alias] = propertyEditor.ValueEditor.ConvertEditorToDb(propData, null);
                     }
+                    items.Add(item);
                 }
 
                 return JsonConvert.SerializeObject(items);
             }
 
-            private object GetProperty(PropertyType propertyType, object value, IDataTypeService dataTypeService)
+            private ContentPropertyDisplay GetProperty(PropertyType propertyType, object value, IDataTypeService dataTypeService)
             {
                 var property = new ContentPropertyDisplay
                 {
@@ -201,6 +212,16 @@
                 property.Validation.Pattern = propertyType.ValidationRegExp;
 
                 return property;
+            }
+
+            private object GetPropertyValue(IDictionary<string, object> properties, string alias)
+            {
+                object value;
+                if (properties.TryGetValue(alias, out value))
+                {
+                    return value;
+                }
+                return null;
             }
         }
     }

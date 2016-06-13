@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Web.Models;
-
-namespace DisPlay.EmbeddedContent.Models
+﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core.Models.PublishedContent;
+    using global::Umbraco.Web.Models;
+
     internal class DetachedPublishedContent : PublishedContentBase, IPublishedContentWithKey
     {
         private readonly IEnumerable<IPublishedProperty> _properties;

@@ -12,7 +12,7 @@ class EmbeddedContentConfigController {
     contentTypeResource.getAll()
     .then(data => {
       this.documentTypes = data;
-      this.model = this.$scope.model.value.map(this.init.bind(this)).filter(item => item);
+      this.model = (this.$scope.model.value || []).map(this.init.bind(this)).filter(item => item);
 
       $scope.$watch(() => this.model, () =>{ this.updateModel(); }, true);
       let unsubscribe = $scope.$on('formSubmitting', () => this.updateModel());

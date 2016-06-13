@@ -1,9 +1,10 @@
-﻿using System;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
-
-namespace DisPlay.EmbeddedContent.Models
+﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
+    using System;
+
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core.Models.PublishedContent;
+
     internal class DetachedPublishedProperty : IPublishedProperty
     {
         private readonly bool _isPreview;

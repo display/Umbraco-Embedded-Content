@@ -1,18 +1,19 @@
-﻿using DisPlay.EmbeddedContent.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Core.PropertyEditors;
-
-namespace DisPlay.EmbeddedContent.ValueConverters
+﻿namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
 {
+
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
+    using global::Umbraco.Core.Models.PublishedContent;
+    using global::Umbraco.Core.PropertyEditors;
+
+    using Models;
+
     public class EmbeddedContentValueConverter : PropertyValueConverterBase, IPropertyValueConverterMeta
     {
         public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)

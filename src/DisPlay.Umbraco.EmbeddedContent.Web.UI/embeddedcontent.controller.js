@@ -75,46 +75,15 @@ class EmbdeddedContentController {
     this.label = $scope.model.label;
     this.allowedDocumentTypes = $scope.model.config.embeddedContentConfig;
 
-    $scope.model.value.forEach(item => {
-      let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias == item.contentTypeAlias);
-      item.nameTemplateExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
-    });
-
-    this.items = $scope.model.value;
-
-    $scope.$watch(() => this.items, () =>{ this.updateModel(); }, true);
-    let unsubscribe = $scope.$on('formSubmitting', () => this.updateModel());
-    $scope.$on('$destroy', () => { unsubscribe(); });
+    $scope.model.value.forEach(this.init.bind(this));
 
     $timeout(() => this.contentReady = true, 0);
-  }
-
-  updateModel() {
-    this.$scope.model.value = this.items.map((item, i) => {
-      let properties = {};
-      item.properties.forEach(property => {
-        properties[property.alias] = property.value;
-      });
-
-      let name = item.nameTemplateExpression(Object.assign({}, properties, { $index: i + 1 }));
-
-      // Shouldn't be done here, but.. yeah..
-      item.name = name;
-
-      return {
-        key: item.key,
-        contentTypeAlias: item.contentTypeAlias,
-        published: item.published,
-        name: name,
-        properties: properties
-      };
-    });
   }
 
   add(documentType) {
     this.contentResource.getScaffold(this.$routeParams.id, documentType.documentTypeAlias)
     .then(data => {
-      this.items.push({
+      this.$scope.model.value.push(this.init({
         key: data.key,
         contentTypeAlias: data.contentTypeAlias,
         contentTypeName: data.contentTypeName,
@@ -122,13 +91,42 @@ class EmbdeddedContentController {
         icon: documentType.icon,
         published: true,
         name: documentType.name,
-        nameTemplateExpression: this.$interpolate(documentType.nameTemplate || 'Item {{$index}}'),
         properties: data.tabs[0].properties
-      });
+      }));
     });
   }
 
-  remove(index) { this.items.splice(index, 1); }
+  init(item) {
+    let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias == item.contentTypeAlias);
+    let nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
+
+    delete item.name;
+
+    item.toJSON = function() {
+      return Object.assign({ name: this.name }, this);
+    };
+
+    Object.defineProperty(item, 'name', {
+      get: () => {
+        let properties = {};
+        let index = this.$scope.model.value.indexOf(item);
+
+        if(index === -1) {
+          index = $scope.model.value.length + 1;
+        }
+
+        item.properties.forEach(property => {
+          properties[property.alias] = property.value;
+        });
+
+        return nameExpression(Object.assign({}, properties, { '$index' : index + 1 }));
+      }
+    });
+
+    return item;
+  }
+
+  remove(index) { this.$scope.model.value.splice(index, 1); }
   activate(item) { item.active = true; }
   deactivate(item) { item.active = false; }
   togglePublished(item) { item.published = !item.published; }

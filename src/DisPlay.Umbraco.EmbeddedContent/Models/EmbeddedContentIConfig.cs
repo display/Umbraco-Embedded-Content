@@ -1,4 +1,4 @@
-﻿namespace DisPlay.EmbeddedContent.Models
+﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
     internal class EmbeddedContentConfig
     {

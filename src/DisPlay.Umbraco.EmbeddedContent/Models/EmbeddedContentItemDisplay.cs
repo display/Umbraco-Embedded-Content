@@ -4,19 +4,22 @@
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
+    using global::Umbraco.Web.Models.ContentEditing;
+
     [DataContract]
-    internal class EmbeddedContentItem
+    internal class EmbeddedContentItemDisplay
     {
-        public EmbeddedContentItem()
-        {
-            Properties = new Dictionary<string, object>();
-        }
+        [DataMember(Name = "key")]
+        public Guid Key { get; set; }
 
         [DataMember(Name = "contentTypeAlias")]
         public string ContentTypeAlias { get; set; }
 
-        [DataMember(Name = "key")]
-        public Guid Key { get; set; }
+        [DataMember(Name = "contentTypeName")]
+        public string ContentTypeName { get; set; }
+
+        [DataMember(Name = "icon")]
+        public string Icon { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }
@@ -25,6 +28,6 @@
         public bool Published { get; set; }
 
         [DataMember(Name = "properties")]
-        public IDictionary<string, object> Properties { get; set; }
+        public IEnumerable<ContentPropertyDisplay> Properties { get; set; }
     }
 }

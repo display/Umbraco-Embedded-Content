@@ -15,13 +15,13 @@
     </div>
   </div>
 
-  <div ui-sortable="ctrl.sortableOptions" ng-model="ctrl.items">
+  <div ui-sortable="ctrl.sortableOptions" ng-model="model.value">
     <div class="embedded-content__item"
          ng-class="{
           'embedded-content__item--active': item.active,
           'embedded-content__item--disabled': !item.published
          }"
-         ng-repeat="item in ctrl.items"
+         ng-repeat="item in model.value"
          ng-click="ctrl.activate(item)"
          on-outside-click="ctrl.deactivate(item)"
          ng-form>
@@ -59,7 +59,7 @@
   </div>
 
   <div class="embedded-content__placeholder"
-       ng-class="{'embedded-content__placeholder--small': ctrl.items.length > 0}"
+       ng-class="{'embedded-content__placeholder--small': model.value.length > 0}"
        ng-click="ctrl.openContentTypeOverlay($event)">
     <div class="embedded-content__add"><localize key="embeddedContent_addContent" /></div>
   </div>
