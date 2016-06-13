@@ -1,5 +1,6 @@
 /App_Data
-/App_Plugins/DisPlay.Umbraco.EmbeddedContent
+/App_Plugins/EmbeddedContent
+/Config/ClientDependency.config
 /media
 /umbraco
 /umbraco_client
