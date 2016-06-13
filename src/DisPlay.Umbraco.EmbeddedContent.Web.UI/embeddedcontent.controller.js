@@ -109,9 +109,9 @@ class EmbdeddedContentController {
 
   validate() {
     if(this.config.minItems && this.config.minItems > this.$scope.model.value.length) {
-      this.currentForm.minItems.$setValidity('minItems', false );
+      this.currentForm.minItems.$setValidity('minItems', false);
     } else {
-      this.currentForm.minItems.$setValidity('minItems', true );
+      this.currentForm.minItems.$setValidity('minItems', true);
     }
 
     if(this.config.maxItems && this.config.maxItems < this.$scope.model.value.length) {

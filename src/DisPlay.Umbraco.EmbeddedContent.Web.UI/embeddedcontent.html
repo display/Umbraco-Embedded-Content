@@ -18,7 +18,7 @@
   <div ui-sortable="ctrl.sortableOptions" ng-model="model.value">
     <div class="embedded-content__item"
          ng-class="{
-          'embedded-content__item--active': item.active || !ctrl.config.enableCollapsing,
+          'embedded-content__item--active': item.active || ctrl.config.enableCollapsing === '0',
           'embedded-content__item--disabled': !item.published
          }"
          ng-repeat="item in model.value"
@@ -35,7 +35,7 @@
         <div class="embedded-content__has-config" ng-if="item.hasConfig">
           <localize key="grid_settingsApplied" />
         </div>
-        <div class="embedded-content__tools" ng-show="item.active || !ctrl.config.enableCollapsing">
+        <div class="embedded-content__tools" ng-show="item.active || ctrl.config.enableCollapsing === '0'">
           <div class="embedded-content__tools-tool">
             <i class="embedded-content__tools-icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
           </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      <div class="embedded-content__item-content" ng-show="item.active || !ctrl.config.enableCollapsing">
+      <div class="embedded-content__item-content" ng-show="item.active || ctrl.config.enableCollapsing === '0'">
         <umb-property ng-repeat="property in item.properties" property="property">
           <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-files-watcher></umb-editor>
         </umb-property>

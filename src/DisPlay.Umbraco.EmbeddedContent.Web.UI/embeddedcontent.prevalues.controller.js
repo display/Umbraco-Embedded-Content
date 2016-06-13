@@ -1,17 +1,17 @@
 (function() {
 'use strict';
 
-class EmbeddedContentConfigController {
-  constructor($scope, $timeout, $interpolate, localizationService, contentTypeResource) {
+class EmbeddedContentPrevaluesController {
+  constructor($scope, $timeout, $interpolate, angularHelper, localizationService, contentTypeResource) {
     this.$scope = $scope;
     this.$interpolate = $interpolate;
     this.localizationService = localizationService;
 
-    this.hasSettings = false;
+    this.currentForm = angularHelper.getCurrentForm($scope);
 
     if(!$scope.model.value) {
       $scope.model.value = {
-        enableCollapsing: true,
+        enableCollapsing: '1',
         documentTypes: []
       };
     }
@@ -23,6 +23,12 @@ class EmbeddedContentConfigController {
 
       this.ready = true;
     });
+  }
+
+  hasSettings() {
+    return this.$scope.model.value.minItems
+      || this.$scope.model.value.maxItems
+      || this.$scope.model.value.enableCollapsing !== '1';
   }
 
   init(item) {
@@ -46,14 +52,61 @@ class EmbeddedContentConfigController {
     this.$scope.model.value.documentTypes.push(docType);
     this.$scope.model.value.documentTypes.sort((a, b) => a.name.localeCompare(b.name));
 
-    this.editSettings(docType);
+    this.editItemSettings(docType);
+
+    this.currentForm.$setDirty();
   }
 
-  remove(index) { this.$scope.model.value.documentTypes.splice(index, 1); }
+  remove(index) {
+    this.$scope.model.value.documentTypes.splice(index, 1);
+    this.currentForm.$setDirty();
+  }
+
   togglePrompt(item) { item.deletePrompt = !item.deletePrompt; }
   hidePrompt(item) { item.deletePrompt = false; }
 
-  editSettings(item, event) {
+  editSettings() {
+    let properties = [{
+      label: 'Minimum number of items',
+      alias: 'minItems',
+      view: 'integer',
+      value: this.$scope.model.value.minItems
+    },{
+      label: 'Maximum number of items',
+      alias: 'maxItems',
+      view: 'integer',
+      value: this.$scope.model.value.maxItems
+    },{
+      label: 'Enable collapsing',
+      alias: 'enableCollapsing',
+      view: 'boolean',
+      value: this.$scope.model.value.enableCollapsing
+    }];
+
+    this.editSettingsOverlay = {
+      view: '/App_Plugins/EmbeddedContent/embeddedcontent-settings-overlay.html',
+      title: this.localizationService.localize('embeddedContent_settings'),
+      settings: properties,
+      event: event,
+      show: true,
+      submit: (model) => {
+        model.settings.forEach(property => {
+          this.$scope.model.value[property.alias] = property.value;
+        });
+
+        this.currentForm.$setDirty();
+
+        this.editSettingsOverlay.show = false;
+        this.editSettingsOverlay = null;
+      },
+      close: () => {
+        this.editSettingsOverlay.show = false;
+        this.editSettingsOverlay = null;
+      }
+    };
+  }
+
+  editItemSettings(item, event) {
     let properties = [{
       label: 'Name template',
       description: '',
@@ -78,6 +131,8 @@ class EmbeddedContentConfigController {
         model.settings.forEach(property => {
           item[property.alias] = property.value;
         });
+
+        this.currentForm.$setDirty();
 
         item.active = false;
         this.editSettingsOverlay.show = false;
@@ -120,6 +175,6 @@ class EmbeddedContentConfigController {
 }
 
 angular.module('umbraco')
-.controller('DisPlay.Umbraco.EmbeddedContent.EmbeddedContentConfigController', EmbeddedContentConfigController);
+.controller('DisPlay.Umbraco.EmbeddedContent.EmbeddedContentPrevaluesController', EmbeddedContentPrevaluesController);
 
 })();

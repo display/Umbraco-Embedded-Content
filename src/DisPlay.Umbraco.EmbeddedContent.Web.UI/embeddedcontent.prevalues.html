@@ -1,4 +1,19 @@
-<div class="embedded-content-config" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbeddedContentConfigController as ctrl" ng-show="ctrl.ready">
+<div class="embedded-content-config" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbeddedContentPrevaluesController as ctrl" ng-show="ctrl.ready">
+
+  <div class="embedded-content__title-bar">
+    <div class="embedded-content__title-bar-title">{{model.label}}</div>
+
+    <div class="embedded-content__has-config" ng-if="ctrl.hasSettings()">
+      <localize key="grid_settingsApplied" />
+    </div>
+
+    <div class="embedded-content__tools">
+       <div class="embedded-content__tools-tool">
+         <i class="icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings()"></i>
+       </div>
+    </div>
+  </div>
+
   <div class="control-group umb-control-group">
     <div class="embedded-content__item" ng-repeat="item in model.value.documentTypes">
       <div class="embedded-content__control-bar">
@@ -12,7 +27,7 @@
         </div>
         <div class="embedded-content__tools">
           <div class="embedded-content__tools-tool">
-            <i class="icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
+            <i class="icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editItemSettings(item, $event)"></i>
           </div>
           <div class="embedded-content__tools-tool">
             <i class="embedded-content__tools-icon icon-trash" ng-click="ctrl.togglePrompt(item)"></i>
@@ -33,18 +48,6 @@
       <div class="embedded-content__add"><localize key="embeddedContent_addDocumentType" /></div>
     </div>
   </div>
-
-  <umb-control-group label="Minimum number of items" alias="minItems">
-    <input type="number" id="minItems" name="minItems" ng-model="model.value.minItems" />
-  </umb-control-group>
-
-  <umb-control-group label="Maximum number of items" alias="maxItems">
-    <input type="number" id="maxItems" name="maxItems" ng-model="model.value.maxItems" />
-  </umb-control-group>
-
-  <umb-control-group label="Enable collapsing" alias="enableCollapsing">
-    <input type="checkbox" id="disableCollapsing" name="enableCollapsing" ng-model="model.value.enableCollapsing" />
-  </umb-control-group>
 
   <umb-overlay
     ng-if="ctrl.contentTypeOverlay.show"
