@@ -1,5 +1,5 @@
 <div class="embedded-content-config" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbeddedContentConfigController as ctrl" ng-show="ctrl.ready">
-  <div class="embedded-content__item" ng-repeat="item in ctrl.model">
+  <div class="embedded-content__item" ng-repeat="item in model.value">
 
     <div class="embedded-content__control-bar">
       <div class="embedded-content__item-title">
@@ -28,7 +28,7 @@
   </div>
 
   <div class="embedded-content__placeholder"
-        ng-class="{'embedded-content__placeholder--small': ctrl.model.length > 0}"
+        ng-class="{'embedded-content__placeholder--small': model.value.length > 0}"
         ng-click="ctrl.openContentTypeOverlay($event)">
     <div class="embedded-content__add"><localize key="embeddedContent_addDocumentType" /></div>
   </div>
