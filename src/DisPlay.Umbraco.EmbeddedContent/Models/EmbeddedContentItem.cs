@@ -15,6 +15,12 @@
         [DataMember(Name = "contentTypeAlias")]
         public string ContentTypeAlias { get; set; }
 
+        [DataMember(Name = "createDate")]
+        public DateTime CreateDate { get; set; }
+
+        [DataMember(Name = "updateDate")]
+        public DateTime UpdateDate { get; set; }
+
         [DataMember(Name = "key")]
         public Guid Key { get; set; }
 

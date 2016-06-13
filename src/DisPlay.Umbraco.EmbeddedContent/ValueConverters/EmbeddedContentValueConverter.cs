@@ -74,12 +74,7 @@
                     continue;
                 }
 
-                var properties = from property in item.Properties
-                                 let propType = contentType.GetPropertyType(property.Key)
-                                 where propType != null
-                                 select new DetachedPublishedProperty(propType, property.Value, preview);
-
-                IPublishedContent content = new DetachedPublishedContent(item.Name, item.Key, i, contentType, properties);
+                IPublishedContent content = new PublishedEmbeddedContent(item, contentType, i, preview);
 
                 if(PublishedContentModelFactoryResolver.HasCurrent)
                 {

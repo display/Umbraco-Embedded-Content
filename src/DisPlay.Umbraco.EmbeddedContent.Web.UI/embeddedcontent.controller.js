@@ -2,10 +2,11 @@
 'use strict';
 
 class EmbdeddedContentController {
-  constructor($scope, $timeout, $interpolate, $routeParams, angularHelper, localizationService, contentResource, contentTypeResource) {
+  constructor($scope, $timeout, $interpolate, $routeParams, angularHelper, fileManager, localizationService, contentResource, contentTypeResource) {
     this.$scope = $scope;
     this.$interpolate = $interpolate;
     this.$routeParams = $routeParams;
+    this.fileManager = fileManager;
     this.localizationService = localizationService;
     this.contentResource = contentResource;
 
@@ -14,7 +15,7 @@ class EmbdeddedContentController {
       this.contentReady = true;
       return;
     }
-    
+
     this.currentForm = angularHelper.getCurrentForm($scope);
     let currentForm = this.currentForm;
 
@@ -82,8 +83,26 @@ class EmbdeddedContentController {
 
     $scope.model.value.forEach(this.init.bind(this));
 
-    $timeout(() => this.contentReady = true, 0);
+    $scope.$on('formSubmitted', () => {
+      this.fileManager.setFiles(this.$scope.model.alias, []);
+    });
+
+    console.log($scope.model.value);
+
+    this.contentReady = true;
   }
+
+  setFiles(newFiles) {
+    let files = this.fileManager.getFiles()
+      .filter(item => item.alias === this.$scope.model.alias)
+      .map(item => item.file)
+      .concat(newFiles);
+
+    this.fileManager.setFiles(this.$scope.model.alias, files);
+
+    console.log(this.fileManager.getFiles());
+  }
+
 
   add(documentType) {
     this.contentResource.getScaffold(this.$routeParams.id, documentType.documentTypeAlias)
@@ -105,11 +124,13 @@ class EmbdeddedContentController {
   init(item) {
     let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias == item.contentTypeAlias);
     let nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
+    let alias = item.alias;
 
     delete item.name;
+    delete item.alias;
 
     item.toJSON = function() {
-      return Object.assign({ name: this.name }, this);
+      return Object.assign({ alias: alias, name: this.name }, this);
     };
 
     Object.defineProperty(item, 'name', {

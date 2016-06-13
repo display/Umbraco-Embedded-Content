@@ -52,7 +52,7 @@
       </div>
       <div class="embedded-content__item-content" ng-show="item.active">
         <umb-property ng-repeat="property in item.properties" property="property">
-          <umb-editor model="property"></umb-editor>
+          <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-files-watcher></umb-editor>
         </umb-property>
       </div>
     </div>

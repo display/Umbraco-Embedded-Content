@@ -5,7 +5,7 @@
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
 
-    internal class DetachedPublishedProperty : IPublishedProperty
+    internal class PublishedEmbeddedContentProperty : IPublishedProperty
     {
         private readonly bool _isPreview;
         private readonly Lazy<object> _objectValue;
@@ -13,7 +13,7 @@
         private readonly Lazy<object> _sourceValue;
         private readonly Lazy<object> _xpathValue;
 
-        public DetachedPublishedProperty(PublishedPropertyType propertyType, object value, bool isPreview)
+        public PublishedEmbeddedContentProperty(PublishedPropertyType propertyType, object value, bool isPreview)
         {
             if (propertyType == null)
             {

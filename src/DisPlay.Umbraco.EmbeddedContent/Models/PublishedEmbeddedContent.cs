@@ -9,21 +9,26 @@
     using global::Umbraco.Core.Models.PublishedContent;
     using global::Umbraco.Web.Models;
 
-    internal class DetachedPublishedContent : PublishedContentBase, IPublishedContentWithKey
+    internal class PublishedEmbeddedContent : PublishedContentWithKeyBase
     {
         private readonly IEnumerable<IPublishedProperty> _properties;
 
-        public DetachedPublishedContent(string name,
-                                        Guid key,
-                                        int sortOrder,
+        public PublishedEmbeddedContent(EmbeddedContentItem item,
                                         PublishedContentType contentType,
-                                        IEnumerable<IPublishedProperty> properties)
+                                        int sortOrder,
+                                        bool isPreview)
         {
-            Name = name;
-            Key = key;
+            Name = item.Name;
+            Key = item.Key;
+            UpdateDate = item.UpdateDate;
+            CreateDate = item.CreateDate;
             SortOrder = sortOrder;
             ContentType = contentType;
-            _properties = properties ?? Enumerable.Empty<IPublishedProperty>();
+
+            _properties = from property in item.Properties
+                          let propType = contentType.GetPropertyType(property.Key)
+                          where propType != null
+                          select new PublishedEmbeddedContentProperty(propType, property.Value, isPreview);
         }
 
         public override int Id => 0;
@@ -44,11 +49,11 @@
         public override int WriterId => 0;
         public override int CreatorId => 0;
         public override string Path { get; }
-        public override DateTime CreateDate => DateTime.MinValue;
-        public override DateTime UpdateDate => DateTime.MinValue;
+        public override DateTime CreateDate { get; }
+        public override DateTime UpdateDate { get; }
         public override Guid Version => Guid.Empty;
         public override int Level => 0;
-        public Guid Key { get; }
+        public override Guid Key { get; }
 
         public override IPublishedProperty GetProperty(string alias)
         {

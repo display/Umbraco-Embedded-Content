@@ -18,6 +18,12 @@
         [DataMember(Name = "contentTypeName")]
         public string ContentTypeName { get; set; }
 
+        [DataMember(Name = "createDate")]
+        public DateTime CreateDate { get; set; }
+
+        [DataMember(Name = "updateDate")]
+        public DateTime UpdateDate { get; set; }
+
         [DataMember(Name = "icon")]
         public string Icon { get; set; }
 
@@ -28,6 +34,6 @@
         public bool Published { get; set; }
 
         [DataMember(Name = "properties")]
-        public IEnumerable<ContentPropertyDisplay> Properties { get; set; }
+        public IEnumerable<EmbeddedContentPropertyDisplay> Properties { get; set; }
     }
 }
