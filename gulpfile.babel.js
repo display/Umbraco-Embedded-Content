@@ -52,7 +52,7 @@ config.files = {
     solution: `${pkg.name}.sln`,
     dotnet: `${config.dirs.src.dotnet}/**/*.cs`,
     assemblyinfo: `${config.dirs.src.dotnet}/**/AssemblyInfo.cs`,
-    dll: `${config.dirs.src.dotnet}/bin/Release/${pkg.name}.{dll,pdb,xml}`,
+    dll: `${config.dirs.src.dotnet}/bin/${config.debug ? 'Debug' : 'Release'}/${pkg.name}.{dll,pdb,xml}`,
     stylesheet: `${config.dirs.src.frontend}/**/*.css`,
     javascript: `${config.dirs.src.frontend}/**/*.js`,
     views: `${config.dirs.src.frontend}/**/*.html`,
