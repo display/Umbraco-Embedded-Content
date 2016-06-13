@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs-promise';
 import buffer from 'buffer';
 import archiver from 'archiver';
+import semver from 'semver';
 import uuid from 'node-uuid';
 import xml from 'js2xmlparser';
 

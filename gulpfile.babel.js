@@ -9,8 +9,8 @@ import * as dotnet from './build/gulp-tasks/dotnet';
 import * as frontend from './build/gulp-tasks/frontend';
 import * as iisexpress from './build/gulp-tasks/iisexpress'
 import * as release from './build/gulp-tasks/release';
-import * as nuget from './build/gulp-tasks/nuget'
-import * as umbraco from './build/gulp-tasks/umbraco'
+import * as nuget from './build/gulp-tasks/nuget';
+import * as umbraco from './build/gulp-tasks/umbraco';
 
 import pkg from './package.json';
 
@@ -19,6 +19,9 @@ const srcDir = 'src';
 const destDir = argv.target || 'dist';
 
 const config = {
+  // Only use the last part of the plugin name as the folder name.
+  // e.g. DisPlay.Umbraco.EmbeddedContent becomes EmbeddedContent
+  cleanedName: pkg.name.replace(/(?:.*)+\.(.*)/, '$1'),
   version: pkg.version,
   debug: argv.debug || false,
   port: 8080
@@ -32,9 +35,9 @@ config.dirs = {
   },
   dest: {
     path: destDir,
-    frontend: `${destDir}/App_Plugins/${pkg.name}`,
+    frontend: `${destDir}/App_Plugins/${config.cleanedName}`,
     dotnet: `${destDir}/bin`,
-    package: `${destDir}/pkg`,
+    package: 'dist/pkg',
   },
   build: 'build',
   tools: 'tools',
@@ -56,8 +59,8 @@ config.files = {
     assets: [`${config.dirs.src.frontend}/**/*`, `!${config.dirs.src.frontend}/**/*.{js,css,html}`]
   },
   dest: {
-    stylesheet: `${pkg.name}.min.css`,
-    javascript: `${pkg.name}.min.js`
+    stylesheet: `${config.cleanedName}.min.css`,
+    javascript: `${config.cleanedName}.min.js`
   }
 };
 

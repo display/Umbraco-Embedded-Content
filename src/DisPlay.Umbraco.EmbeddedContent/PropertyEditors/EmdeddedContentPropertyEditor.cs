@@ -13,9 +13,9 @@
     using Umbraco.Web.Models.ContentEditing;
     using Models;
 
-    [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/DisPlay.Umbraco.EmbeddedContent/DisPlay.Umbraco.EmbeddedContent.min.css")]
-    [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/DisPlay.Umbraco.EmbeddedContent/DisPlay.Umbraco.EmbeddedContent.min.js")]
-    [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "DIS/PLAY Embedded Content", "JSON", "~/App_Plugins/DisPlay.Umbraco.EmbeddedContent/EmbeddedContent.html", Group = "Rich content", HideLabel = true, Icon = "icon-code")]
+    [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
+    [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.js")]
+    [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "DIS/PLAY Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/EmbeddedContent.html", Group = "Rich content", HideLabel = true, Icon = "icon-code")]
     public class EmdeddedContentPropertyEditor : PropertyEditor
     {
         protected override PreValueEditor CreatePreValueEditor()
@@ -30,7 +30,7 @@
 
         internal class EmbeddedContentPreValueEditor : PreValueEditor
         {
-            [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/DisPlay.Umbraco.EmbeddedContent/embeddedcontent-config.html", HideLabel = false)]
+            [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/EmbeddedContent/embeddedcontent-config.html", HideLabel = false)]
             public string[] EmbeddedContentConfig { get; set; }
 
             public override IDictionary<string, object> ConvertDbToEditor(IDictionary<string, object> defaultPreVals, PreValueCollection persistedPreVals)

@@ -69,7 +69,7 @@ class EmbeddedContentConfigController {
     }];
 
     this.editSettingsOverlay = {
-      view: '/App_Plugins/DisPlay.Umbraco.EmbeddedContent/embeddedcontent-settings-overlay.html',
+      view: '/App_Plugins/EmbeddedContent/embeddedcontent-settings-overlay.html',
       title: this.localizationService.localize('embeddedContent_settings'),
       subtitle: item.documentTypeAlias,
       settings: properties,
