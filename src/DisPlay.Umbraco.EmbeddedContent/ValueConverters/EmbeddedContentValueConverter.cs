@@ -74,7 +74,7 @@
                     continue;
                 }
 
-                IPublishedContent content = new PublishedEmbeddedContent(item, contentType, i, preview);
+                IPublishedContent content = new PublishedEmbeddedContent(ApplicationContext.Current, item, contentType, i, preview);
 
                 if(PublishedContentModelFactoryResolver.HasCurrent)
                 {

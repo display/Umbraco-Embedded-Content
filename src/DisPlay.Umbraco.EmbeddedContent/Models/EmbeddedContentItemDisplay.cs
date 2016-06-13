@@ -24,6 +24,12 @@
         [DataMember(Name = "updateDate")]
         public DateTime UpdateDate { get; set; }
 
+        [DataMember(Name = "creatorId")]
+        public int CreatorId { get; set; }
+
+        [DataMember(Name = "writerId")]
+        public int WriterId { get; set; }
+
         [DataMember(Name = "icon")]
         public string Icon { get; set; }
 

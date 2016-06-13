@@ -11,6 +11,7 @@
     using global::Umbraco.Core.Models.Editors;
     using global::Umbraco.Core.PropertyEditors;
     using global::Umbraco.Core.Services;
+    using global::Umbraco.Web;
     using global::Umbraco.Web.PropertyEditors;
     using global::Umbraco.Web.Models.ContentEditing;
 
@@ -130,6 +131,8 @@
                            ContentTypeName = contentType.Name,
                            CreateDate = item.CreateDate,
                            UpdateDate = item.UpdateDate,
+                           CreatorId = item.CreatorId,
+                           WriterId = item.WriterId,
                            Icon = contentType.Icon,
                            Name = item.Name,
                            Published = item.Published,
@@ -171,7 +174,9 @@
                         Name = itemDisplay.Name,
                         Published = itemDisplay.Published,
                         CreateDate = itemDisplay.CreateDate,
-                        UpdateDate = itemDisplay.UpdateDate
+                        UpdateDate = itemDisplay.UpdateDate,
+                        CreatorId = itemDisplay.CreatorId,
+                        WriterId = itemDisplay.WriterId
                     };
 
                     var contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
@@ -184,6 +189,7 @@
                     if(item.CreateDate == DateTime.MinValue)
                     {
                         item.CreateDate = DateTime.Now;
+                        item.CreatorId = UmbracoContext.Current.Security.CurrentUser.Id;
                     }
 
                     var currentItem = currentItems.FirstOrDefault(x => x.Key == itemDisplay.Key);
@@ -191,6 +197,8 @@
                     {
                         item.CreateDate = currentItem.CreateDate;
                         item.UpdateDate = currentItem.UpdateDate;
+                        item.CreatorId = currentItem.CreatorId;
+                        item.WriterId = currentItem.WriterId;
                     }
 
                     foreach(var propertyType in contentType.CompositionPropertyGroups.First().PropertyTypes)
@@ -234,6 +242,7 @@
                         || JsonConvert.SerializeObject(currentItem.Properties) != JsonConvert.SerializeObject(item.Properties))
                     {
                         item.UpdateDate = DateTime.Now;
+                        item.WriterId = UmbracoContext.Current.Security.CurrentUser.Id;
                     }
 
                     items.Add(item);
