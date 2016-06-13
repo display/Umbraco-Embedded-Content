@@ -253,15 +253,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\PublishedEmbeddedContent.cs" />
-    <Compile Include="Models\PublishedEmbeddedContentProperty.cs" />
-    <Compile Include="Models\EmbeddedContentIConfig.cs" />
-    <Compile Include="Models\EmbeddedContentItem.cs" />
-    <Compile Include="Models\EmbeddedContentItemDisplay.cs" />
-    <Compile Include="Models\EmbeddedContentPropertyDisplay.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyEditors\EmdeddedContentPropertyEditor.cs" />
-    <Compile Include="ValueConverters\EmbeddedContentValueConverter.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

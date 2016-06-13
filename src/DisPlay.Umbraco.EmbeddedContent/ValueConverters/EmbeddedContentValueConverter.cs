@@ -49,7 +49,7 @@
 
             var preValues = ApplicationContext.Current.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
             var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
-            var config = JsonConvert.DeserializeObject<EmbeddedContentConfig[]>(configPreValue.Value);
+            var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
 
             var result = new List<IPublishedContent>();
             var items = ((JArray)source).ToObject<EmbeddedContentItem[]>();
@@ -63,7 +63,7 @@
                     continue;
                 }
 
-                if(config.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias) == null)
+                if(config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias) == null)
                 {
                     continue;
                 }

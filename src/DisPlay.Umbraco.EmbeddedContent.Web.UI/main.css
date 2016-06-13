@@ -1,8 +1,6 @@
 .embedded-content__title-bar {
   display: flex;
   align-items: center;
-  padding-right: 10px;
-  padding-left: 10px;
 }
 
 .embedded-content__title-bar-title {
@@ -30,8 +28,8 @@
 
 .embedded-content__item,
 .embedded-content-config__item {
-  margin: 10px;
   position: relative;
+  margin: 10px 0;
   border: 1px solid transparent;
 }
 
@@ -96,7 +94,7 @@
 .embedded-content__placeholder {
   position: relative;
   min-height: 130px;
-  margin: 10px;
+  margin: 10px 0;
   background-color: #f8f8f8;
   border-color: #d9d9d9;
   border-style: dashed;

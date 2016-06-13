@@ -9,10 +9,16 @@ class EmbeddedContentConfigController {
 
     this.hasSettings = false;
 
+    if(!$scope.model.value) {
+      $scope.model.value = {
+        documentTypes: []
+      };
+    }
+
     contentTypeResource.getAll()
     .then(data => {
       this.documentTypes = data;
-      this.$scope.model.value = (this.$scope.model.value || []).map(this.init.bind(this)).filter(item => item);
+      this.$scope.model.value.documentTypes = this.$scope.model.value.documentTypes.map(this.init.bind(this)).filter(item => item);
 
       this.ready = true;
     });
@@ -36,13 +42,13 @@ class EmbeddedContentConfigController {
       documentTypeAlias: item.alias,
     });
 
-    this.$scope.model.value.push(docType);
-    this.$scope.model.value.sort((a, b) => a.name.localeCompare(b.name));
+    this.$scope.model.value.documentTypes.push(docType);
+    this.$scope.model.value.documentTypes.sort((a, b) => a.name.localeCompare(b.name));
 
     this.editSettings(docType);
   }
 
-  remove(index) { this.$scope.model.value.splice(index, 1); }
+  remove(index) { this.$scope.model.value.documentTypes.splice(index, 1); }
   togglePrompt(item) { item.deletePrompt = !item.deletePrompt; }
   hidePrompt(item) { item.deletePrompt = false; }
 
@@ -86,7 +92,7 @@ class EmbeddedContentConfigController {
 
   openContentTypeOverlay(event) {
     let availableItems = this.documentTypes
-    .filter(docType => !this.$scope.model.value.find(item => item.documentTypeAlias === docType.alias))
+    .filter(docType => !this.$scope.model.value.documentTypes.find(item => item.documentTypeAlias === docType.alias))
     .map(docType => {
       return {
         alias: docType.alias,

@@ -60,8 +60,20 @@
 
   <div class="embedded-content__placeholder"
        ng-class="{'embedded-content__placeholder--small': model.value.length > 0}"
-       ng-click="ctrl.openContentTypeOverlay($event)">
+       ng-click="ctrl.openContentTypeOverlay($event)"
+       ng-show="!ctrl.config.maxItems || model.value.length < ctrl.config.maxItems">
     <div class="embedded-content__add"><localize key="embeddedContent_addContent" /></div>
+  </div>
+
+  <input type="hidden" name="minItems" ng-model="model">
+  <input type="hidden" name="maxItems" ng-model="model">
+
+  <div class="help-inline" val-msg-for="minItems" val-toggle-msg="minItems">
+      You need to add at least {{ctrl.config.minItems - model.value.length}} more item(s)
+  </div>
+
+  <div class="help-inline" val-msg-for="maxItems" val-toggle-msg="maxItems">
+      You can only have {{ctrl.config.maxItems}} item(s) selected
   </div>
 
   <umb-overlay

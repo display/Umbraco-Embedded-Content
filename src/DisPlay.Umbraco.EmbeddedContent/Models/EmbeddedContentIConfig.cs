@@ -1,8 +1,9 @@
 ﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
+    using System.Collections.Generic;
+
     internal class EmbeddedContentConfig
     {
-        public string DocumentTypeAlias { get; set; }
-        public string NameLabel { get; set; }
+        public IEnumerable<EmbeddedContentConfigDocumentType> DocumentTypes { get; set; }
     }
 }

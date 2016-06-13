@@ -79,15 +79,21 @@ class EmbdeddedContentController {
     this.hasSettings = false;
 
     this.label = $scope.model.label;
-    this.allowedDocumentTypes = $scope.model.config.embeddedContentConfig;
+    this.config = $scope.model.config.embeddedContentConfig;
+    this.allowedDocumentTypes = this.config.documentTypes;
 
     $scope.model.value.forEach(this.init.bind(this));
+
+    if($scope.model.value.length === 0 && this.config.minItems === 1 && this.allowedDocumentTypes.length === 1) {
+      this.add(this.allowedDocumentTypes[0]);
+    }
+
+    $scope.$watch('model.value', this.validate.bind(this), true);
+    $scope.$on('formSubmitting', this.validate.bind(this));
 
     $scope.$on('formSubmitted', () => {
       this.fileManager.setFiles(this.$scope.model.alias, []);
     });
-
-    console.log($scope.model.value);
 
     this.contentReady = true;
   }
@@ -99,10 +105,21 @@ class EmbdeddedContentController {
       .concat(newFiles);
 
     this.fileManager.setFiles(this.$scope.model.alias, files);
-
-    console.log(this.fileManager.getFiles());
   }
 
+  validate() {
+    if(this.config.minItems && this.config.minItems > this.$scope.model.value.length) {
+      this.currentForm.minItems.$setValidity('minItems', false );
+    } else {
+      this.currentForm.minItems.$setValidity('minItems', true );
+    }
+
+    if(this.config.maxItems && this.config.maxItems < this.$scope.model.value.length) {
+      this.currentForm.maxItems.$setValidity('maxItems', false);
+    } else {
+      this.currentForm.maxItems.$setValidity('maxItems', true);
+    }
+  }
 
   add(documentType) {
     this.contentResource.getScaffold(this.$routeParams.id, documentType.documentTypeAlias)

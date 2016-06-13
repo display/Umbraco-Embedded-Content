@@ -16,7 +16,7 @@
     using global::Umbraco.Web.Models.ContentEditing;
 
     using Models;
-
+    using umbraco.presentation.channels.businesslogic;
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.js")]
     [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "DIS/PLAY Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/EmbeddedContent.html", Group = "Rich content", HideLabel = true, Icon = "icon-code")]
@@ -50,9 +50,9 @@
                 var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
 
                 var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
-                var config = JArray.Parse(configPreValue.Value);
+                var config = JObject.Parse(configPreValue.Value);
 
-                foreach(var item in config)
+                foreach(var item in config["documentTypes"])
                 {
                     var contentType = contentTypes.FirstOrDefault(x => x.Alias == item["documentTypeAlias"].Value<string>());
                     if(contentType != null)
@@ -113,14 +113,14 @@
                 var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
                 var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
-                var config = JsonConvert.DeserializeObject<EmbeddedContentConfig[]>(configPreValue.Value);
+                var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
 
                 var items = source.ToObject<EmbeddedContentItem[]>();
 
                 return from indexedItem in items.Select((item, index) => new { item, index })
                        let item = indexedItem.item
                        let index = indexedItem.index
-                       let configDocType = config.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
+                       let configDocType = config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
                        where configDocType != null
                        let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias)
                        where contentType != null && contentType.CompositionPropertyGroups.Any()
