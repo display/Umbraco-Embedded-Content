@@ -34,12 +34,16 @@
     </div>
   </div>
 
-  <umb-control-group label="Minimum number of items">
-    <input type="number" ng-model="model.value.minItems" />
+  <umb-control-group label="Minimum number of items" alias="minItems">
+    <input type="number" id="minItems" name="minItems" ng-model="model.value.minItems" />
   </umb-control-group>
 
-  <umb-control-group label="Maximum number of items">
-    <input type="number" ng-model="model.value.maxItems" />
+  <umb-control-group label="Maximum number of items" alias="maxItems">
+    <input type="number" id="maxItems" name="maxItems" ng-model="model.value.maxItems" />
+  </umb-control-group>
+
+  <umb-control-group label="Enable collapsing" alias="enableCollapsing">
+    <input type="checkbox" id="disableCollapsing" name="enableCollapsing" ng-model="model.value.enableCollapsing" />
   </umb-control-group>
 
   <umb-overlay

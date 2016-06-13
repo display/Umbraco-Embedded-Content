@@ -11,6 +11,7 @@ class EmbeddedContentConfigController {
 
     if(!$scope.model.value) {
       $scope.model.value = {
+        enableCollapsing: true,
         documentTypes: []
       };
     }
