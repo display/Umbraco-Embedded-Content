@@ -3,7 +3,7 @@ import {spawn} from 'child_process';
 import path from 'path';
 
 export function run(gulp, $, config) {
-  return function() {
+  return function(done) {
 
     let iisexpress = spawn('iisexpress', [
       `/port:${config.port}`,
@@ -30,7 +30,9 @@ export function run(gulp, $, config) {
       throw data;
     });
 
-    process.on('SIGINT', () => {
+    iisexpress.on('exit', done);
+
+    process.on('exit', () => {
       iisexpress.kill();
     });
 

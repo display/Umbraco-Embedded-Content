@@ -64,6 +64,10 @@ config.files = {
   }
 };
 
+process.on('SIGINT', () => {
+  process.exit(0);
+});
+
 // nuget tasks
 gulp.task('nuget-download', nuget.download(gulp, $, config));
 gulp.task('nuget-package', gulp.series('nuget-download', nuget.pack(gulp, $, config)));
