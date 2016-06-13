@@ -16,11 +16,11 @@ export function stylesheet(gulp, $, config) {
       }]
     }))
     .pipe($.sourcemaps.init() )
+    .pipe($.concat(config.files.dest.stylesheet))
     .pipe($.postcss([
-      cssnext({browsers: ['last 2 version']}),
+      cssnext({ browsers: ['last 2 version'], warnForDuplicates: false }),
       cssnano()
     ]))
-    .pipe($.rename(config.files.dest.stylesheet))
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest(config.dirs.dest.frontend));
   };

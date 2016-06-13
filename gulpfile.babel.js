@@ -53,7 +53,7 @@ config.files = {
     dotnet: `${config.dirs.src.dotnet}/**/*.cs`,
     assemblyinfo: `${config.dirs.src.dotnet}/**/AssemblyInfo.cs`,
     dll: `${config.dirs.src.dotnet}/bin/Release/${pkg.name}.{dll,pdb,xml}`,
-    stylesheet: `${config.dirs.src.frontend}/main.css`,
+    stylesheet: `${config.dirs.src.frontend}/**/*.css`,
     javascript: `${config.dirs.src.frontend}/**/*.js`,
     views: `${config.dirs.src.frontend}/**/*.html`,
     assets: [`${config.dirs.src.frontend}/**/*`, `!${config.dirs.src.frontend}/**/*.{js,css,html}`]
