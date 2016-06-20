@@ -188,7 +188,7 @@
 
                     if(item.CreateDate == DateTime.MinValue)
                     {
-                        item.CreateDate = DateTime.Now;
+                        item.CreateDate = DateTime.UtcNow;
                         item.CreatorId = UmbracoContext.Current.Security.CurrentUser.Id;
                     }
 
@@ -241,7 +241,7 @@
                         || currentItem.Published != item.Published
                         || JsonConvert.SerializeObject(currentItem.Properties) != JsonConvert.SerializeObject(item.Properties))
                     {
-                        item.UpdateDate = DateTime.Now;
+                        item.UpdateDate = DateTime.UtcNow;
                         item.WriterId = UmbracoContext.Current.Security.CurrentUser.Id;
                     }
 
