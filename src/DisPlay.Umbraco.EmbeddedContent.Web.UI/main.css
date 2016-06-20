@@ -91,6 +91,10 @@
   cursor: pointer;
 }
 
+.embedded-content__tools-tool:hover {
+  color: #0064cd;
+}
+
 .embedded-content__placeholder {
   position: relative;
   min-height: 130px;
@@ -146,8 +150,89 @@
   content: "\e0d7";
 }
 
-.embedded-content-config .embedded-content__tools-tool:hover {
-  color: #0064cd;
+.embedded-content__switch {
+  position: relative;
+  margin: 0;
+  display: inline-block;
+  vertical-align: top;
+  width: 56px;
+  height: 20px;
+  padding: 3px;
+  background-color: #fff;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.embedded-content__switch input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.embedded-content__switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #eceeef;
+  border-radius: inherit;
+  transition: left 0.15s ease-out;
+  transition-property: opacity, background;
+}
+
+.embedded-content__switch-label::before,
+.embedded-content__switch-label::after {
+  position: absolute;
+  top: 50%;
+  margin-top: -.5em;
+  line-height: 1;
+  transition: inherit;
+}
+
+.embedded-content__switch-label::before {
+  content: attr(data-off);
+  right: 11px;
+  color: #aaa;
+}
+
+.embedded-content__switch-label::after {
+  content: attr(data-on);
+  left: 11px;
+  color: #fff;
+  opacity: 0;
+}
+
+.embedded-content__switch input:checked ~ .embedded-content__switch-label {
+  background: #2e8aea;
+}
+
+.embedded-content__switch input:checked ~ .embedded-content__switch-label::before {
+  opacity: 0;
+}
+
+.embedded-content__switch input:checked ~ .embedded-content__switch-label::after {
+  opacity: 1;
+}
+
+.embedded-content__switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 10px;
+  transition: left 0.15s ease-out;
+}
+
+.embedded-content__switch input:checked ~ .embedded-content__switch-handle {
+  left: 40px;
+}
+
+.embedded-content__item--active .embedded-content__tools-tool:hover {
+  color: #fff;
 }
 
 .embedded-content-config .embedded-content__control-bar {
@@ -159,10 +244,6 @@
   padding: 0;
   font-size: 12px;
   font-weight: bold;
-}
-
-.embedded-content__item--disabled > .embedded-content__control-bar {
-  opacity: 0.5;
 }
 
 .embedded-content__item--active > .embedded-content__control-bar {

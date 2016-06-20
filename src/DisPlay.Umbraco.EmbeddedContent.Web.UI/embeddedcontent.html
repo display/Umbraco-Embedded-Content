@@ -18,8 +18,7 @@
   <div ui-sortable="ctrl.sortableOptions" ng-model="model.value">
     <div class="embedded-content__item"
          ng-class="{
-          'embedded-content__item--active': item.active || ctrl.config.enableCollapsing === '0',
-          'embedded-content__item--disabled': !item.published
+          'embedded-content__item--active': item.active || ctrl.config.enableCollapsing === '0'
          }"
          ng-repeat="item in model.value"
          ng-click="ctrl.activate(item)"
@@ -36,16 +35,20 @@
           <localize key="grid_settingsApplied" />
         </div>
         <div class="embedded-content__tools">
-          <div class="embedded-content__tools-tool">
-            <i class="embedded-content__tools-icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
+          <div class="embedded-content__tools-tool" ng-hide="item.deletePrompt">
+            <label class="embedded-content__switch" ng-click="$event.stopPropagation();">
+              <input type="checkbox" name="published" ng-model="item.published" />
+              <span class="embedded-content__switch-label" data-on="On" data-off="Off"></span>
+              <span class="embedded-content__switch-handle"></span>
+            </label>
           </div>
           <div class="embedded-content__tools-tool">
-            <i class="embedded-content__tools-icon icon-trash" ng-click="ctrl.togglePrompt(item)"></i>
+            <i class="embedded-content__tools-icon icon-trash" ng-click="ctrl.togglePrompt(item, $event)"></i>
             <umb-confirm-action
               ng-if="item.deletePrompt"
               direction="left"
               on-confirm="ctrl.remove($index)"
-              on-cancel="ctrl.hidePrompt(item)">
+              on-cancel="ctrl.hidePrompt(item, $event)">
             </umb-confirm-action>
           </div>
         </div>
@@ -81,12 +84,5 @@
     model="ctrl.contentTypeOverlay"
     view="ctrl.contentTypeOverlay.view"
     position="target">
-  </umb-overlay>
-
-  <umb-overlay
-    ng-if="ctrl.editSettingsOverlay.show"
-    model="ctrl.editSettingsOverlay"
-    view="ctrl.editSettingsOverlay.view"
-    position="right">
   </umb-overlay>
 </div>
