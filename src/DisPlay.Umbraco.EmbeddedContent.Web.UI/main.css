@@ -175,7 +175,7 @@
   height: inherit;
   font-size: 12px;
   text-transform: uppercase;
-  background: #eceeef;
+  background: #ed5652;
   border-radius: inherit;
   transition: left 0.15s ease-out;
   transition-property: opacity, background;
@@ -193,7 +193,7 @@
 .embedded-content__switch-label::before {
   content: attr(data-off);
   right: 11px;
-  color: #aaa;
+  color: #fff;
 }
 
 .embedded-content__switch-label::after {
