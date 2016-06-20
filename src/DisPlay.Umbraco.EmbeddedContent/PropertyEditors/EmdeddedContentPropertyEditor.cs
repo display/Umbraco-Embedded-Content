@@ -28,7 +28,7 @@
         private IContentTypeService _contentTypeService;
         private IDataTypeService _dataTypeService;
         private PropertyEditorResolver _propertyEditorResolver;
-        private WebSecurity _security;
+        private Func<WebSecurity> _securityFactory;
         private ProfilingLogger _profilingLogger;
 
         public EmbeddedContentPropertyEditor(
@@ -36,13 +36,13 @@
             IDataTypeService dataTypeService,
             ProfilingLogger profilingLogger,
             PropertyEditorResolver propertyEditorResolver,
-            WebSecurity security)
+            Func<WebSecurity> securityFactory)
         {
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
             _profilingLogger = profilingLogger;
             _propertyEditorResolver = propertyEditorResolver;
-            _security = security;
+            _securityFactory = securityFactory;
         }
 
         public EmbeddedContentPropertyEditor() : this(
@@ -50,7 +50,7 @@
             ApplicationContext.Current.Services.DataTypeService,
             ApplicationContext.Current.ProfilingLogger,
             PropertyEditorResolver.Current,
-            UmbracoContext.Current.Security)
+            () => UmbracoContext.Current.Security)
         {
 
         }
@@ -68,7 +68,7 @@
                 _dataTypeService,
                 _profilingLogger,
                 _propertyEditorResolver,
-                _security
+                _securityFactory()
             );
         }
 
