@@ -49,7 +49,12 @@
 
         public Type GetPropertyValueType(PublishedPropertyType propertyType)
         {
-            //TODO: Change if adding support for maxItems
+            var config = GetConfig(propertyType.DataTypeId);
+
+            if(config.MaxItems == 1)
+            {
+                return typeof(IPublishedContent);
+            }
 
             return typeof(IEnumerable<IPublishedContent>);
         }
@@ -68,14 +73,17 @@
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-            if(source == null)
+            var config = GetConfig(propertyType.DataTypeId);
+
+            if (source == null)
             {
+                if(config.MaxItems == 1)
+                {
+                    return null;
+                }
+
                 return Enumerable.Empty<IPublishedContent>();
             }
-
-            var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
-            var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
-            var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
 
             var result = new List<IPublishedContent>();
             var items = ((JArray)source).ToObject<EmbeddedContentItem[]>();
@@ -114,6 +122,13 @@
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
             return propertyType.PropertyEditorAlias == "DisPlay.Umbraco.EmbeddedContent";
+        }
+
+        private EmbeddedContentConfig GetConfig(int dataTypeId)
+        {
+            var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(dataTypeId);
+            var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
+            return JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
         }
     }
 }
