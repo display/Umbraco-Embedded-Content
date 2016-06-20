@@ -22,6 +22,12 @@ Please use the [issue tracker](issues) to report any bugs or file feature reques
 This will install node dependencies, build the project, start watching files
 and start IIS Express listening on `http://localhost:8080`
 
+Change `debug` to `true` in `samples/Website/Web.config`
+
+When installing Umbraco hit `Customize` and select `No thanks` when asked to install a Starter kit.
+
+uSync wil automatically populate Umbraco with sample content from disk.
+
 ### Folder structure
 
 TODO: Describe the folder structure
