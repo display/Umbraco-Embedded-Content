@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "samples\Website\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{56AB67CE-160E-4DFC-B361-04BDCDC5D34A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent.uSync", "src\DisPlay.Umbraco.EmbeddedContent.uSync\DisPlay.Umbraco.EmbeddedContent.uSync.csproj", "{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFA82B64-EF41-4B30-A8AC-26ECEEA84AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class EmbeddedContentItem
+    public class EmbeddedContentItem
     {
         public EmbeddedContentItem()
         {
