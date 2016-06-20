@@ -7,6 +7,7 @@
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
+    using global::Umbraco.Core.Services;
     using global::Umbraco.Web.Models;
 
     internal class PublishedEmbeddedContent : PublishedContentWithKeyBase
@@ -15,7 +16,7 @@
         private readonly Lazy<string> _writerName;
         private readonly Lazy<string> _creatorName;
 
-        public PublishedEmbeddedContent(ApplicationContext applicationContext,
+        public PublishedEmbeddedContent(IUserService userService,
                                         EmbeddedContentItem item,
                                         PublishedContentType contentType,
                                         int sortOrder,
@@ -31,8 +32,8 @@
             SortOrder = sortOrder;
             ContentType = contentType;
 
-            _writerName = new Lazy<string>(() => applicationContext.Services.UserService.GetByProviderKey(WriterId).Name);
-            _creatorName = new Lazy<string>(() => applicationContext.Services.UserService.GetByProviderKey(CreatorId).Name);
+            _writerName = new Lazy<string>(() => userService.GetByProviderKey(WriterId).Name);
+            _creatorName = new Lazy<string>(() => userService.GetByProviderKey(CreatorId).Name);
 
             _properties = from property in item.Properties
                           let propType = contentType.GetPropertyType(property.Key)

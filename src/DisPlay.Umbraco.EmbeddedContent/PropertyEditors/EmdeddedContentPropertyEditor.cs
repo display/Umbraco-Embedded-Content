@@ -6,22 +6,50 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.Editors;
     using global::Umbraco.Core.PropertyEditors;
     using global::Umbraco.Core.Services;
     using global::Umbraco.Web;
-    using global::Umbraco.Web.PropertyEditors;
     using global::Umbraco.Web.Models.ContentEditing;
+    using global::Umbraco.Web.PropertyEditors;
+    using global::Umbraco.Web.Security;
 
     using Models;
-    using umbraco.presentation.channels.businesslogic;
+
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.js")]
     [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-code")]
     public class EmbeddedContentPropertyEditor : PropertyEditor
     {
+        private IContentTypeService _contentTypeService;
+        private IDataTypeService _dataTypeService;
+        private PropertyEditorResolver _propertyEditorResolver;
+        private WebSecurity _security;
+
+        public EmbeddedContentPropertyEditor(
+            IContentTypeService contentTypeService,
+            IDataTypeService dataTypeService,
+            PropertyEditorResolver propertyEditorResolver,
+            WebSecurity security)
+        {
+            _contentTypeService = contentTypeService;
+            _dataTypeService = dataTypeService;
+            _propertyEditorResolver = propertyEditorResolver;
+            _security = security;
+        }
+
+        public EmbeddedContentPropertyEditor() : this(
+            ApplicationContext.Current.Services.ContentTypeService,
+            ApplicationContext.Current.Services.DataTypeService,
+            PropertyEditorResolver.Current,
+            UmbracoContext.Current.Security)
+        {
+
+        }
+
         protected override PreValueEditor CreatePreValueEditor()
         {
            return new EmbeddedContentPreValueEditor();
@@ -29,7 +57,7 @@
 
         protected override PropertyValueEditor CreateValueEditor()
         {
-            return new EmbeddedContentValueEditor(base.CreateValueEditor());
+            return new EmbeddedContentValueEditor(base.CreateValueEditor(), _contentTypeService, _dataTypeService, _propertyEditorResolver, _security);
         }
 
         internal class EmbeddedContentPreValueEditor : PreValueEditor
@@ -41,13 +69,27 @@
 
         internal class EmbeddedContentValueEditor : PropertyValueEditorWrapper
         {
-            public EmbeddedContentValueEditor(PropertyValueEditor wrapped) : base(wrapped)
+            private IContentTypeService _contentTypeService;
+            private IDataTypeService _dataTypeService;
+            private PropertyEditorResolver _propertyEditorResolver;
+            private WebSecurity _security;
+
+            public EmbeddedContentValueEditor(
+                PropertyValueEditor wrapped,
+                IContentTypeService contentTypeService,
+                IDataTypeService dataTypeService,
+                PropertyEditorResolver propertyEditorResolver,
+                WebSecurity security) : base(wrapped)
             {
+                _contentTypeService = contentTypeService;
+                _dataTypeService = dataTypeService;
+                _propertyEditorResolver = propertyEditorResolver;
+                _security = security;
             }
 
             public override void ConfigureForDisplay(PreValueCollection preValues)
             {
-                var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
+                var contentTypes = _contentTypeService.GetAllContentTypes();
 
                 var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                 var config = JObject.Parse(configPreValue.Value);
@@ -75,7 +117,7 @@
                     return string.Empty;
                 }
 
-                var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
+                var contentTypes = _contentTypeService.GetAllContentTypes();
                 var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(property.Value.ToString());
 
                 foreach (var item in items)
@@ -85,7 +127,7 @@
                     {
                         object value;
                         item.Properties.TryGetValue(propType.Alias, out value);
-                        PropertyEditor propertyEditor = PropertyEditorResolver.Current.GetByAlias(propType.PropertyEditorAlias);
+                        PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
 
                         item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
                           new Property(propType, value),
@@ -109,7 +151,7 @@
 
                 var source = JArray.Parse(property.Value.ToString());
 
-                var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
+                var contentTypes = _contentTypeService.GetAllContentTypes();
                 var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
                 var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
@@ -139,7 +181,7 @@
                            Properties = from pt in contentType.CompositionPropertyGroups.First().PropertyTypes
                                         orderby pt.SortOrder
                                         let value = GetPropertyValue(item.Properties, pt.Alias)
-                                        let p = GetProperty(pt, value, dataTypeService)
+                                        let p = GetProperty(pt, value)
                                         where p != null
                                         select p
                        };
@@ -152,7 +194,7 @@
                     return string.Empty;
                 }
 
-                var contentTypes = ApplicationContext.Current.Services.ContentTypeService.GetAllContentTypes();
+                var contentTypes = _contentTypeService.GetAllContentTypes();
                 var itemsDisplay = JsonConvert.DeserializeObject<EmbeddedContentItemDisplay[]>(editorValue.Value.ToString());
                 var currentItems = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(currentValue?.ToString() ?? "[]");
                 var items = new List<EmbeddedContentItem>();
@@ -189,7 +231,7 @@
                     if(item.CreateDate == DateTime.MinValue)
                     {
                         item.CreateDate = DateTime.UtcNow;
-                        item.CreatorId = UmbracoContext.Current.Security.CurrentUser.Id;
+                        item.CreatorId = _security.CurrentUser.Id;
                     }
 
                     var currentItem = currentItems.FirstOrDefault(x => x.Key == itemDisplay.Key);
@@ -209,9 +251,9 @@
                             continue;
                         }
 
-                        PropertyEditor propertyEditor = PropertyEditorResolver.Current.GetByAlias(propertyType.PropertyEditorAlias);
+                        PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propertyType.PropertyEditorAlias);
 
-                        var preValues = ApplicationContext.Current.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
+                        var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
                         var additionalData = new Dictionary<string, object>();
 
                         if(files != null)
@@ -242,7 +284,7 @@
                         || JsonConvert.SerializeObject(currentItem.Properties) != JsonConvert.SerializeObject(item.Properties))
                     {
                         item.UpdateDate = DateTime.UtcNow;
-                        item.WriterId = UmbracoContext.Current.Security.CurrentUser.Id;
+                        item.WriterId = _security.CurrentUser.Id;
                     }
 
                     items.Add(item);
@@ -251,7 +293,7 @@
                 return JsonConvert.SerializeObject(items);
             }
 
-            private EmbeddedContentPropertyDisplay GetProperty(PropertyType propertyType, object value, IDataTypeService dataTypeService)
+            private EmbeddedContentPropertyDisplay GetProperty(PropertyType propertyType, object value)
             {
                 var property = new EmbeddedContentPropertyDisplay
                 {
@@ -261,13 +303,14 @@
                     Value = value
                 };
 
-                PropertyEditor propertyEditor = PropertyEditorResolver.Current.GetByAlias(propertyType.PropertyEditorAlias);
+                PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propertyType.PropertyEditorAlias);
 
-                PreValueCollection preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
+                PreValueCollection preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
                 property.Value = propertyEditor.ValueEditor.ConvertDbToEditor(
-                    new Property(propertyType, value), propertyType,
-                    ApplicationContext.Current.Services.DataTypeService
+                    new Property(propertyType, value),
+                    propertyType,
+                    _dataTypeService
                 );
 
 

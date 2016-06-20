@@ -7,15 +7,41 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+
     using global::Umbraco.Core;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
     using global::Umbraco.Core.PropertyEditors;
+    using global::Umbraco.Core.Services;
 
     using Models;
 
     public class EmbeddedContentValueConverter : PropertyValueConverterBase, IPropertyValueConverterMeta
     {
+        private IDataTypeService _dataTypeService;
+        private IUserService _userService;
+        private IPublishedContentModelFactory _publishedContentModelFactory;
+
+        public EmbeddedContentValueConverter(
+            IDataTypeService dataTypeService,
+            IUserService userService,
+            IPublishedContentModelFactory publishedContentModelFactory)
+        {
+            _dataTypeService = dataTypeService;
+            _userService = userService;
+            _publishedContentModelFactory = publishedContentModelFactory;
+        }
+
+        public EmbeddedContentValueConverter() : this(
+            ApplicationContext.Current.Services.DataTypeService,
+            ApplicationContext.Current.Services.UserService,
+            PublishedContentModelFactoryResolver.HasCurrent
+                ? PublishedContentModelFactoryResolver.Current.Factory
+                : PassthroughPublishedContentModelFactory.Instance)
+        {
+
+        }
+
         public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
         {
             return PropertyCacheLevel.Content;
@@ -47,7 +73,7 @@
                 return Enumerable.Empty<IPublishedContent>();
             }
 
-            var preValues = ApplicationContext.Current.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
+            var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
             var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
             var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
 
@@ -74,12 +100,9 @@
                     continue;
                 }
 
-                IPublishedContent content = new PublishedEmbeddedContent(ApplicationContext.Current, item, contentType, i, preview);
-
-                if(PublishedContentModelFactoryResolver.HasCurrent)
-                {
-                    content = PublishedContentModelFactoryResolver.Current.Factory.CreateModel(content);
-                }
+                IPublishedContent content = _publishedContentModelFactory.CreateModel(
+                    new PublishedEmbeddedContent(_userService, item, contentType, i, preview)
+                );
 
                 result.Add(content);
             }
