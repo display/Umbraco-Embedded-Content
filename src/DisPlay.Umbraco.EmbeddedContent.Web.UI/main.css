@@ -124,8 +124,7 @@
 }
 
 .embedded-content__sortable-placeholder {
-  margin: 5px 0;
-  margin: 0 10px;
+  margin: 0;
   position: relative;
   background-color: #2e8aea;
   height: 2px;
