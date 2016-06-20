@@ -22,7 +22,7 @@
 
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.js")]
-    [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-list")]
+    [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-item-arrangement")]
     public class EmbeddedContentPropertyEditor : PropertyEditor
     {
         private IContentTypeService _contentTypeService;
@@ -111,15 +111,18 @@
                     var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                     var config = JObject.Parse(configPreValue.Value);
 
-                    foreach (var item in config["documentTypes"])
+                    foreach (var item in config["documentTypes"].ToList())
                     {
                         var contentType = contentTypes.FirstOrDefault(x => x.Alias == item["documentTypeAlias"].Value<string>());
-                        if (contentType != null)
+                        if (contentType == null)
                         {
-                            item["name"] = contentType.Name;
-                            item["description"] = contentType.Description;
-                            item["icon"] = contentType.Icon;
+                            item.Remove();
+                            continue;
                         }
+
+                        item["name"] = contentType.Name;
+                        item["description"] = contentType.Description;
+                        item["icon"] = contentType.Icon;
                     }
 
                     configPreValue.Value = config.ToString();
