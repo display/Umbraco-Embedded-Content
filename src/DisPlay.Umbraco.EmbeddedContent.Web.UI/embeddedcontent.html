@@ -20,7 +20,7 @@
          ng-class="{
           'embedded-content__item--active': item.active || ctrl.config.enableCollapsing === '0'
          }"
-         ng-repeat="item in model.value"
+         ng-repeat="item in model.value track by item.key"
          ng-click="ctrl.activate(item)"
          on-outside-click="ctrl.deactivate(item)"
          ng-form>
