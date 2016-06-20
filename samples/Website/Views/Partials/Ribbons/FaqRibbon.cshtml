@@ -1,0 +1,21 @@
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<FaqRibbon>
+
+<div id="accordion-@Model.Title.ToUrlSegment()" role="tablist" aria-multiselectable="true">
+  <h2>@Model.Title</h2>
+
+  @foreach(var item in Model.Items.OfType<FaqItem>())
+  {
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="heading-@item.Question.ToUrlSegment()">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion-@Model.Title.ToUrlSegment()" href="#@item.Question.ToUrlSegment()" aria-expanded="false" aria-controls="@item.Question.ToUrlSegment()">
+            @item.Question
+          </a>
+        </h4>
+      </div>
+      <div id="@item.Question.ToUrlSegment()" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-@item.Question.ToUrlSegment()">
+        @item.Answer
+      </div>
+    </div>
+  }
+</div>

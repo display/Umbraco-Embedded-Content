@@ -1,0 +1,12 @@
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<JumbotronRibbon>
+<div class="jumbotron">
+  <h1 class="display-3">@Model.Headline</h1>
+  <p class="lead">@Model.Lead</p>
+  <hr class="m-y-2">
+  @Model.Text
+  @if(Model.Link != null) {
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="@Umbraco.NiceUrl((int)Model.Link)" role="button">Learn more</a>
+    </p>
+  }
+</div>

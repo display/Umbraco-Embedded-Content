@@ -100,6 +100,18 @@
       <HintPath>..\..\packages\UmbracoCms.Core.7.4.3\lib\interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Jumoo.uSync.BackOffice, Version=3.1.4.740, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\uSync.3.1.4.740\lib\net45\Jumoo.uSync.BackOffice.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jumoo.uSync.Content, Version=3.1.2.740, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\uSync.ContentEdition.3.1.2.740\lib\net45\Jumoo.uSync.Content.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jumoo.uSync.Core, Version=5.3.5.740, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\uSync.Core.5.3.5.740\lib\net45\Jumoo.uSync.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UmbracoCms.Core.7.4.3\lib\log4net.dll</HintPath>
       <Private>True</Private>
@@ -300,6 +312,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\uSync\uSyncDashboard.css" />
+    <Content Include="App_Plugins\uSync\uSyncDashboard.html" />
+    <Content Include="App_Plugins\uSync\uSyncDashboardController.js" />
+    <Content Include="App_Plugins\uSync\uSyncDashboardService.js" />
     <Content Include="packages.config" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Views\Web.config" />
@@ -328,6 +344,9 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="Config\uSyncCore.config" />
+    <Content Include="Config\uSyncBackOffice.Config" />
+    <Content Include="App_Plugins\uSync\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -370,6 +389,10 @@
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DisPlay.Umbraco.EmbeddedContent.uSync\DisPlay.Umbraco.EmbeddedContent.uSync.csproj">
+      <Project>{01df07d9-5d68-4a76-9c40-e0b05c04b8b4}</Project>
+      <Name>DisPlay.Umbraco.EmbeddedContent.uSync</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DisPlay.Umbraco.EmbeddedContent\DisPlay.Umbraco.EmbeddedContent.csproj">
       <Project>{1545c061-a049-41bf-b201-3a470fb96bce}</Project>
       <Name>DisPlay.EmbeddedContent</Name>

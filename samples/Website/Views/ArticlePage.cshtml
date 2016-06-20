@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<ArticlePage>
+
+<h1>@Model.Headline</h1>
+
+@foreach(var ribbon in Model.Ribbons) {
+	<div class="ribbon">
+		@Html.Partial("Ribbons/" + ribbon.DocumentTypeAlias, ribbon)
+	</div>
+}
