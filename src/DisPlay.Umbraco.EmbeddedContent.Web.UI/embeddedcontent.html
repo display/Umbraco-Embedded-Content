@@ -35,7 +35,7 @@
         <div class="embedded-content__has-config" ng-if="item.hasConfig">
           <localize key="grid_settingsApplied" />
         </div>
-        <div class="embedded-content__tools" ng-show="item.active || ctrl.config.enableCollapsing === '0'">
+        <div class="embedded-content__tools">
           <div class="embedded-content__tools-tool">
             <i class="embedded-content__tools-icon icon-settings" title="@embeddedContent_settings" localize="title" ng-click="ctrl.editSettings(item, $event)"></i>
           </div>
