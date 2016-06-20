@@ -230,10 +230,6 @@
   left: 40px;
 }
 
-.embedded-content__item--active .embedded-content__tools-tool:hover {
-  color: #fff;
-}
-
 .embedded-content-config .embedded-content__control-bar {
   cursor: default;
 }
@@ -248,6 +244,10 @@
 .embedded-content__item--active > .embedded-content__control-bar {
   background-color: #2e8aea;
   cursor: default;
+  color: #fff;
+}
+
+.embedded-content__item--active > .embedded-content__control-bar > .embedded-content__tools > .embedded-content__tools-tool:hover {
   color: #fff;
 }
 
