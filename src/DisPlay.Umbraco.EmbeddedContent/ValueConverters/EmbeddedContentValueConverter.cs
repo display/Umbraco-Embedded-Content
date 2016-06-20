@@ -128,7 +128,7 @@
 
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
-            return propertyType.PropertyEditorAlias == "DisPlay.Umbraco.EmbeddedContent";
+            return propertyType.PropertyEditorAlias == EmbeddedContent.Constants.PropertyEditorAlias;
         }
 
         private EmbeddedContentConfig GetConfig(int dataTypeId)

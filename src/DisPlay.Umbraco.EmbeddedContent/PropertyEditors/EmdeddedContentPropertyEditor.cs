@@ -22,7 +22,7 @@
 
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Css, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.css")]
     [PropertyEditorAsset(ClientDependency.Core.ClientDependencyType.Javascript, "~/App_Plugins/EmbeddedContent/EmbeddedContent.min.js")]
-    [PropertyEditor("DisPlay.Umbraco.EmbeddedContent", "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-item-arrangement")]
+    [PropertyEditor(EmbeddedContent.Constants.PropertyEditorAlias, "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-item-arrangement")]
     public class EmbeddedContentPropertyEditor : PropertyEditor
     {
         private IContentTypeService _contentTypeService;
@@ -50,7 +50,7 @@
             ApplicationContext.Current.Services.DataTypeService,
             ApplicationContext.Current.ProfilingLogger,
             PropertyEditorResolver.Current,
-            () => UmbracoContext.Current.Security)
+            () => UmbracoContext.Current == null ? null : UmbracoContext.Current.Security)
         {
 
         }
@@ -257,7 +257,11 @@
                         if (item.CreateDate == DateTime.MinValue)
                         {
                             item.CreateDate = DateTime.UtcNow;
-                            item.CreatorId = _security.CurrentUser.Id;
+
+                            if (_security != null && _security.CurrentUser != null)
+                            {
+                                item.CreatorId = _security.CurrentUser.Id;
+                            }
                         }
 
                         var currentItem = currentItems.FirstOrDefault(x => x.Key == itemDisplay.Key);
@@ -284,7 +288,7 @@
 
                             if (files != null)
                             {
-                                if (propertyEditor.Alias == "DisPlay.Umbraco.EmbeddedContent")
+                                if (propertyEditor.Alias == EmbeddedContent.Constants.PropertyEditorAlias)
                                 {
                                     additionalData["files"] = files;
                                 }
@@ -310,7 +314,11 @@
                             || JsonConvert.SerializeObject(currentItem.Properties) != JsonConvert.SerializeObject(item.Properties))
                         {
                             item.UpdateDate = DateTime.UtcNow;
-                            item.WriterId = _security.CurrentUser.Id;
+
+                            if (_security != null && _security.CurrentUser != null)
+                            {
+                                item.WriterId = _security.CurrentUser.Id;
+                            }
                         }
 
                         items.Add(item);
