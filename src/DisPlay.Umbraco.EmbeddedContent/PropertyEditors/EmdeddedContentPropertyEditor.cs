@@ -8,12 +8,14 @@
     using Newtonsoft.Json.Linq;
 
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Dictionary;
     using global::Umbraco.Core.Logging;
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.Editors;
     using global::Umbraco.Core.PropertyEditors;
     using global::Umbraco.Core.Services;
     using global::Umbraco.Web;
+    using global::Umbraco.Web.Dictionary;
     using global::Umbraco.Web.Models.ContentEditing;
     using global::Umbraco.Web.PropertyEditors;
     using global::Umbraco.Web.Security;
@@ -25,21 +27,24 @@
     [PropertyEditor(EmbeddedContent.Constants.PropertyEditorAlias, "Embedded Content", "JSON", "~/App_Plugins/EmbeddedContent/embeddedcontent.html", Group = "Rich content", HideLabel = true, Icon = "icon-item-arrangement")]
     public class EmbeddedContentPropertyEditor : PropertyEditor
     {
-        private IContentTypeService _contentTypeService;
-        private IDataTypeService _dataTypeService;
-        private PropertyEditorResolver _propertyEditorResolver;
-        private Func<WebSecurity> _securityFactory;
-        private ProfilingLogger _profilingLogger;
+        private readonly IContentTypeService _contentTypeService;
+        private readonly IDataTypeService _dataTypeService;
+        private readonly PropertyEditorResolver _propertyEditorResolver;
+        private readonly Func<WebSecurity> _securityFactory;
+        private readonly ICultureDictionary _cultureDictionary;
+        private readonly ProfilingLogger _profilingLogger;
 
         public EmbeddedContentPropertyEditor(
             IContentTypeService contentTypeService,
             IDataTypeService dataTypeService,
+            ICultureDictionary cultureDictionary,
             ProfilingLogger profilingLogger,
             PropertyEditorResolver propertyEditorResolver,
             Func<WebSecurity> securityFactory)
         {
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
+            _cultureDictionary = cultureDictionary;
             _profilingLogger = profilingLogger;
             _propertyEditorResolver = propertyEditorResolver;
             _securityFactory = securityFactory;
@@ -48,6 +53,7 @@
         public EmbeddedContentPropertyEditor() : this(
             ApplicationContext.Current.Services.ContentTypeService,
             ApplicationContext.Current.Services.DataTypeService,
+            new DefaultCultureDictionary(),
             ApplicationContext.Current.ProfilingLogger,
             PropertyEditorResolver.Current,
             () => UmbracoContext.Current == null ? null : UmbracoContext.Current.Security)
@@ -66,6 +72,7 @@
                 base.CreateValueEditor(),
                 _contentTypeService,
                 _dataTypeService,
+                _cultureDictionary,
                 _profilingLogger,
                 _propertyEditorResolver,
                 _securityFactory()
@@ -81,22 +88,25 @@
 
         internal class EmbeddedContentValueEditor : PropertyValueEditorWrapper
         {
-            private IContentTypeService _contentTypeService;
-            private IDataTypeService _dataTypeService;
-            private PropertyEditorResolver _propertyEditorResolver;
-            private WebSecurity _security;
-            private ProfilingLogger _profilingLogger;
+            private readonly IContentTypeService _contentTypeService;
+            private readonly IDataTypeService _dataTypeService;
+            private readonly ICultureDictionary _cultureDictionary;
+            private readonly PropertyEditorResolver _propertyEditorResolver;
+            private readonly WebSecurity _security;
+            private readonly ProfilingLogger _profilingLogger;
 
             public EmbeddedContentValueEditor(
                 PropertyValueEditor wrapped,
                 IContentTypeService contentTypeService,
                 IDataTypeService dataTypeService,
+                ICultureDictionary cultureDictionary,
                 ProfilingLogger profilingLogger,
                 PropertyEditorResolver propertyEditorResolver,
                 WebSecurity security) : base(wrapped)
             {
                 _contentTypeService = contentTypeService;
                 _dataTypeService = dataTypeService;
+                _cultureDictionary = cultureDictionary;
                 _profilingLogger = profilingLogger;
                 _propertyEditorResolver = propertyEditorResolver;
                 _security = security;
@@ -120,8 +130,8 @@
                             continue;
                         }
 
-                        item["name"] = contentType.Name;
-                        item["description"] = contentType.Description;
+                        item["name"] = UmbracoDictionaryTranslate(contentType.Name);
+                        item["description"] = UmbracoDictionaryTranslate(contentType.Description);
                         item["icon"] = contentType.Icon;
                     }
 
@@ -193,7 +203,8 @@
                            {
                                Key = item.Key,
                                ContentTypeAlias = item.ContentTypeAlias,
-                               ContentTypeName = contentType.Name,
+                               ContentTypeName = UmbracoDictionaryTranslate(contentType.Name),
+                               Description = UmbracoDictionaryTranslate(contentType.Description),
                                CreateDate = item.CreateDate,
                                UpdateDate = item.UpdateDate,
                                CreatorId = item.CreatorId,
@@ -206,7 +217,7 @@
                                       select new Tab<EmbeddedContentPropertyDisplay>
                                       {
                                           Id = pg.Id,
-                                          Label = pg.Name,
+                                          Label = UmbracoDictionaryTranslate(pg.Name),
                                           Alias = pg.Key.ToString(),
                                           Properties = from pt in pg.PropertyTypes
                                                        orderby pt.SortOrder
@@ -340,8 +351,8 @@
             {
                 var property = new EmbeddedContentPropertyDisplay
                 {
-                    Label = propertyType.Name,
-                    Description = propertyType.Description,
+                    Label = UmbracoDictionaryTranslate(propertyType.Name),
+                    Description = UmbracoDictionaryTranslate(propertyType.Description),
                     Alias = propertyType.Alias,
                     Value = value
                 };
@@ -376,6 +387,17 @@
                     return value;
                 }
                 return null;
+            }
+
+            private string UmbracoDictionaryTranslate(string text)
+            {
+                if (text == null || text.StartsWith("#") == false)
+                {
+                    return text;
+                }
+
+                text = text.Substring(1);
+                return _cultureDictionary[text].IfNullOrWhiteSpace(text);
             }
         }
     }

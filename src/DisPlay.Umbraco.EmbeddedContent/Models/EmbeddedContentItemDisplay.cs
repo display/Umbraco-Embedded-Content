@@ -18,6 +18,9 @@
         [DataMember(Name = "contentTypeName")]
         public string ContentTypeName { get; set; }
 
+        [DataMember(Name = "description")]
+        public string Description { get; set; }
+
         [DataMember(Name = "createDate")]
         public DateTime CreateDate { get; set; }
 
