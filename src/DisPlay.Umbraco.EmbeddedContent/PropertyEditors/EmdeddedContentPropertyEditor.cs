@@ -144,7 +144,7 @@
                     foreach (var item in items)
                     {
                         var contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias);
-                        foreach (var propType in contentType.CompositionPropertyGroups.First().PropertyTypes)
+                        foreach (var propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
                         {
                             object value;
                             item.Properties.TryGetValue(propType.Alias, out value);
@@ -201,12 +201,20 @@
                                Icon = contentType.Icon,
                                Name = item.Name,
                                Published = item.Published,
-                               Properties = from pt in contentType.CompositionPropertyGroups.First().PropertyTypes
-                                            orderby pt.SortOrder
-                                            let value = GetPropertyValue(item.Properties, pt.Alias)
-                                            let p = GetProperty(pt, value)
-                                            where p != null
-                                            select p
+                               Tabs = from pg in contentType.CompositionPropertyGroups
+                                      orderby pg.SortOrder
+                                      select new Tab<EmbeddedContentPropertyDisplay>
+                                      {
+                                          Id = pg.Id,
+                                          Label = pg.Name,
+                                          Alias = pg.Key.ToString(),
+                                          Properties = from pt in pg.PropertyTypes
+                                                       orderby pt.SortOrder
+                                                       let value = GetPropertyValue(item.Properties, pt.Alias)
+                                                       let p = GetProperty(pt, value)
+                                                       where p != null
+                                                       select p
+                                      }
                            };
                 }
             }
@@ -273,9 +281,9 @@
                             item.WriterId = currentItem.WriterId;
                         }
 
-                        foreach (var propertyType in contentType.CompositionPropertyGroups.First().PropertyTypes)
+                        foreach (var propertyType in contentType.CompositionPropertyGroups.SelectMany(x => x.PropertyTypes))
                         {
-                            var property = itemDisplay.Properties.FirstOrDefault(x => x.Alias == propertyType.Alias);
+                            var property = itemDisplay.Tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);
                             if (property == null)
                             {
                                 continue;

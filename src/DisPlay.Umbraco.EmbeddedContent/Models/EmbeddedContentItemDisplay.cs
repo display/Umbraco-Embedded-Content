@@ -39,7 +39,7 @@
         [DataMember(Name = "published")]
         public bool Published { get; set; }
 
-        [DataMember(Name = "properties")]
-        public IEnumerable<EmbeddedContentPropertyDisplay> Properties { get; set; }
+        [DataMember(Name = "tabs")]
+        public IEnumerable<Tab<EmbeddedContentPropertyDisplay>> Tabs { get; set; }
     }
 }

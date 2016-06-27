@@ -132,7 +132,8 @@ class EmbdeddedContentController {
         icon: documentType.icon,
         published: true,
         name: documentType.allowEditingName === '1' ? '' : documentType.name,
-        properties: data.tabs[0].properties
+        // filter out Generic Propeties tab
+        tabs: data.tabs.filter(tab => tab.alias !== "Generic properties")
       }));
       this.currentForm.$setDirty();
     });
@@ -163,7 +164,7 @@ class EmbdeddedContentController {
             index = $scope.model.value.length + 1;
           }
 
-          item.properties.forEach(property => {
+          [].concat(item.tabs.map(tab => tab.properties)).forEach(property => {
             properties[property.alias] = property.value;
           });
 
