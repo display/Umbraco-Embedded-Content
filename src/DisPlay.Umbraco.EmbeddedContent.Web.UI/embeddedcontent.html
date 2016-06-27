@@ -53,10 +53,21 @@
           </div>
         </div>
       </div>
-      <div class="embedded-content__item-content" ng-show="item.active || ctrl.config.enableCollapsing === '0'">
-        <umb-property ng-repeat="property in item.properties" property="property">
-          <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-files-watcher></umb-editor>
-        </umb-property>
+      <div ng-show="item.active || ctrl.config.enableCollapsing === '0'">
+        <div class="embedded-content__item-content-header" ng-if="item.allowEditingName">
+          <input type="text"
+                 required
+                 class="embedded-content__item-name"
+                 placeholder="@placeholders_entername"
+                 localize="placeholder"
+                 ng-model="item.name"
+                 ng-class="{'embedded-content__item-name--empty': !item.name}" />
+        </div>
+        <div class="embedded-content__item-content-body">
+          <umb-property ng-repeat="property in item.properties" property="property">
+            <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-files-watcher></umb-editor>
+          </umb-property>
+        </div>
       </div>
     </div>
   </div>

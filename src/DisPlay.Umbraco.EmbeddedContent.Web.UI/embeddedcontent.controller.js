@@ -131,7 +131,7 @@ class EmbdeddedContentController {
         active: true,
         icon: documentType.icon,
         published: true,
-        name: documentType.name,
+        name: documentType.allowEditingName === '1' ? '' : documentType.name,
         properties: data.tabs[0].properties
       }));
       this.currentForm.$setDirty();
@@ -140,32 +140,37 @@ class EmbdeddedContentController {
 
   init(item) {
     let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias == item.contentTypeAlias);
-    let nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
-    let alias = item.alias;
 
-    delete item.name;
-    delete item.alias;
+    item.allowEditingName = documentType.allowEditingName === '1';
 
-    item.toJSON = function() {
-      return Object.assign({ alias: alias, name: this.name }, this);
-    };
+    if(!item.allowEditingName) {
+      let nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
+      let alias = item.alias;
 
-    Object.defineProperty(item, 'name', {
-      get: () => {
-        let properties = {};
-        let index = this.$scope.model.value.indexOf(item);
+      delete item.name;
+      delete item.alias;
 
-        if(index === -1) {
-          index = $scope.model.value.length + 1;
+      item.toJSON = function() {
+        return Object.assign({ alias: alias, name: this.name }, this);
+      };
+
+      Object.defineProperty(item, 'name', {
+        get: () => {
+          let properties = {};
+          let index = this.$scope.model.value.indexOf(item);
+
+          if(index === -1) {
+            index = $scope.model.value.length + 1;
+          }
+
+          item.properties.forEach(property => {
+            properties[property.alias] = property.value;
+          });
+
+          return nameExpression(Object.assign({}, properties, { '$index' : index + 1 }));
         }
-
-        item.properties.forEach(property => {
-          properties[property.alias] = property.value;
-        });
-
-        return nameExpression(Object.assign({}, properties, { '$index' : index + 1 }));
-      }
-    });
+      });
+    }
 
     return item;
   }

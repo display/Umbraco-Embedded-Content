@@ -12,6 +12,7 @@ class EmbeddedContentPrevaluesController {
     if(!$scope.model.value) {
       $scope.model.value = {
         enableCollapsing: '1',
+        allowEditingName: '0',
         documentTypes: []
       };
     }
@@ -28,7 +29,8 @@ class EmbeddedContentPrevaluesController {
   hasSettings() {
     return this.$scope.model.value.minItems
       || this.$scope.model.value.maxItems
-      || this.$scope.model.value.enableCollapsing !== '1';
+      || this.$scope.model.value.enableCollapsing !== '1'
+      || this.$scope.model.value.allowEditingName !== '1';
   }
 
   init(item) {
@@ -40,7 +42,8 @@ class EmbeddedContentPrevaluesController {
       documentTypeAlias: documentType.alias,
       name: documentType.name,
       icon: documentType.icon,
-      nameTemplate : item.nameTemplate
+      nameTemplate : item.nameTemplate,
+      allowEditingName: item.allowEditingName
     };
   }
 
@@ -118,6 +121,12 @@ class EmbeddedContentPrevaluesController {
       },
       value: item.nameTemplate,
       view: 'textbox'
+    },{
+      label: 'Allow editing name',
+      description: 'If checked, a mandatory name property is added and the name template won\'t be used.',
+      alias: 'allowEditingName',
+      value: item.allowEditingName,
+      view: 'boolean'
     }];
 
     this.editSettingsOverlay = {
