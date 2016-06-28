@@ -122,6 +122,11 @@
                     result.Add(content);
                 }
 
+                if (config.MaxItems == 1)
+                {
+                    return result.FirstOrDefault();
+                }
+
                 return result;
             }
         }
