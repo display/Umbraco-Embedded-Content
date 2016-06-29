@@ -39,6 +39,9 @@
         [DataMember(Name = "name")]
         public string Name { get; set; }
 
+        [DataMember(Name = "parentId")]
+        public int ParentId { get; set; }
+
         [DataMember(Name = "published")]
         public bool Published { get; set; }
 

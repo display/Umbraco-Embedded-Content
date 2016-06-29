@@ -2,11 +2,11 @@
 'use strict';
 
 class EmbdeddedContentController {
-  constructor($scope, $timeout, $interpolate, $routeParams, angularHelper, fileManager, localizationService, contentResource, contentTypeResource) {
+  constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState, localizationService, contentResource, contentTypeResource) {
     this.$scope = $scope;
     this.$interpolate = $interpolate;
-    this.$routeParams = $routeParams;
     this.fileManager = fileManager;
+    this.editorState = editorState;
     this.localizationService = localizationService;
     this.contentResource = contentResource;
 
@@ -122,7 +122,7 @@ class EmbdeddedContentController {
   }
 
   add(documentType) {
-    this.contentResource.getScaffold(this.$routeParams.id, documentType.documentTypeAlias)
+    this.contentResource.getScaffold(this.editorState.current.id, documentType.documentTypeAlias)
     .then(data => {
       this.$scope.model.value.push(this.init({
         key: data.key,
@@ -132,6 +132,7 @@ class EmbdeddedContentController {
         icon: documentType.icon,
         published: true,
         name: documentType.allowEditingName === '1' ? '' : documentType.name,
+        parentId: this.editorState.current.id,
         // filter out Generic Propeties tab
         tabs: data.tabs.filter(tab => tab.alias !== "Generic properties")
       }));

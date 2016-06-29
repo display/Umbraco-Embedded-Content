@@ -19,6 +19,7 @@
         public PublishedEmbeddedContent(IUserService userService,
                                         EmbeddedContentItem item,
                                         PublishedContentType contentType,
+                                        IPublishedContent parent,
                                         int sortOrder,
                                         bool isPreview)
         {
@@ -29,6 +30,7 @@
             CreatorId = item.CreatorId;
             WriterId = item.WriterId;
             IsDraft = isPreview;
+            Parent = parent;
             SortOrder = sortOrder;
             ContentType = contentType;
 
@@ -38,7 +40,7 @@
             _properties = from property in item.Properties
                           let propType = contentType.GetPropertyType(property.Key)
                           where propType != null
-                          select new PublishedEmbeddedContentProperty(propType, property.Value, isPreview);
+                          select new PublishedEmbeddedContentProperty(this, propType, property.Value, isPreview);
         }
 
         public override int Id => 0;

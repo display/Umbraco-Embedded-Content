@@ -211,6 +211,7 @@
                                WriterId = item.WriterId,
                                Icon = contentType.Icon,
                                Name = item.Name,
+                               ParentId = item.ParentId,
                                Published = item.Published,
                                Tabs = from pg in contentType.CompositionPropertyGroups
                                       orderby pg.SortOrder
@@ -259,6 +260,7 @@
                             ContentTypeAlias = itemDisplay.ContentTypeAlias,
                             Key = itemDisplay.Key,
                             Name = itemDisplay.Name,
+                            ParentId = itemDisplay.ParentId,
                             Published = itemDisplay.Published,
                             CreateDate = itemDisplay.CreateDate,
                             UpdateDate = itemDisplay.UpdateDate,

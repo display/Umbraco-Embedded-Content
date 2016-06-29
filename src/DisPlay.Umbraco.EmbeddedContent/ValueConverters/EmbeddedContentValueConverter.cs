@@ -1,6 +1,5 @@
 ﻿namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
 {
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -14,6 +13,7 @@
     using global::Umbraco.Core.Models.PublishedContent;
     using global::Umbraco.Core.PropertyEditors;
     using global::Umbraco.Core.Services;
+    using global::Umbraco.Web;
 
     using Models;
 
@@ -23,17 +23,20 @@
         private IUserService _userService;
         private IPublishedContentModelFactory _publishedContentModelFactory;
         private ProfilingLogger _profilingLogger;
+        private UmbracoContext _umbracoContext;
 
         public EmbeddedContentValueConverter(
             IDataTypeService dataTypeService,
             IUserService userService,
             IPublishedContentModelFactory publishedContentModelFactory,
-            ProfilingLogger profilingLogger)
+            ProfilingLogger profilingLogger,
+            UmbracoContext umbracoContext)
         {
             _dataTypeService = dataTypeService;
             _userService = userService;
             _publishedContentModelFactory = publishedContentModelFactory;
             _profilingLogger = profilingLogger;
+            _umbracoContext = umbracoContext;
         }
 
         public EmbeddedContentValueConverter() : this(
@@ -42,7 +45,8 @@
             PublishedContentModelFactoryResolver.HasCurrent
                 ? PublishedContentModelFactoryResolver.Current.Factory
                 : PassthroughPublishedContentModelFactory.Instance,
-            ApplicationContext.Current.ProfilingLogger)
+            ApplicationContext.Current.ProfilingLogger,
+            UmbracoContext.Current)
         {
 
         }
@@ -77,6 +81,11 @@
         }
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
+        {
+            return ConvertSourceToObject(null, propertyType, source, preview);
+        }
+
+        internal object ConvertSourceToObject(IPublishedContent parent, PublishedPropertyType propertyType, object source, bool preview)
         {
             var config = GetConfig(propertyType.DataTypeId);
 
@@ -114,9 +123,12 @@
                     {
                         continue;
                     }
-
+                    if (parent == null)
+                    {
+                        parent = _umbracoContext.ContentCache.GetById(item.ParentId);
+                    }
                     IPublishedContent content = _publishedContentModelFactory.CreateModel(
-                        new PublishedEmbeddedContent(_userService, item, contentType, i, preview)
+                        new PublishedEmbeddedContent(_userService, item, contentType, parent, i, preview)
                     );
 
                     result.Add(content);
