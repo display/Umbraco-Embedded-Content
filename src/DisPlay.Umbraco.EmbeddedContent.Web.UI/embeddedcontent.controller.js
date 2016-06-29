@@ -158,16 +158,18 @@ class EmbdeddedContentController {
 
       Object.defineProperty(item, 'name', {
         get: () => {
-          let properties = {};
           let index = this.$scope.model.value.indexOf(item);
 
           if(index === -1) {
             index = $scope.model.value.length + 1;
           }
 
-          [].concat(item.tabs.map(tab => tab.properties)).forEach(property => {
-            properties[property.alias] = property.value;
-          });
+          let properties = item.tabs
+          .reduce((cur, tab) => cur.concat(tab.properties), [])
+          .reduce((obj, property) => {
+            obj[property.alias] = property.value;
+            return obj;
+          }, {});
 
           return nameExpression(Object.assign({}, properties, { '$index' : index + 1 }));
         }
