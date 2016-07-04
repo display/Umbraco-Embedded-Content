@@ -29,8 +29,7 @@ class EmbeddedContentPrevaluesController {
   hasSettings() {
     return this.$scope.model.value.minItems
       || this.$scope.model.value.maxItems
-      || this.$scope.model.value.enableCollapsing !== '1'
-      || this.$scope.model.value.allowEditingName !== '1';
+      || this.$scope.model.value.enableCollapsing !== '1';
   }
 
   init(item) {
@@ -43,7 +42,8 @@ class EmbeddedContentPrevaluesController {
       name: documentType.name,
       icon: documentType.icon,
       nameTemplate : item.nameTemplate,
-      allowEditingName: item.allowEditingName
+      allowEditingName: item.allowEditingName,
+      hasConfig: item.nameTemplate || item.allowEditingName === '1'
     };
   }
 
@@ -140,6 +140,8 @@ class EmbeddedContentPrevaluesController {
         model.settings.forEach(property => {
           item[property.alias] = property.value;
         });
+
+        item.hasConfig = item.nameTemplate || item.allowEditingName === '1';
 
         this.currentForm.$setDirty();
 
