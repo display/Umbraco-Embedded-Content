@@ -179,10 +179,9 @@
                     return new object[0];
                 }
 
-                //TODO: Convert from nested content
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertDbToEditor({property.Alias})"))
                 {
-                    var source = JArray.Parse(property.Value.ToString());
+                    var source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
 
                     var contentTypes = _contentTypeService.GetAllContentTypes();
                     var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
@@ -364,7 +363,7 @@
                 PreValueCollection preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
                 property.Value = propertyEditor.ValueEditor.ConvertDbToEditor(
-                    new Property(propertyType, value),
+                    new Property(propertyType, value?.ToString()),
                     propertyType,
                     _dataTypeService
                 );

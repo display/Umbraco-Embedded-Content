@@ -75,9 +75,7 @@
                 return null;
             }
 
-            //TODO: Convert from nested content
-
-            return JArray.Parse(source.ToString());
+            return NestedContentHelper.ConvertFromNestedContent(JArray.Parse(source.ToString()));
         }
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
