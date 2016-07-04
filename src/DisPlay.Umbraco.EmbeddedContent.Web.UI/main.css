@@ -307,6 +307,11 @@ input.embedded-content__item-name--empty {
   background-color: #9d261d;
 }
 
+/* hide false-positive error message */
+.show-validation.ng-invalid .embedded-content__item.ng-invalid .ng-valid > .control-group > .property-error {
+  display: none !important;
+}
+
 .show-validation.ng-invalid .embedded-content__item.ng-invalid > .embedded-content__control-bar .embedded-content__hasConfig,
 .show-validation.ng-invalid .embedded-content__item.ng-invalid > .embedded-content__control-bar .embedded-content__content-type-name,
 .embedded-content__item--active > .embedded-content__control-bar > .embedded-content__item-title > .embedded-content__has-config,

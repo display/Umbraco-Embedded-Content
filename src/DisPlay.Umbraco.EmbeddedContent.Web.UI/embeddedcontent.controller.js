@@ -4,6 +4,7 @@
 class EmbdeddedContentController {
   constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState, localizationService, contentResource, contentTypeResource) {
     this.$scope = $scope;
+    this.$timeout = $timeout;
     this.$interpolate = $interpolate;
     this.fileManager = fileManager;
     this.editorState = editorState;
@@ -82,13 +83,14 @@ class EmbdeddedContentController {
     this.config = $scope.model.config.embeddedContentConfig;
     this.allowedDocumentTypes = this.config.documentTypes;
 
-    $scope.model.value.forEach(this.init.bind(this));
-
     if($scope.model.value.length === 0 && this.config.minItems === 1 && this.allowedDocumentTypes.length === 1) {
       this.add(this.allowedDocumentTypes[0]);
     }
 
-    $scope.$watch('model.value', this.validate.bind(this), true);
+    $scope.$watch('model.value', () => {
+      this.$scope.model.value.forEach(this.init.bind(this));
+    });
+
     $scope.$on('formSubmitting', this.validate.bind(this));
 
     $scope.$on('formSubmitted', () => {
@@ -124,29 +126,33 @@ class EmbdeddedContentController {
   add(documentType) {
     this.contentResource.getScaffold(this.editorState.current.id, documentType.documentTypeAlias)
     .then(data => {
-      this.$scope.model.value.push(this.init({
+      let item = this.init({
         key: data.key,
+        allowEditingName: documentType.allowEditingName === '1',
         contentTypeAlias: data.contentTypeAlias,
         contentTypeName: data.contentTypeName,
-        active: true,
         icon: documentType.icon,
         published: true,
         name: documentType.allowEditingName === '1' ? '' : documentType.name,
         parentId: this.editorState.current.id,
         // filter out Generic Propeties tab
         tabs: data.tabs.filter(tab => tab.alias !== "Generic properties")
-      }));
+      });
+      this.$scope.model.value.push(item);
       this.currentForm.$setDirty();
+      this.activate(item);
     });
   }
 
   init(item) {
-    let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
-
-    item.allowEditingName = documentType.allowEditingName === '1';
-
     if(!item.allowEditingName) {
-      let nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
+      let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
+
+      if(!documentType.nameExpression) {
+        documentType.nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
+      }
+
+      let nameExpression = documentType.nameExpression;
       let alias = item.alias;
 
       delete item.name;
@@ -184,7 +190,18 @@ class EmbdeddedContentController {
     this.currentForm.$setDirty();
   }
 
-  activate(item) { item.active = true; }
+  activate(item) {
+    item.active = true;
+    item.loaded = true;
+
+    this.$timeout(() => {
+      // not sure where this undefined error comes from
+      // but we need to set it to true, or else the form won't
+      // submit after a validation error
+      this.currentForm.$setValidity(undefined, true);
+    });
+  }
+
   deactivate(item) { item.active = false; }
   togglePublished(item) { item.published = !item.published; }
 

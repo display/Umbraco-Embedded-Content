@@ -9,6 +9,9 @@
     [DataContract]
     internal class EmbeddedContentItemDisplay
     {
+        [DataMember(Name = "allowEditingName")]
+        public bool AllowEditingName { get; set; }
+
         [DataMember(Name = "key")]
         public Guid Key { get; set; }
 

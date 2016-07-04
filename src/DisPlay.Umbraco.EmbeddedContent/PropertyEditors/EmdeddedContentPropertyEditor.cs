@@ -191,7 +191,7 @@
 
                     var items = source.ToObject<EmbeddedContentItem[]>();
 
-                    return from indexedItem in items.Select((item, index) => new { item, index })
+                    return (from indexedItem in items.Select((item, index) => new { item, index })
                            let item = indexedItem.item
                            let index = indexedItem.index
                            let configDocType = config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
@@ -201,6 +201,7 @@
                            select new EmbeddedContentItemDisplay
                            {
                                Key = item.Key,
+                               AllowEditingName = configDocType.AllowEditingName == "1",
                                ContentTypeAlias = item.ContentTypeAlias,
                                ContentTypeName = UmbracoDictionaryTranslate(contentType.Name),
                                Description = UmbracoDictionaryTranslate(contentType.Description),
@@ -226,7 +227,7 @@
                                                        where p != null
                                                        select p
                                       }
-                           };
+                           }).ToList();
                 }
             }
 
