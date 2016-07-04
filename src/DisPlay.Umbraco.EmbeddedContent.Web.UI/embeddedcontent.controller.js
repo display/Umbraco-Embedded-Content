@@ -156,10 +156,9 @@ class EmbdeddedContentController {
       let alias = item.alias;
 
       delete item.name;
-      delete item.alias;
 
       item.toJSON = function() {
-        return _.extend({ alias: alias, name: this.name }, this);
+        return _.extend({ name: this.name }, this);
       };
 
       Object.defineProperty(item, 'name', {

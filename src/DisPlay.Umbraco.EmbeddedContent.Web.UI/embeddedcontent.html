@@ -68,7 +68,7 @@
             <div class="embedded-content__section-title" ng-if="item.tabs.length > 1">{{tab.label}}</div>
             <div class="embedded-content__properties">
               <umb-property ng-repeat="property in tab.properties track by property.alias" property="property">
-                <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-files-watcher></umb-editor>
+                <umb-editor model="property" set-files="ctrl.setFiles(files)" embedded-content-item="item" embedded-content-property></umb-editor>
               </umb-property>
             </div>
           </div>
