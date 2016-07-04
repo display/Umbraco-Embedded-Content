@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+- Replace unsupported IE javascript functions with underscore equivalent ones
+
 ## 0.2.0 - 2016-07-04
 ### Features
 - Add name editing support

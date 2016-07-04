@@ -9,7 +9,7 @@ function EmbeddedContentFilesWatcherDirective(fileManager) {
     },
     link(scope) {
       scope.$on('filesSelected', (e, args) => {
-        let filesArray = [].slice.call(args.files).map(file => Object.assign(file, { propertyAlias: scope.model.alias }));
+        let filesArray = [].slice.call(args.files).map(file => _.extend(file, { propertyAlias: scope.model.alias }));
         scope.model.selectedFiles =filesArray.map(file => file.name);
         fileManager.setFiles(scope.model.alias, []);
         scope.setFiles({ files: filesArray });

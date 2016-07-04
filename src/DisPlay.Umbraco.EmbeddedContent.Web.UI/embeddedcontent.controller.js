@@ -141,7 +141,7 @@ class EmbdeddedContentController {
   }
 
   init(item) {
-    let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias == item.contentTypeAlias);
+    let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
 
     item.allowEditingName = documentType.allowEditingName === '1';
 
@@ -153,7 +153,7 @@ class EmbdeddedContentController {
       delete item.alias;
 
       item.toJSON = function() {
-        return Object.assign({ alias: alias, name: this.name }, this);
+        return _.extend({ alias: alias, name: this.name }, this);
       };
 
       Object.defineProperty(item, 'name', {
@@ -171,7 +171,7 @@ class EmbdeddedContentController {
             return obj;
           }, {});
 
-          return nameExpression(Object.assign({}, properties, { '$index' : index + 1 }));
+          return nameExpression(_.extend({}, properties, { '$index' : index + 1 }));
         }
       });
     }
@@ -221,7 +221,7 @@ class EmbdeddedContentController {
       event: event,
       show: true,
       submit: (model) => {
-        let documentType = this.allowedDocumentTypes.find(docType => docType.documentTypeAlias === model.selectedItem.alias);
+        let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias === model.selectedItem.alias);
         this.add(documentType);
         this.contentTypeOverlay.show = false;
         this.contentTypeOverlay = null;

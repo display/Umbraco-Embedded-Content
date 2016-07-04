@@ -33,7 +33,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   init(item) {
-    let documentType = this.documentTypes.find(docType => docType.alias === item.documentTypeAlias);
+    let documentType = _.find(this.documentTypes, docType => docType.alias === item.documentTypeAlias);
     if(!documentType) {
       return;
     }
@@ -159,7 +159,7 @@ class EmbeddedContentPrevaluesController {
 
   openContentTypeOverlay(event) {
     let availableItems = this.documentTypes
-    .filter(docType => !this.$scope.model.value.documentTypes.find(item => item.documentTypeAlias === docType.alias))
+    .filter(docType => !_.find(this.$scope.model.value.documentTypes, item => item.documentTypeAlias === docType.alias))
     .map(docType => {
       return {
         alias: docType.alias,
