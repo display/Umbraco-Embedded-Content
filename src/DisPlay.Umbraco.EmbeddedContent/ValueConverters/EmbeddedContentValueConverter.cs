@@ -19,24 +19,24 @@
 
     public class EmbeddedContentValueConverter : PropertyValueConverterBase, IPropertyValueConverterMeta
     {
-        private IDataTypeService _dataTypeService;
-        private IUserService _userService;
-        private IPublishedContentModelFactory _publishedContentModelFactory;
-        private ProfilingLogger _profilingLogger;
-        private UmbracoContext _umbracoContext;
+        private readonly IDataTypeService _dataTypeService;
+        private readonly IUserService _userService;
+        private readonly IPublishedContentModelFactory _publishedContentModelFactory;
+        private readonly ProfilingLogger _profilingLogger;
+        private readonly Func<UmbracoContext> _umbracoContextFactory;
 
         public EmbeddedContentValueConverter(
             IDataTypeService dataTypeService,
             IUserService userService,
             IPublishedContentModelFactory publishedContentModelFactory,
             ProfilingLogger profilingLogger,
-            UmbracoContext umbracoContext)
+            Func<UmbracoContext> umbracoContextFactory)
         {
             _dataTypeService = dataTypeService;
             _userService = userService;
             _publishedContentModelFactory = publishedContentModelFactory;
             _profilingLogger = profilingLogger;
-            _umbracoContext = umbracoContext;
+            _umbracoContextFactory = umbracoContextFactory;
         }
 
         public EmbeddedContentValueConverter() : this(
@@ -46,7 +46,7 @@
                 ? PublishedContentModelFactoryResolver.Current.Factory
                 : PassthroughPublishedContentModelFactory.Instance,
             ApplicationContext.Current.ProfilingLogger,
-            UmbracoContext.Current)
+            () => UmbracoContext.Current)
         {
 
         }
@@ -125,7 +125,7 @@
                     }
                     if (parent == null)
                     {
-                        parent = _umbracoContext.ContentCache.GetById(item.ParentId);
+                        parent = _umbracoContextFactory().ContentCache.GetById(item.ParentId);
                     }
                     IPublishedContent content = _publishedContentModelFactory.CreateModel(
                         new PublishedEmbeddedContent(_userService, item, contentType, parent, i, preview)
