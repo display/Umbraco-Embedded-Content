@@ -1,4 +1,7 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Courier
+﻿using System;
+using Umbraco.Core;
+
+namespace DisPlay.Umbraco.EmbeddedContent.Courier
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -15,10 +18,7 @@
     public class EmbeddedContentDataResolverProvider : PropertyDataResolverProvider
     {
 
-        public override string EditorAlias
-        {
-            get { return EmbeddedContent.Constants.PropertyEditorAlias; }
-        }
+        public override string EditorAlias => Constants.PropertyEditorAlias;
 
         public override void PackagingDataType(DataType item)
         {
@@ -38,11 +38,6 @@
                     }
                 }
             }
-        }
-
-        public override void ExtractingDataType(DataType item)
-        {
-            base.ExtractingDataType(item);
         }
 
         public override void PackagingProperty(Item item, ContentProperty propertyData)
@@ -78,6 +73,18 @@
                     {
                         item.Dependencies.Add(contentType.UniqueId.ToString(), ItemProviderIds.documentTypeItemProviderGuid);
                     }
+                    else
+                    {
+                        // set the parentid to the item we are importing
+                        // we don't need to set it while packaging
+                        // since the item we are importing will always be the parent
+
+                        Guid parentId;
+                        if (Guid.TryParse(item.ItemId.Id, out parentId))
+                        {
+                            embeddedContent.ParentId = ExecutionContext.DatabasePersistence.GetNodeId(parentId);
+                        }
+                    }
 
                     foreach (var property in embeddedContent.Properties.ToList())
                     {
@@ -99,7 +106,7 @@
                         var fakeItem = new ContentPropertyData
                         {
                             ItemId = item.ItemId,
-                            Name = string.Format("{0} [{1}: Nested {2} ({3})]", new[] { item.Name, EditorAlias, dataType.PropertyEditorAlias, property.Key }),
+                            Name = $"{item.Name} [{EditorAlias}: Nested {dataType.PropertyEditorAlias} ({property.Key})]",
                             Data = new List<ContentProperty>
                             {
                                 new ContentProperty
@@ -124,16 +131,13 @@
                             ResolutionManager.Instance.ExtractingItem(fakeItem, propertyItemProvider);
                         }
 
-                        if (fakeItem.Data != null)
+                        var data = fakeItem.Data?.FirstOrDefault();
+                        if (data != null)
                         {
-                            var data = fakeItem.Data.FirstOrDefault();
-                            if (data != null)
+                            embeddedContent.Properties[property.Key] = data.Value;
+                            if (packaging)
                             {
-                                embeddedContent.Properties[property.Key] = data.Value;
-                                if (packaging)
-                                {
-                                    item.Dependencies.Add(data.DataType.ToString(), ItemProviderIds.dataTypeItemProviderGuid);
-                                }
+                                item.Dependencies.Add(data.DataType.ToString(), ItemProviderIds.dataTypeItemProviderGuid);
                             }
                         }
                     }
