@@ -80,7 +80,7 @@
   <div class="embedded-content__placeholder"
        ng-class="{'embedded-content__placeholder--small': model.value.length > 0}"
        ng-click="ctrl.openContentTypeOverlay($event)"
-       ng-show="!ctrl.config.maxItems || model.value.length < ctrl.config.maxItems">
+       ng-show="ctrl.canAdd()">
     <div class="embedded-content__add"><localize key="embeddedContent_addContent" /></div>
   </div>
 

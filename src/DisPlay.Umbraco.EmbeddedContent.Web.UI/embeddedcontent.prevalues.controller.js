@@ -43,7 +43,8 @@ class EmbeddedContentPrevaluesController {
       icon: documentType.icon,
       nameTemplate : item.nameTemplate,
       allowEditingName: item.allowEditingName,
-      hasConfig: item.nameTemplate || item.allowEditingName === '1'
+      maxInstances: item.maxInstances,
+      hasConfig: item.nameTemplate || item.allowEditingName === '1' || item.maxInstances
     };
   }
 
@@ -110,6 +111,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   editItemSettings(item, event) {
+    console.log(item);
     let properties = [{
       label: 'Allow editing name',
       description: 'If checked, a mandatory name property is added and the name template won\'t be used.',
@@ -128,6 +130,11 @@ class EmbeddedContentPrevaluesController {
       value: item.nameTemplate,
       view: 'textbox'
     },{
+      label: 'Maximum number of instances',
+      description: 'How many instances of this item can be added?',
+      alias: 'maxInstances',
+      view: 'integer',
+      value: item.maxInstances
     }];
 
     this.editSettingsOverlay = {
@@ -142,7 +149,7 @@ class EmbeddedContentPrevaluesController {
           item[property.alias] = property.value;
         });
 
-        item.hasConfig = item.nameTemplate || item.allowEditingName === '1';
+        item.hasConfig = item.nameTemplate || item.allowEditingName === '1' || item.maxInstances;
 
         this.currentForm.$setDirty();
 

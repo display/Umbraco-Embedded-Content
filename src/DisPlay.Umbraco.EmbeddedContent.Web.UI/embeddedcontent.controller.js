@@ -81,7 +81,6 @@ class EmbdeddedContentController {
 
     this.label = $scope.model.label;
     this.config = $scope.model.config.embeddedContentConfig;
-    this.allowedDocumentTypes = this.config.documentTypes;
 
     if($scope.model.value.length === 0 && this.config.minItems === 1 && this.allowedDocumentTypes.length === 1) {
       this.add(this.allowedDocumentTypes[0]);
@@ -146,7 +145,7 @@ class EmbdeddedContentController {
 
   init(item) {
     if(!item.allowEditingName) {
-      let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
+      let documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
 
       if(!documentType.nameExpression) {
         documentType.nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
@@ -218,6 +217,13 @@ class EmbdeddedContentController {
     item.deletePrompt = false;
   }
 
+  canAdd() {
+    if(this.config.maxItems && this.$scope.model.value.length >= this.config.maxItems) {
+      return false;
+    }
+    return this.allowedDocumentTypes.length > 0;
+  }
+
   openContentTypeOverlay(event) {
     if(this.allowedDocumentTypes.length === 1) {
       this.add(this.allowedDocumentTypes[0]);
@@ -241,12 +247,22 @@ class EmbdeddedContentController {
       event: event,
       show: true,
       submit: (model) => {
-        let documentType = _.find(this.allowedDocumentTypes, docType => docType.documentTypeAlias === model.selectedItem.alias);
+        let documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias === model.selectedItem.alias);
         this.add(documentType);
         this.contentTypeOverlay.show = false;
         this.contentTypeOverlay = null;
       }
     };
+  }
+
+  get allowedDocumentTypes() {
+    return this.config.documentTypes
+    .filter(docType => {
+      if(!docType.maxInstances || docType.maxInstances < 1) {
+        return true;
+      }
+      return this.$scope.model.value.filter(item => item.contentTypeAlias === docType.documentTypeAlias).length < docType.maxInstances;
+    });
   }
 }
 
