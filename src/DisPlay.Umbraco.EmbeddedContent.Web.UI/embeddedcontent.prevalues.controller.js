@@ -111,6 +111,12 @@ class EmbeddedContentPrevaluesController {
 
   editItemSettings(item, event) {
     let properties = [{
+      label: 'Allow editing name',
+      description: 'If checked, a mandatory name property is added and the name template won\'t be used.',
+      alias: 'allowEditingName',
+      value: item.allowEditingName,
+      view: 'boolean'
+    },{
       label: 'Name template',
       description: '',
       alias: 'nameTemplate',
@@ -122,11 +128,6 @@ class EmbeddedContentPrevaluesController {
       value: item.nameTemplate,
       view: 'textbox'
     },{
-      label: 'Allow editing name',
-      description: 'If checked, a mandatory name property is added and the name template won\'t be used.',
-      alias: 'allowEditingName',
-      value: item.allowEditingName,
-      view: 'boolean'
     }];
 
     this.editSettingsOverlay = {
