@@ -172,7 +172,11 @@ class EmbdeddedContentController {
           let properties = item.tabs
           .reduce((cur, tab) => cur.concat(tab.properties), [])
           .reduce((obj, property) => {
-            obj[property.alias] = property.value;
+            let alias = property.alias;
+            if(alias.indexOf(`item-${item.key}-`) === 0){
+              alias = alias.substring(`item-${item.key}-`.length);
+            }
+            obj[alias] = property.value;
             return obj;
           }, {});
 
