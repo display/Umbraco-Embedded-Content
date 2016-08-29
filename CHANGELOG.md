@@ -2,12 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
-# Features
+## 0.3.0 - 2016-08-29
+### Features
 - Add server-side validation
 - Add support for defining max instances per document type
 
-# Bugfixes
+### Bugfixes
 - Fix name template not working because it used the unique property alias
 
 ## 0.2.1 - 2016-07-04
