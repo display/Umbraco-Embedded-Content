@@ -111,7 +111,6 @@ class EmbeddedContentPrevaluesController {
   }
 
   editItemSettings(item, event) {
-    console.log(item);
     let properties = [{
       label: 'Allow editing name',
       description: 'If checked, a mandatory name property is added and the name template won\'t be used.',

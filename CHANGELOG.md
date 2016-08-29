@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 # Features
-- Add support for max instances per document type
+- Add server-side validation
+- Add support for defining max instances per document type
 
 # Bugfixes
 - Fix name template not working because it used the unique property alias

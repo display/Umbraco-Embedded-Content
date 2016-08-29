@@ -1,8 +1,21 @@
 (function() {
 'use strict';
 
+function endsWith(str, searchString) {
+  let position = str.length - searchString.length;
+  let lastIndex = str.indexOf(searchString, position);
+  return lastIndex !== -1 && lastIndex === position;
+}
+
+function trimEnd(str, strToRemove) {
+  if (endsWith(str, strToRemove)) {
+    return str.substring(0, str.length - strToRemove.length);
+  }
+  return str;
+}
+
 class EmbdeddedContentController {
-  constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState, localizationService, contentResource, contentTypeResource) {
+  constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState, localizationService, contentResource, contentTypeResource, serverValidationManager) {
     this.$scope = $scope;
     this.$timeout = $timeout;
     this.$interpolate = $interpolate;
@@ -94,6 +107,30 @@ class EmbdeddedContentController {
 
     $scope.$on('formSubmitted', () => {
       this.fileManager.setFiles(this.$scope.model.alias, []);
+    });
+
+    $scope.$on('valStatusChanged', (evt, args) => {
+      // this is very ugly, but it works for now
+      if (args.form.$invalid) {
+        let errors = serverValidationManager.items.filter((error) => error.propertyAlias === this.$scope.model.alias);
+        for(let i = 0; i < errors.length; i++) {
+          let error = errors[i];
+          let splits = error.fieldName.split('item-').filter(item => item);
+          let errorPropertyName = trimEnd(error.fieldName, '-value');
+          let errorFieldName = '';
+          let id = error.fieldName.substr('item-'.length, 'f7ad912c-2907-4416-9b43-a38059953a80'.length);
+          let item = _.findWhere(this.$scope.model.value, { key: id });
+
+          item.loaded = true;
+
+          if(splits.length > 1) {
+            errorPropertyName = trimEnd(`item-${splits[0]}`, '-');
+            errorFieldName = `item-${splits.splice(1).join('item-')}`;
+          }
+
+          serverValidationManager.addPropertyError(errorPropertyName, errorFieldName, error.errorMsg);
+        }
+      }
     });
 
     this.contentReady = true;
@@ -218,6 +255,9 @@ class EmbdeddedContentController {
   }
 
   canAdd() {
+    if(this.$scope.preview) {
+      return true;
+    }
     if(this.config.maxItems && this.$scope.model.value.length >= this.config.maxItems) {
       return false;
     }

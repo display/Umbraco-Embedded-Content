@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
 
     using Newtonsoft.Json;
@@ -110,6 +111,8 @@
                 _profilingLogger = profilingLogger;
                 _propertyEditorResolver = propertyEditorResolver;
                 _security = security;
+
+                Validators.Add(new EmbeddedContentValidator(contentTypeService, dataTypeService));
             }
 
             public override void ConfigureForDisplay(PreValueCollection preValues)
@@ -400,6 +403,95 @@
 
                 text = text.Substring(1);
                 return _cultureDictionary[text].IfNullOrWhiteSpace(text);
+            }
+
+            internal class EmbeddedContentValidator : IPropertyValidator
+            {
+                private readonly IContentTypeService _contentTypeService;
+                private readonly IDataTypeService _dataTypeService;
+
+                public EmbeddedContentValidator(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
+                {
+                    if (contentTypeService == null)
+                    {
+                        throw new ArgumentNullException(nameof(contentTypeService));
+                    }
+                    if (dataTypeService == null)
+                    {
+                        throw new ArgumentNullException(nameof(dataTypeService));
+                    }
+                    _contentTypeService = contentTypeService;
+                    _dataTypeService = dataTypeService;
+                }
+
+                public IEnumerable<ValidationResult> Validate(object value, PreValueCollection preValues, PropertyEditor editor)
+                {
+                    if (value == null)
+                    {
+                        yield break;
+                    }
+
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    var itemsDisplay = JsonConvert.DeserializeObject<IEnumerable<EmbeddedContentItemDisplay>>(value.ToString()).ToList();
+
+                    for(var i =0;i<itemsDisplay.Count;i++)
+                    {
+                        EmbeddedContentItemDisplay itemDisplay = itemsDisplay[i];
+
+                        IContentType contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
+
+                        if (contentType == null)
+                        {
+                            continue;
+                        }
+
+                        IEnumerable<EmbeddedContentPropertyDisplay> properties = itemDisplay.Tabs.SelectMany(x => x.Properties).ToList();
+
+                        foreach (PropertyType propertyType in contentType.CompositionPropertyGroups.SelectMany(x => x.PropertyTypes))
+                        {
+                            EmbeddedContentPropertyDisplay property = properties.FirstOrDefault(x => x.Alias == propertyType.Alias);
+                            if (property == null)
+                            {
+                                continue;
+                            }
+
+                            PropertyEditor propertyEditor = PropertyEditorResolver.Current.GetByAlias(propertyType.PropertyEditorAlias);
+                            if (propertyEditor == null)
+                            {
+                                continue;
+                            }
+
+                            PreValueCollection propertyPreValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
+                            if (propertyType.Mandatory)
+                            {
+                                foreach (ValidationResult result in propertyEditor.ValueEditor.RequiredValidator.Validate(property.Value, "", propertyPreValues, editor))
+                                {
+                                    yield return new ValidationResult(result.ErrorMessage, result.MemberNames.Select(x =>$"item-{itemDisplay.Key}-{property.Alias}-{x}"));
+                                }
+                            }
+
+                            if (false == propertyType.ValidationRegExp.IsNullOrWhiteSpace())
+                            {
+                                string str = property.Value as string;
+                                if (property.Value != null && false == str.IsNullOrWhiteSpace() || propertyType.Mandatory)
+                                {
+                                    foreach (ValidationResult result in propertyEditor.ValueEditor.RegexValidator.Validate(property.Value, propertyType.ValidationRegExp, propertyPreValues, editor))
+                                    {
+                                        yield return new ValidationResult(result.ErrorMessage, result.MemberNames.Select(x => $"item-{itemDisplay.Key}-{property.Alias}-{x}"));
+                                    }
+                                }
+                            }
+
+                            foreach (IPropertyValidator validator in propertyEditor.ValueEditor.Validators)
+                            {
+                                foreach (ValidationResult result in validator.Validate(property.Value, propertyPreValues, editor))
+                                {
+                                    yield return new ValidationResult(result.ErrorMessage, result.MemberNames.Select(x => $"item-{itemDisplay.Key}-{property.Alias}-{x}"));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
