@@ -9,6 +9,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
         <dependency id="UmbracoCms.Core" version="[7.4.0, 8.0.0)"/>
+        <dependency id="DisPlay.Umbraco.EmbeddedContent" version="[0.2.0, 1.0.0)"/>
     </dependencies>
   </metadata>
   <files>
