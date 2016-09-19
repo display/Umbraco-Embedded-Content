@@ -337,7 +337,7 @@ input.embedded-content__item-name--empty {
   color: #000;
 }
 
-.embedded-content .ui-sortable-helper {
+.embedded-content__item.ui-sortable-helper {
   position: absolute !important;
   background-color: #2e8aea !important;
   height: 42px !important;
@@ -350,18 +350,18 @@ input.embedded-content__item-name--empty {
   box-shadow: 3px 3px 12px 0 rgba(50, 50, 50, 0.45);
 }
 
-.embedded-content .ui-sortable-helper::after {
+.embedded-content__item.ui-sortable-helper::after {
   line-height: 42px;
   font-size: 22px;
   content: "\e126";
   color: #fff;
 }
 
-.embedded-content .ui-sortable-helper * {
+.embedded-content__item.ui-sortable-helper * {
   display: none;
 }
 
-.embedded-content .ui-sortable-helper .embedded-content__tools,
-.embedded-content .ui-sortable-helper .embedded-content__add {
+.embedded-content__item.ui-sortable-helper .embedded-content__tools,
+.embedded-content__item.ui-sortable-helper .embedded-content__add {
   display: none !important;
 }
