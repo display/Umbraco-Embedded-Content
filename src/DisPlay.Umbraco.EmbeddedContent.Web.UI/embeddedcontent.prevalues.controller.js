@@ -69,7 +69,7 @@ class EmbeddedContentPrevaluesController {
   togglePrompt(item) { item.deletePrompt = !item.deletePrompt; }
   hidePrompt(item) { item.deletePrompt = false; }
 
-  editSettings() {
+  editSettings(event) {
     let properties = [{
       label: 'Minimum number of items',
       alias: 'minItems',
