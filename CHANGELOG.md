@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.1 - 2016-09-20
+### Bugfixes
+- Fix angular dependency error when js is minified
+
 ## 0.4.0 - 2016-09-20
 ### Features
 - Labels for media picker, multi node tree picker and multi url picker
