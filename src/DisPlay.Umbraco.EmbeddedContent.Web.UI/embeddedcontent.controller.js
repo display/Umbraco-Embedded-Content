@@ -165,7 +165,7 @@ class EmbdeddedContentController {
   }
 
   add(documentType) {
-    this.contentResource.getScaffold(this.editorState.current.id, documentType.documentTypeAlias)
+    this.contentResource.getScaffold(this.editorState.current.id || -1, documentType.documentTypeAlias)
     .then(data => {
       let item = this.init({
         key: data.key,
