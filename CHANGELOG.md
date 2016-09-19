@@ -2,15 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-# Unrealeased
+## 0.4.0 - 2016-09-20
 ### Features
 - Labels for media picker, multi node tree picker and multi url picker
+- Show property description (#3)
+- Toggle expanded when clicking on item control bar (#5)
 
 ### Bugfixes
-- Property description not shown (#3)
 - Sort styling is inherited by other property editors (#9)
 - Item not expanded when allow expanding is false (#10)
 - Fix error when adding item to new page (#11)
+- Fix property editor settings could not be opened in Firefix (#11)
 
 ## 0.3.0 - 2016-08-29
 ### Features
