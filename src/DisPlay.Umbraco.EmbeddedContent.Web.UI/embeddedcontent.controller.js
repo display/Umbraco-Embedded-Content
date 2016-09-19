@@ -248,6 +248,15 @@ class EmbdeddedContentController {
   }
 
   deactivate(item) { item.active = false; }
+
+  toggle(item) {
+    if(item.active) {
+      this.deactivate(item);
+    } else {
+      this.activate(item);
+    }
+  }
+
   togglePublished(item) { item.published = !item.published; }
 
   togglePrompt(item, event) {

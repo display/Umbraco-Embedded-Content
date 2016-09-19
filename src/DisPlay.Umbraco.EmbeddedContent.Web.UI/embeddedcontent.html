@@ -21,11 +21,10 @@
           'embedded-content__item--active': item.active || ctrl.config.enableCollapsing === '0'
          }"
          ng-repeat="item in model.value track by item.key"
-         ng-click="ctrl.activate(item)"
          on-outside-click="ctrl.deactivate(item)"
          ng-form>
 
-      <div class="embedded-content__control-bar">
+      <div class="embedded-content__control-bar" ng-click="ctrl.toggle(item)">
         <div class="embedded-content__item-title">
           <i class="icon {{item.icon}}"></i>
           <span>{{item.name}}</span>
