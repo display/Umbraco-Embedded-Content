@@ -15,7 +15,10 @@ function trimEnd(str, strToRemove) {
 }
 
 class EmbdeddedContentController {
-  constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState, localizationService, contentResource, contentTypeResource, serverValidationManager) {
+  constructor($scope, $timeout, $interpolate, angularHelper, fileManager, editorState,
+    localizationService, contentResource, contentTypeResource, serverValidationManager,
+    embeddedContentLabelService) {
+
     this.$scope = $scope;
     this.$timeout = $timeout;
     this.$interpolate = $interpolate;
@@ -23,6 +26,7 @@ class EmbdeddedContentController {
     this.editorState = editorState;
     this.localizationService = localizationService;
     this.contentResource = contentResource;
+    this.embeddedContentLabelService = embeddedContentLabelService;
 
     if($scope.preview) {
       this.label = 'Embedded content';
@@ -212,7 +216,8 @@ class EmbdeddedContentController {
             if(alias.indexOf(`item-${item.key}-`) === 0){
               alias = alias.substring(`item-${item.key}-`.length);
             }
-            obj[alias] = property.value;
+
+            obj[alias] = this.embeddedContentLabelService.getPropertyLabel(property);
             return obj;
           }, {});
 
@@ -305,6 +310,12 @@ class EmbdeddedContentController {
     });
   }
 }
+
+EmbdeddedContentController.$inject = [
+  '$scope', '$timeout', '$interpolate',  'angularHelper', 'fileManager',
+  'editorState', 'localizationService', 'contentResource', 'contentTypeResource',
+  'serverValidationManager', 'DisPlay.Umbraco.EmbeddedContent.LabelService'
+];
 
 angular.module('umbraco')
 .controller('DisPlay.Umbraco.EmbeddedContent.EmbdeddedContentController', EmbdeddedContentController);

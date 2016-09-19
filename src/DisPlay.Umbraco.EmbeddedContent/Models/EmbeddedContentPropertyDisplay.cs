@@ -10,5 +10,8 @@
     {
         [DataMember(Name = "selectedFiles")]
         public IEnumerable<string> SelectedFiles { get; set; }
+
+        [DataMember(Name = "propertyEditorAlias")]
+        public string PropertyEditorAlias { get; set; }
     }
 }

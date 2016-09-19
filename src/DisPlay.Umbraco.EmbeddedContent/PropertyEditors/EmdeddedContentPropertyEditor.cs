@@ -356,6 +356,7 @@
             {
                 var property = new EmbeddedContentPropertyDisplay
                 {
+                    PropertyEditorAlias = propertyType.PropertyEditorAlias,
                     Label = UmbracoDictionaryTranslate(propertyType.Name),
                     Description = UmbracoDictionaryTranslate(propertyType.Description),
                     Alias = propertyType.Alias,
