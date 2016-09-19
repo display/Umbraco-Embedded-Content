@@ -33,6 +33,8 @@ class CacheService {
   }
 }
 
+CacheService.factory.$inject = ['entityResource'];
+
 angular.module('umbraco')
 .factory('DisPlay.Umbraco.EmbeddedContent.CacheService', CacheService.factory);
 
