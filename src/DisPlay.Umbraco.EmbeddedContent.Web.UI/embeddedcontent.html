@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div ng-show="item.active || ctrl.config.enableCollapsing === '0'" ng-if="item.loaded">
+      <div ng-show="item.active || ctrl.config.enableCollapsing === '0'" ng-if="item.loaded || ctrl.config.enableCollapsing === '0'">
         <div class="embedded-content__item-content-header" ng-if="item.allowEditingName">
           <input type="text"
                  required
