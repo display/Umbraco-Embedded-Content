@@ -116,11 +116,21 @@
                         continue;
                     }
 
-                    var contentType = PublishedContentType.Get(PublishedItemType.Content, item.ContentTypeAlias);
+                    PublishedContentType contentType = null;
+                    try
+                    {
+                        contentType = PublishedContentType.Get(PublishedItemType.Content, item.ContentTypeAlias);
+                    }
+                    catch (Exception ex)
+                    {
+                        _profilingLogger.Logger.Error<EmbeddedContentValueConverter>($"Error getting content type {item.ContentTypeAlias}.", ex);
+                    }
+
                     if (contentType == null)
                     {
                         continue;
                     }
+
                     if (parent == null)
                     {
                         parent = _umbracoContextFactory().ContentCache.GetById(item.ParentId);
