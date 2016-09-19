@@ -97,6 +97,7 @@ class EmbdeddedContentController {
     this.hasSettings = false;
 
     this.label = $scope.model.label;
+    this.description = $scope.model.description;
     this.config = $scope.model.config.embeddedContentConfig;
 
     if($scope.model.value.length === 0 && this.config.minItems === 1 && this.allowedDocumentTypes.length === 1) {
