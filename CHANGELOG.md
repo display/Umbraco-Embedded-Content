@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+# Unrealeased
+### Features
+- Labels for media picker, multi node tree picker and multi url picker
+
+### Bugfixes
+- Property description not shown (#3)
+- Sort styling is inherited by other property editors (#9)
+- Item not expanded when allow expanding is false (#10)
+- Fix error when adding item to new page (#11)
+
 ## 0.3.0 - 2016-08-29
 ### Features
 - Add server-side validation
