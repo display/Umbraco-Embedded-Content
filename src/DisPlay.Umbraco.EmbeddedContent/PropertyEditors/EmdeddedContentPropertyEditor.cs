@@ -200,7 +200,7 @@
                            let configDocType = config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
                            where configDocType != null
                            let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias)
-                           where contentType != null && contentType.CompositionPropertyGroups.Any()
+                           where contentType != null
                            select new EmbeddedContentItemDisplay
                            {
                                Key = item.Key,
