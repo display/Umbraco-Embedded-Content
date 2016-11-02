@@ -1,8 +1,8 @@
 (function() {
 'use strict';
 
-let converters = {
-  'Umbraco.MultipleMediaPicker': (cacheService, property) => {
+const resolvers = {
+  'Umbraco.MultipleMediaPicker': (property, cacheService) => {
     const ids = property.value.split(',');
 
     return ids.map(id => cacheService.getEntityById(+id, 'Media'))
@@ -10,7 +10,7 @@ let converters = {
     .map(entity => entity.name)
     .join(', ');
   },
-  'Umbraco.MultiNodeTreePicker': (cacheService, property) => {
+  'Umbraco.MultiNodeTreePicker': (property, cacheService) => {
     const ids = property.value.split(',');
     let type = 'Document';
 
@@ -28,37 +28,43 @@ let converters = {
     .map(entity => entity.name)
     .join(', ');
   },
-  'Umbraco.TinyMCEv3': (CacheService, property) => {
-    return property.value ? String(property.value).replace(/<[^>]+>/gm, '') : '';
+  'Umbraco.TinyMCEv3': (property, cacheService) => {
+    return String(property.value).replace(/<[^>]+>/gm, '');
   },
-  'RJP.MultiUrlPicker': (CacheService, property) => {
-    return property.value ? property.value.map(link => link.name).join(', ') : '';
+  'RJP.MultiUrlPicker': (property, cacheService) => {
+    return property.value.map(link => link.name).join(', ');
   }
 };
 
 class LabelService {
-  constructor(cacheService) {
+  constructor(cacheService, resolvers) {
     this.cacheService = cacheService;
+    this.resolvers = resolvers;
   }
 
   getPropertyLabel(property) {
-    const converter = converters[property.propertyEditorAlias];
+    if(!property.value) {
+      return '';
+    }
 
-    if(converter) {
-      return converter(this.cacheService, property);
+    const resolver = this.resolvers[property.editor];
+
+    if(resolver) {
+      return resolver(property, this.cacheService);
     }
 
     return property.value;
   }
 
-  static factory(cacheService) {
-    return new LabelService(cacheService);
+  static factory(cacheService, resolvers) {
+    return new LabelService(cacheService, resolvers);
   }
 }
 
-LabelService.factory.$inject = ['DisPlay.Umbraco.EmbeddedContent.CacheService'];
+LabelService.factory.$inject = ['DisPlay.Umbraco.EmbeddedContent.CacheService', 'DisPlay.Umbraco.EmbeddedContent.LabelResolvers'];
 
 angular.module('umbraco')
-.factory('DisPlay.Umbraco.EmbeddedContent.LabelService', LabelService.factory);
+.value('DisPlay.Umbraco.EmbeddedContent.LabelResolvers', resolvers)
+.factory('DisPlay.Umbraco.EmbeddedContent.LabelService', LabelService.factory)
 
 })();

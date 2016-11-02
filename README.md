@@ -30,6 +30,20 @@ TODO: Add code example
 ```csharp
 ```
 
+## Creating a custom label resolver
+```javascript
+angular.module('umbraco')
+.run(['DisPlay.Umbraco.EmbeddedContent.LabelResolvers', 'formResource', (labelResolvers, formResource) => {
+  labelResolvers['UmbracoForms.FormPicker'] = (property, cacheService) => {
+    const fromCache = cacheService.getOrAdd('UmbracoForms.FormPicker', property.value, () => {
+      return formResource.getByGuid(property.value);
+    });
+
+    return fromCache ? fromCache.data.name : null;
+  }
+}]);
+```
+
 ## Contributing
 
 Anyone can help make this project better - check out our [Contributing guide](CONTRIBUTING.md)

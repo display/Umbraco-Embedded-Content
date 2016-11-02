@@ -5,23 +5,28 @@ class CacheService {
   constructor(entityResource) {
     this.entityResource = entityResource;
 
-    this.entityCache = [];
-    this.isEntityLoading = false;
+    this.cache = {};
+    this.isLoading = false;
   }
 
   getEntityById(id, type) {
-    const foundEntities = this.entityCache.filter(entity => entity.id === id);
+    return this.getOrAdd('entity', id, () => this.entityResource.getById(id, type));
+  }
 
-    if(foundEntities.length === 1) {
-      return foundEntities[0];
+  getOrAdd(type, key, valueFactory) {
+    const cache = this.cache[type] || (this.cache[type] = []);
+    const fromCache = cache.filter(item => item.key === key);
+
+    if(fromCache.length === 1) {
+      return fromCache[0].value;
     }
 
-    if(!this.isEntityLoading) {
-      this.isEntityLoading = true;
+    if(!this.isLoading) {
+      this.isLoading = true;
 
-      this.entityResource.getById(id, type).then(entity => {
-        this.entityCache.push(entity);
-        this.isEntityLoading = false;
+      valueFactory(key).then(result => {
+        cache.push({ key: key, value: result});
+        this.isLoading = false;
       });
     }
 
