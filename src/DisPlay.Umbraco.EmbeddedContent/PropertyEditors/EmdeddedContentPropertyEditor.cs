@@ -241,12 +241,12 @@
             {
                 if (string.IsNullOrEmpty(editorValue.Value?.ToString()))
                 {
-                    return string.Empty;
+                    return null;
                 }
 
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertEditorToDb()"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes();
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     var itemsDisplay = JsonConvert.DeserializeObject<EmbeddedContentItemDisplay[]>(editorValue.Value.ToString());
                     var currentItems = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(currentValue?.ToString() ?? "[]");
                     var items = new List<EmbeddedContentItem>();
@@ -285,7 +285,7 @@
                         {
                             item.CreateDate = DateTime.UtcNow;
 
-                            if (_security != null && _security.CurrentUser != null)
+                            if (_security?.CurrentUser != null)
                             {
                                 item.CreatorId = _security.CurrentUser.Id;
                             }
@@ -342,13 +342,18 @@
                         {
                             item.UpdateDate = DateTime.UtcNow;
 
-                            if (_security != null && _security.CurrentUser != null)
+                            if (_security?.CurrentUser != null)
                             {
                                 item.WriterId = _security.CurrentUser.Id;
                             }
                         }
 
                         items.Add(item);
+                    }
+
+                    if (items.Count == 0)
+                    {
+                        return null;
                     }
 
                     return JsonConvert.SerializeObject(items);
