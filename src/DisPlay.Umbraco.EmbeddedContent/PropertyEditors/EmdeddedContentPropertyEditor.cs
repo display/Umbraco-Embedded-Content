@@ -119,7 +119,7 @@
             {
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>("ConfigureForDisplay()"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes();
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
 
                     var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                     var config = JObject.Parse(configPreValue.Value);
@@ -151,23 +151,26 @@
                 }
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertDbToString({property.Alias})"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes();
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(property.Value.ToString());
 
                     foreach (var item in items)
                     {
                         var contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias);
-                        foreach (var propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
+                        if(contentType != null)
                         {
-                            object value;
-                            item.Properties.TryGetValue(propType.Alias, out value);
-                            PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
+                            foreach (var propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
+                            {
+                                object value;
+                                item.Properties.TryGetValue(propType.Alias, out value);
+                                PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
 
-                            item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
-                              new Property(propType, value),
-                              propType,
-                              dataTypeService
-                            );
+                                item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
+                                  new Property(propType, value),
+                                  propType,
+                                  dataTypeService
+                                );
+                            }
                         }
                     }
 
@@ -186,7 +189,7 @@
                 {
                     var source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
 
-                    var contentTypes = _contentTypeService.GetAllContentTypes();
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
                     var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
