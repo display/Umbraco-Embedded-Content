@@ -27,8 +27,8 @@
       <div class="embedded-content__control-bar" ng-click="ctrl.toggle(item)">
         <div class="embedded-content__item-title">
           <i class="icon {{item.icon}}"></i>
-          <span>{{item.name}}</span>
-          <small class="embedded-content__content-type-name">{{item.contentTypeName}}</small>
+          <span title="{{item.name}}">{{item.name}}</span>
+          <small class="embedded-content__content-type-name" title="{{item.contentTypeName}}">{{item.contentTypeName}}</small>
         </div>
         <div class="embedded-content__has-config" ng-if="item.hasConfig">
           <localize key="grid_settingsApplied" />

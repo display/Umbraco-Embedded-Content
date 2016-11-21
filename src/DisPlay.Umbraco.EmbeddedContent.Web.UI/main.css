@@ -93,6 +93,20 @@
 .embedded-content__item-title {
   cursor: pointer;
   padding-left: 5px;
+  min-width: 0;
+  display: flex;
+}
+
+.embedded-content__item-title > i {
+  margin-right: 5px;
+}
+
+.embedded-content__item-title > span,
+.embedded-content__item-title > small {
+  margin-right: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 input.embedded-content__item-name {
