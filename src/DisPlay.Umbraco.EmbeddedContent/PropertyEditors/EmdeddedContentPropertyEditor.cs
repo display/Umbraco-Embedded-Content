@@ -83,7 +83,7 @@
         internal class EmbeddedContentPreValueEditor : PreValueEditor
         {
             [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/EmbeddedContent/embeddedcontent.prevalues.html", HideLabel = true)]
-            public string[] EmbeddedContentConfig { get; set; }
+            public EmbeddedContentConfig EmbeddedContentConfig { get; set; }
         }
 
 
@@ -217,7 +217,6 @@
                                WriterId = item.WriterId,
                                Icon = contentType.Icon,
                                Name = item.Name,
-                               ParentId = item.ParentId,
                                Published = item.Published,
                                Tabs = from pg in contentType.CompositionPropertyGroups
                                       orderby pg.SortOrder
@@ -269,7 +268,6 @@
                             ContentTypeAlias = itemDisplay.ContentTypeAlias,
                             Key = itemDisplay.Key,
                             Name = itemDisplay.Name,
-                            ParentId = itemDisplay.ParentId,
                             Published = itemDisplay.Published,
                             CreateDate = itemDisplay.CreateDate,
                             UpdateDate = itemDisplay.UpdateDate,

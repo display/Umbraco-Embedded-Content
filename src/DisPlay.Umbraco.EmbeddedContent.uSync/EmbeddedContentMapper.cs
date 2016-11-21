@@ -1,5 +1,6 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.uSync
+namespace DisPlay.Umbraco.EmbeddedContent.uSync
 {
+    using System;
     using System.Linq;
 
     using Jumoo.uSync.Core.Mappers;
@@ -13,16 +14,31 @@
 
     public class EmbeddedContentMapper : IContentMapper
     {
-        private IContentTypeService _contentTypeService;
-        private IDataTypeService _dataTypeService;
+        private readonly IEntityService _entityService;
+        private readonly IContentTypeService _contentTypeService;
+        private readonly IDataTypeService _dataTypeService;
 
-        public EmbeddedContentMapper(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
+        public EmbeddedContentMapper(IEntityService entityService, IContentTypeService contentTypeService, IDataTypeService dataTypeService)
         {
+            if (entityService == null)
+            {
+                throw new ArgumentNullException(nameof(entityService));
+            }
+            if (contentTypeService == null)
+            {
+                throw new ArgumentNullException(nameof(contentTypeService));
+            }
+            if (dataTypeService == null)
+            {
+                throw new ArgumentNullException(nameof(dataTypeService));
+            }
+            _entityService = entityService;
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
         }
 
         public EmbeddedContentMapper() : this(
+            ApplicationContext.Current.Services.EntityService,
             ApplicationContext.Current.Services.ContentTypeService,
             ApplicationContext.Current.Services.DataTypeService)
         {

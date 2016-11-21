@@ -9,25 +9,19 @@
 
     internal class PublishedEmbeddedContentProperty : IPublishedProperty
     {
-        private readonly IPublishedContent _content;
         private readonly bool _isPreview;
         private readonly Lazy<object> _objectValue;
         private readonly PublishedPropertyType _propertyType;
         private readonly Lazy<object> _sourceValue;
         private readonly Lazy<object> _xpathValue;
 
-        public PublishedEmbeddedContentProperty(IPublishedContent content, PublishedPropertyType propertyType, object value, bool isPreview)
+        public PublishedEmbeddedContentProperty(PublishedPropertyType propertyType, object value, bool isPreview)
         {
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
             if (propertyType == null)
             {
                 throw new ArgumentNullException(nameof(propertyType));
             }
 
-            _content = content;
             _propertyType = propertyType;
             _isPreview = isPreview;
 
@@ -48,15 +42,6 @@
 
         private object ConvertSourceToObject()
         {
-            // if the property type is EmbeddedContent we need to set the
-            // parent to the content this property belongs to.
-            // I bet this could be done way better, but it'll do for now.
-            if (_propertyType.PropertyEditorAlias == Constants.PropertyEditorAlias)
-            {
-                var converter = new EmbeddedContentValueConverter();
-
-                return converter.ConvertSourceToObject(_content, _propertyType, _sourceValue.Value, _isPreview);
-            }
             return _propertyType.ConvertSourceToObject(_sourceValue.Value, _isPreview);
         }
     }

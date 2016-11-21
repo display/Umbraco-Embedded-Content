@@ -1,8 +1,6 @@
-﻿using System;
-using Umbraco.Core;
-
-namespace DisPlay.Umbraco.EmbeddedContent.Courier
+﻿namespace DisPlay.Umbraco.EmbeddedContent.Courier
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -72,18 +70,6 @@ namespace DisPlay.Umbraco.EmbeddedContent.Courier
                     if (packaging)
                     {
                         item.Dependencies.Add(contentType.UniqueId.ToString(), ItemProviderIds.documentTypeItemProviderGuid);
-                    }
-                    else
-                    {
-                        // set the parentid to the item we are importing
-                        // we don't need to set it while packaging
-                        // since the item we are importing will always be the parent
-
-                        Guid parentId;
-                        if (Guid.TryParse(item.ItemId.Id, out parentId))
-                        {
-                            embeddedContent.ParentId = ExecutionContext.DatabasePersistence.GetNodeId(parentId);
-                        }
                     }
 
                     foreach (var property in embeddedContent.Properties.ToList())

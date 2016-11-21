@@ -80,11 +80,7 @@
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-            return ConvertSourceToObject(null, propertyType, source, preview);
-        }
 
-        internal object ConvertSourceToObject(IPublishedContent parent, PublishedPropertyType propertyType, object source, bool preview)
-        {
             var config = GetConfig(propertyType.DataTypeId);
 
             using (_profilingLogger.DebugDuration<EmbeddedContentValueConverter>($"ConvertSourceToObject({propertyType.PropertyTypeAlias})"))
@@ -131,12 +127,8 @@
                         continue;
                     }
 
-                    if (parent == null)
-                    {
-                        parent = _umbracoContextFactory().ContentCache.GetById(item.ParentId);
-                    }
                     IPublishedContent content = _publishedContentModelFactory.CreateModel(
-                        new PublishedEmbeddedContent(_userService, item, contentType, parent, i, preview)
+                        new PublishedEmbeddedContent(_userService, item, contentType, i, preview)
                     );
 
                     result.Add(content);
