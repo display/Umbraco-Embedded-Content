@@ -1,0 +1,12 @@
+<div class="umb-editor"  ng-controller="DisPlay.Umbraco.EmbeddedContent.GroupsController as ctrl">
+  <div class="control-group">
+    <input name="newItem" type="text" ng-model="ctrl.newItem" val-highlight="{{ctrl.hasError}}" />
+    <button class="btn" ng-click="ctrl.add($event)">Add</button>
+  </div>
+  <div ui-sortable="sortableOptions">
+    <div class="control-group" ng-repeat="item in model.value | orderBy: 'toString()'">
+      <input type="text" ng-model="item" disabled />
+      <button class="btn btn-danger" ng-click="ctrl.remove($index, $event)">Remove</button>
+    </div>
+  </div>
+</div>

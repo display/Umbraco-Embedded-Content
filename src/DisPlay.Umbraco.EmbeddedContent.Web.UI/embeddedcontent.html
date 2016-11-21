@@ -97,6 +97,6 @@
     ng-if="ctrl.contentTypeOverlay.show"
     model="ctrl.contentTypeOverlay"
     view="ctrl.contentTypeOverlay.view"
-    position="target">
+    position="{{ctrl.config.groups.length ? 'right' : 'target'}}">
   </umb-overlay>
 </div>

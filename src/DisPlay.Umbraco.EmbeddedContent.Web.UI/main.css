@@ -53,7 +53,6 @@
 .embedded-content__item-content-body {
   box-sizing: border-box;
   background: #fff;
-  position: relative;
   display: block;
   margin: 10px;
   overflow: hidden;
@@ -274,7 +273,7 @@ input.embedded-content__item-name--empty {
 }
 
 .embedded-content-config .embedded-content__control-bar {
-  cursor: default;
+  cursor: pointer;
 }
 
 .embedded-content__placeholder--small .embedded-content__add {

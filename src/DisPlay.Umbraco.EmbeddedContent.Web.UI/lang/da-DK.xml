@@ -9,5 +9,6 @@
     <key alias="addDocumentType">Tilføj dokumenttype</key>
     <key alias="addContent">Tilføj indhold</key>
     <key alias="chooseContentType">Vælg indholdstype</key>
+    <key alias="groupOther">Andet</key>
   </area>
 </language>

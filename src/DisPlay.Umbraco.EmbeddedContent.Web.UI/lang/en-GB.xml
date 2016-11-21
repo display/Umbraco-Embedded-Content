@@ -9,5 +9,6 @@
     <key alias="addDocumentType">Add document type</key>
     <key alias="addContent">Add content</key>
     <key alias="chooseContentType">Choose type of content</key>
+    <key alias="groupOther">Other</key>
   </area>
 </language>

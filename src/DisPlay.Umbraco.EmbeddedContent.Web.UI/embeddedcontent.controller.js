@@ -94,6 +94,10 @@ class EmbdeddedContentController {
       }
     };
 
+    this.localizationService.localize('embeddedContent_groupOther').then(label => {
+      this.groupOther = label;
+    });
+
     this.hasSettings = false;
 
     this.label = $scope.model.label;
@@ -289,14 +293,19 @@ class EmbdeddedContentController {
       return {
         alias: docType.documentTypeAlias,
         name: docType.name,
+        group: docType.group,
         description: docType.description,
         icon: docType.icon
       };
-    });
+    }).reduce((prev, cur) => {
+      const group = cur.group || this.groupOther;
+      (prev[group] || (prev[group] = [])).push(cur);
+      return prev;
+    }, {});
 
     this.contentTypeOverlay = {
-      view: 'itempicker',
-      filter: false,
+      view: '/App_Plugins/EmbeddedContent/contenttypepicker.overlay.html',
+      filter: this.config.enableFiltering === '1',
       title: this.localizationService.localize('embeddedContent_chooseContentType'),
       availableItems: availableItems,
       event: event,

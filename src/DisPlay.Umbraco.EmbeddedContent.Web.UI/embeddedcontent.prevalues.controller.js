@@ -44,8 +44,23 @@ class EmbeddedContentPrevaluesController {
       nameTemplate : item.nameTemplate,
       allowEditingName: item.allowEditingName,
       maxInstances: item.maxInstances,
-      hasConfig: item.nameTemplate || item.allowEditingName === '1' || item.maxInstances
+      group: item.group
     };
+  }
+
+  activate(item) {
+    item.active = true;
+    item.loaded = true;
+  }
+
+  deactivate(item) { item.active = false; }
+
+  toggle(item) {
+    if(item.active) {
+      this.deactivate(item);
+    } else {
+      this.activate(item);
+    }
   }
 
   add(item) {
@@ -56,7 +71,7 @@ class EmbeddedContentPrevaluesController {
     this.$scope.model.value.documentTypes.push(docType);
     this.$scope.model.value.documentTypes.sort((a, b) => a.name.localeCompare(b.name));
 
-    this.editItemSettings(docType);
+    this.activate(docType);
 
     this.currentForm.$setDirty();
   }
@@ -66,8 +81,15 @@ class EmbeddedContentPrevaluesController {
     this.currentForm.$setDirty();
   }
 
-  togglePrompt(item) { item.deletePrompt = !item.deletePrompt; }
-  hidePrompt(item) { item.deletePrompt = false; }
+  togglePrompt(item, event) {
+    event.stopPropagation();
+    item.deletePrompt = !item.deletePrompt;
+  }
+
+  hidePrompt(item, $event) {
+    event.stopPropagation();
+    item.deletePrompt = false;
+  }
 
   editSettings(event) {
     let properties = [{
@@ -85,6 +107,19 @@ class EmbeddedContentPrevaluesController {
       alias: 'enableCollapsing',
       view: 'boolean',
       value: this.$scope.model.value.enableCollapsing
+    },{
+      label: 'Enable filtering',
+      alias: 'enableFiltering',
+      view: 'boolean',
+      value: this.$scope.model.value.enableFiltering
+    },{
+      label: 'Groups',
+      alias: 'groups',
+      view: '/App_Plugins/EmbeddedContent/groups.html',
+      value: this.$scope.model.value.groups,
+      config: {
+        max: 0
+      }
     }];
 
     this.editSettingsOverlay = {
@@ -104,60 +139,6 @@ class EmbeddedContentPrevaluesController {
         this.editSettingsOverlay = null;
       },
       close: () => {
-        this.editSettingsOverlay.show = false;
-        this.editSettingsOverlay = null;
-      }
-    };
-  }
-
-  editItemSettings(item, event) {
-    let properties = [{
-      label: 'Allow editing name',
-      description: 'If checked, a mandatory name property is added and the name template won\'t be used.',
-      alias: 'allowEditingName',
-      value: item.allowEditingName,
-      view: 'boolean'
-    },{
-      label: 'Name template',
-      description: '',
-      alias: 'nameTemplate',
-      config: {},
-      validation: {
-        mandatory: false,
-        pattern: null
-      },
-      value: item.nameTemplate,
-      view: 'textbox'
-    },{
-      label: 'Maximum number of instances',
-      description: 'How many instances of this item can be added?',
-      alias: 'maxInstances',
-      view: 'integer',
-      value: item.maxInstances
-    }];
-
-    this.editSettingsOverlay = {
-      view: '/App_Plugins/EmbeddedContent/embeddedcontent-settings-overlay.html',
-      title: this.localizationService.localize('embeddedContent_settings'),
-      subtitle: item.documentTypeAlias,
-      settings: properties,
-      event: event,
-      show: true,
-      submit: (model) => {
-        model.settings.forEach(property => {
-          item[property.alias] = property.value;
-        });
-
-        item.hasConfig = item.nameTemplate || item.allowEditingName === '1' || item.maxInstances;
-
-        this.currentForm.$setDirty();
-
-        item.active = false;
-        this.editSettingsOverlay.show = false;
-        this.editSettingsOverlay = null;
-      },
-      close: () => {
-        item.active = false;
         this.editSettingsOverlay.show = false;
         this.editSettingsOverlay = null;
       }
