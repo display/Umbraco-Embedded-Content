@@ -221,12 +221,15 @@
                                Published = item.Published,
                                Tabs = from pg in contentType.CompositionPropertyGroups
                                       orderby pg.SortOrder
+                                      group pg by pg.Name into groupedByTabName
+                                      let firstTab = groupedByTabName.First()
+                                      let propertyTypes = groupedByTabName.SelectMany(x => x.PropertyTypes)
                                       select new Tab<EmbeddedContentPropertyDisplay>
                                       {
-                                          Id = pg.Id,
-                                          Label = UmbracoDictionaryTranslate(pg.Name),
-                                          Alias = pg.Key.ToString(),
-                                          Properties = from pt in pg.PropertyTypes
+                                          Id = firstTab.Id,
+                                          Label = UmbracoDictionaryTranslate(firstTab.Name),
+                                          Alias = firstTab.Key.ToString(),
+                                          Properties = from pt in propertyTypes
                                                        orderby pt.SortOrder
                                                        let value = GetPropertyValue(item.Properties, pt.Alias)
                                                        let p = GetProperty(pt, value)
