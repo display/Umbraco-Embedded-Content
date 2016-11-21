@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.6.0 2016-11-22
+### Breaking
+- Remove Parent support
+
+### Features
+- Merge property groups whith same name to a single section
+- Clean config UI
+- Add filtering support creating content
+- Add item group support
+
+### Bugfixes
+- Fix item title overflow
+
 ## 0.5.1 2016-11-03
 ### Bugfixes
 - Fix null exception
@@ -36,6 +49,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fix name template not working because it used the unique property alias
 
 ## 0.2.1 - 2016-07-04
+### Features
 - Replace unsupported IE javascript functions with underscore equivalent ones
 - Backoffice performance optimisations
 - Ensure properties have unique alias and id
