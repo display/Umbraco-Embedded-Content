@@ -165,6 +165,11 @@
                                 item.Properties.TryGetValue(propType.Alias, out value);
                                 PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
 
+                                if (propertyEditor == null)
+                                {
+                                    continue;
+                                }
+
                                 item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
                                   new Property(propType, value),
                                   propType,
@@ -444,10 +449,8 @@
                     List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     var itemsDisplay = JsonConvert.DeserializeObject<IEnumerable<EmbeddedContentItemDisplay>>(value.ToString()).ToList();
 
-                    for(var i =0;i<itemsDisplay.Count;i++)
+                    foreach (EmbeddedContentItemDisplay itemDisplay in itemsDisplay)
                     {
-                        EmbeddedContentItemDisplay itemDisplay = itemsDisplay[i];
-
                         IContentType contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
 
                         if (contentType == null)
