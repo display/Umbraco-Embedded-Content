@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.6.1 2017-01-02
+### Bugfixes
+- Fix exception when property editor is null 
+- Don't save unpublished items in the xml cache
+
 ## 0.6.0 2016-11-22
 ### Breaking
 - Remove Parent support

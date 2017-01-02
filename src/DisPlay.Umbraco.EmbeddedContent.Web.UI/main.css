@@ -152,6 +152,7 @@ input.embedded-content__item-name--empty {
 }
 
 .embedded-content__placeholder {
+  display: block;
   position: relative;
   min-height: 130px;
   margin: 10px 0;
