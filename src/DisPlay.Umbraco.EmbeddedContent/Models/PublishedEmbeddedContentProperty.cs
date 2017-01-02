@@ -5,8 +5,6 @@
     using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Models.PublishedContent;
 
-    using ValueConverters;
-
     internal class PublishedEmbeddedContentProperty : IPublishedProperty
     {
         private readonly bool _isPreview;
@@ -28,7 +26,7 @@
             DataValue = value;
 
             _sourceValue = new Lazy<object>(() => _propertyType.ConvertDataToSource(DataValue, _isPreview));
-            _objectValue = new Lazy<object>(ConvertSourceToObject);
+            _objectValue = new Lazy<object>(() => _propertyType.ConvertSourceToObject(_sourceValue.Value, _isPreview));
             _xpathValue = new Lazy<object>(() => _propertyType.ConvertSourceToXPath(_sourceValue.Value, _isPreview));
 
             PropertyTypeAlias = propertyType.PropertyTypeAlias;
@@ -39,10 +37,5 @@
         public object DataValue { get; }
         public object Value => _objectValue.Value;
         public object XPathValue => _xpathValue.Value;
-
-        private object ConvertSourceToObject()
-        {
-            return _propertyType.ConvertSourceToObject(_sourceValue.Value, _isPreview);
-        }
     }
 }

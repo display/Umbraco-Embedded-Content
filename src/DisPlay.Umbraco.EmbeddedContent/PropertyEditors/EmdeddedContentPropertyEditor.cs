@@ -151,32 +151,45 @@
                 }
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertDbToString({property.Alias})"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
-                    var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(property.Value.ToString());
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    List<EmbeddedContentItem> items = new List<EmbeddedContentItem>();
 
-                    foreach (var item in items)
+                    foreach (EmbeddedContentItem item in JsonConvert.DeserializeObject<EmbeddedContentItem[]>(property.Value.ToString()))
                     {
-                        var contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias);
-                        if(contentType != null)
+                        if (!item.Published)
                         {
-                            foreach (var propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
-                            {
-                                object value;
-                                item.Properties.TryGetValue(propType.Alias, out value);
-                                PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
-
-                                if (propertyEditor == null)
-                                {
-                                    continue;
-                                }
-
-                                item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
-                                  new Property(propType, value),
-                                  propType,
-                                  dataTypeService
-                                );
-                            }
+                            continue;
                         }
+
+                        IContentType contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias);
+                        if (contentType == null)
+                        {
+                            continue;
+                        }
+                        foreach (PropertyType propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
+                        {
+                            object value;
+                            item.Properties.TryGetValue(propType.Alias, out value);
+                            PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
+
+                            if (propertyEditor == null)
+                            {
+                                continue;
+                            }
+
+                            item.Properties[propType.Alias] = propertyEditor.ValueEditor.ConvertDbToString(
+                                new Property(propType, value),
+                                propType,
+                                dataTypeService
+                            );
+                        }
+
+                        items.Add(item);
+                    }
+
+                    if (items.Count == 0)
+                    {
+                        return string.Empty;
                     }
 
                     return JsonConvert.SerializeObject(items);
