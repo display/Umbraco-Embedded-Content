@@ -2,8 +2,8 @@
 'use strict';
 
 function endsWith(str, searchString) {
-  let position = str.length - searchString.length;
-  let lastIndex = str.indexOf(searchString, position);
+  const position = str.length - searchString.length;
+  const lastIndex = str.indexOf(searchString, position);
   return lastIndex !== -1 && lastIndex === position;
 }
 
@@ -35,7 +35,7 @@ class EmbdeddedContentController {
     }
 
     this.currentForm = angularHelper.getCurrentForm($scope);
-    let currentForm = this.currentForm;
+    const currentForm = this.currentForm;
 
     let draggedRteSettings = {};
     this.sortableOptions = {
@@ -54,7 +54,7 @@ class EmbdeddedContentController {
       },
       sort: function (event, ui) {
         /* prevent vertical scroll out of the screen */
-        let max = $('.embedded-content').width() - 150;
+        const max = $('.embedded-content').width() - 150;
         if (parseInt(ui.helper.css('left')) > max) {
           ui.helper.css({ 'left': max + 'px' });
         }
@@ -70,8 +70,8 @@ class EmbdeddedContentController {
         draggedRteSettings = {};
         ui.item.parents('.embedded-content').find('.umb-rte textarea').each(function () {
           // remove all RTEs in the dragged row and save their settings
-          let id = $(this).attr('id');
-          let editor = _.findWhere(tinyMCE.editors, { id: id });
+          const id = $(this).attr('id');
+          const editor = _.findWhere(tinyMCE.editors, { id: id });
           if(editor) {
             draggedRteSettings[id] = editor.settings;
             tinyMCE.execCommand('mceRemoveEditor', false, id);
@@ -84,7 +84,7 @@ class EmbdeddedContentController {
 
         // reset all RTEs affected by the dragging
         ui.item.parents('.embedded-content').find('.umb-rte textarea').each(function () {
-          let id = $(this).attr('id');
+          const id = $(this).attr('id');
           draggedRteSettings[id] = draggedRteSettings[id] || _.findWhere(tinyMCE.editors, { id: id }).settings;
           tinyMCE.execCommand('mceRemoveEditor', false, id);
           tinyMCE.init(draggedRteSettings[id]);
@@ -121,14 +121,14 @@ class EmbdeddedContentController {
     $scope.$on('valStatusChanged', (evt, args) => {
       // this is very ugly, but it works for now
       if (args.form.$invalid) {
-        let errors = serverValidationManager.items.filter((error) => error.propertyAlias === this.$scope.model.alias);
+        const errors = serverValidationManager.items.filter((error) => error.propertyAlias === this.$scope.model.alias);
         for(let i = 0; i < errors.length; i++) {
-          let error = errors[i];
-          let splits = error.fieldName.split('item-').filter(item => item);
+          const error = errors[i];
+          const splits = error.fieldName.split('item-').filter(item => item);
+          const id = error.fieldName.substr('item-'.length, 'f7ad912c-2907-4416-9b43-a38059953a80'.length);
+          const item = _.findWhere(this.$scope.model.value, { key: id });
           let errorPropertyName = trimEnd(error.fieldName, '-value');
           let errorFieldName = '';
-          let id = error.fieldName.substr('item-'.length, 'f7ad912c-2907-4416-9b43-a38059953a80'.length);
-          let item = _.findWhere(this.$scope.model.value, { key: id });
 
           item.loaded = true;
 
@@ -146,7 +146,7 @@ class EmbdeddedContentController {
   }
 
   setFiles(newFiles) {
-    let files = this.fileManager.getFiles()
+    const files = this.fileManager.getFiles()
       .filter(item => item.alias === this.$scope.model.alias)
       .map(item => item.file)
       .concat(newFiles);
@@ -171,7 +171,7 @@ class EmbdeddedContentController {
   add(documentType) {
     this.contentResource.getScaffold(this.editorState.current.id || -1, documentType.documentTypeAlias)
     .then(data => {
-      let item = this.init({
+      const item = this.init({
         key: data.key,
         allowEditingName: documentType.allowEditingName === '1',
         contentTypeAlias: data.contentTypeAlias,
@@ -191,14 +191,13 @@ class EmbdeddedContentController {
 
   init(item) {
     if(!item.allowEditingName) {
-      let documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias == item.contentTypeAlias);
+      const documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias === item.contentTypeAlias);
 
       if(!documentType.nameExpression) {
         documentType.nameExpression = this.$interpolate(documentType.nameTemplate || 'Item {{$index}}');
       }
 
-      let nameExpression = documentType.nameExpression;
-      let alias = item.alias;
+      const nameExpression = documentType.nameExpression;
 
       delete item.name;
 
@@ -214,7 +213,7 @@ class EmbdeddedContentController {
             index = $scope.model.value.length + 1;
           }
 
-          let properties = item.tabs
+          const properties = item.tabs
           .reduce((cur, tab) => cur.concat(tab.properties), [])
           .reduce((obj, property) => {
             let alias = property.alias;
@@ -289,7 +288,7 @@ class EmbdeddedContentController {
       return;
     }
 
-    let availableItems = this.allowedDocumentTypes.map(docType => {
+    const availableItems = this.allowedDocumentTypes.map(docType => {
       return {
         alias: docType.documentTypeAlias,
         name: docType.name,
@@ -311,7 +310,7 @@ class EmbdeddedContentController {
       event: event,
       show: true,
       submit: (model) => {
-        let documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias === model.selectedItem.alias);
+        const documentType = _.find(this.config.documentTypes, docType => docType.documentTypeAlias === model.selectedItem.alias);
         this.add(documentType);
         this.contentTypeOverlay.show = false;
         this.contentTypeOverlay = null;

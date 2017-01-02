@@ -12,8 +12,8 @@ function EmbeddedContentPropertyDirective(fileManager) {
     },
     link(scope) {
 
-      let alias = scope.property.alias;
-      let id = scope.property.id;
+      const alias = scope.property.alias;
+      const id = scope.property.id;
 
       // return the original alias and id when the property is serialized
       scope.property.toJSON = function() {
@@ -25,7 +25,7 @@ function EmbeddedContentPropertyDirective(fileManager) {
 
       scope.ready = true;
       scope.$on('filesSelected', (e, args) => {
-        let filesArray = [].slice.call(args.files).map(file => _.extend(file, { propertyAlias: scope.property.alias }));
+        const filesArray = [].slice.call(args.files).map(file => _.extend(file, { propertyAlias: scope.property.alias }));
         scope.property.selectedFiles = filesArray.map(file => file.name);
         fileManager.setFiles(scope.property.alias, []);
         scope.setFiles({ files: filesArray });

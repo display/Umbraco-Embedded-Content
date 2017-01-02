@@ -33,7 +33,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   init(item) {
-    let documentType = _.find(this.documentTypes, docType => docType.alias === item.documentTypeAlias);
+    const documentType = _.find(this.documentTypes, docType => docType.alias === item.documentTypeAlias);
     if(!documentType) {
       return;
     }
@@ -64,7 +64,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   add(item) {
-    let docType = this.init({
+    const docType = this.init({
       documentTypeAlias: item.alias,
     });
 
@@ -92,7 +92,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   editSettings(event) {
-    let properties = [{
+    const properties = [{
       label: 'Minimum number of items',
       alias: 'minItems',
       view: 'integer',
@@ -146,7 +146,7 @@ class EmbeddedContentPrevaluesController {
   }
 
   openContentTypeOverlay(event) {
-    let availableItems = this.documentTypes
+    const availableItems = this.documentTypes
     .filter(docType => !_.find(this.$scope.model.value.documentTypes, item => item.documentTypeAlias === docType.alias))
     .map(docType => {
       return {
