@@ -105,6 +105,9 @@
 .embedded-content__item-title > small {
   margin-right: 5px;
   white-space: nowrap;
+}
+
+.embedded-content__item-title > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
