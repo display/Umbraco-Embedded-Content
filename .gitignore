@@ -1,16 +1,16 @@
-.vs/
-.idea/
+/.fake/
+/.idea/
+/.nuget/
+/.vs/
+/artifacts/
+/packages/
 
-/dist
-/node_modules
-/packages
-/tools
-
+App_Data/
 bin/
 obj/
 
-.DS_Store
-*.orig
 *.log
+*.orig
 *.suo
+*.swp
 *.user

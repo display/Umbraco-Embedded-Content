@@ -12,8 +12,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\dist\bin\**" target="lib\net452"/>
-    <file src="..\..\dist\App_Plugins\**" target="content\App_Plugins"/>
+    <file src="..\..\artifacts\bin\**" target="lib\net452"/>
+    <file src="..\..\artifacts\App_Plugins\**" target="content\App_Plugins"/>
     <file src="tools\install.ps1" target="tools\install.ps1"/>
   </files>
 </package>

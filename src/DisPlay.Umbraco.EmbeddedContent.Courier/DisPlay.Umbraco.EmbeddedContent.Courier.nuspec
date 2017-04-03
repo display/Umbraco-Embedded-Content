@@ -12,8 +12,4 @@
         <dependency id="DisPlay.Umbraco.EmbeddedContent" version="[0.6.0, 1.0.0)"/>
     </dependencies>
   </metadata>
-  <files>
-    <file src="..\..\src\DisPlay.Umbraco.EmbeddedContent.Courier\bin\Release\DisPlay.Umbraco.EmbeddedContent.Courier.dll" target="lib\net452"/>
-    <file src="..\..\src\DisPlay.Umbraco.EmbeddedContent.Courier\bin\Release\DisPlay.Umbraco.EmbeddedContent.Courier.pdb" target="lib\net452"/>
-  </files>
 </package>

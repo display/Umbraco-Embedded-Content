@@ -1,0 +1,67 @@
+{
+  "name": "umbraco-embedded-content",
+  "version": "0.1.0",
+  "description": "DIS/PLAY Umbraco Embedded Content Property Editor",
+  "repository": "",
+  "author": "Rasmus John Pedersen <mail@rjp.dk> (http://www.rasmusjp.dk)",
+  "license": "MIT",
+  "pluginName": "EmbeddedContent",
+  "proxy": "http://localhost:49392/",
+  "externals": {
+    "angular": "angular",
+    "jquery": "jQuery",
+    "underscore": "underscore"
+  },
+  "browsers": [
+    "last 2 versions"
+  ],
+  "engines": {
+    "node": ">=6.0"
+  },
+  "scripts": {
+    "lint:js": "eslint .",
+    "lint:style": "stylelint app/**/*.css",
+    "lint": "yarn run lint:js && yarn run lint:style",
+    "clean": "rimraf build",
+    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development --progress\"",
+    "build": "yarn run clean && webpack --env production --progress",
+    "stats": "webpack --env production --profile --json > stats.json"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.1.8",
+    "case-sensitive-paths-webpack-plugin": "^1.1.4",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.15.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-promise": "^3.4.1",
+    "eslint-plugin-standard": "^2.0.1",
+    "extract-loader": "^0.1.0",
+    "extract-text-webpack-plugin": "beta",
+    "file-loader": "^0.10.0",
+    "html-loader": "^0.4.4",
+    "ng-annotate-webpack-plugin": "^0.2.1-pre",
+    "nodemon": "^1.11.0",
+    "postcss-cssnext": "^2.9.0",
+    "postcss-loader": "^1.3.0",
+    "postcss-smart-import": "^0.6.10",
+    "rimraf": "^2.6.0",
+    "string-replace-loader": "^1.0.5",
+    "style-loader": "^0.13.1",
+    "stylelint": "^7.8.0",
+    "stylelint-config-standard": "^16.0.0",
+    "stylelint-webpack-plugin": "^0.6.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
+  },
+  "dependencies": {}
+}

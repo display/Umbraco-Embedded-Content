@@ -395,7 +395,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\src\DisPlay.Umbraco.EmbeddedContent\DisPlay.Umbraco.EmbeddedContent.csproj">
       <Project>{1545c061-a049-41bf-b201-3a470fb96bce}</Project>
-      <Name>DisPlay.EmbeddedContent</Name>
+      <Name>DisPlay.Umbraco.EmbeddedContent</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -105,9 +105,6 @@
 .embedded-content__item-title > small {
   margin-right: 5px;
   white-space: nowrap;
-}
-
-.embedded-content__item-title > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -245,7 +242,7 @@ input.embedded-content__item-name--empty {
 .embedded-content__switch-label::after {
   position: absolute;
   top: 50%;
-  margin-top: -.5em;
+  margin-top: -0.5em;
   line-height: 1;
   transition: inherit;
 }

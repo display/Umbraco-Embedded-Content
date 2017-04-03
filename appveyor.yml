@@ -1,0 +1,15 @@
+version: '{build}'
+os: Visual Studio 2015
+init:
+  - git config --global core.autocrlf input
+  - git config --global core.longpaths true
+shallow_clone: true
+install:
+  - ps: Install-Product node 6.9.4
+build_script:
+  build.cmd
+test: off
+artifacts:
+- path: artifacts\*.nupkg
+  name: NuGetPackages
+deploy: off
