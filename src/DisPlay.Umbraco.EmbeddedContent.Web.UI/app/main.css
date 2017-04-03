@@ -1,3 +1,9 @@
+:root {
+  --primaryColor: #03bfb3;
+  --lightColor: #f3f3f5;
+  --borderColor: #d8d7d9;
+}
+
 .embedded-content__title-bar {
   display: flex;
   align-items: center;
@@ -41,13 +47,13 @@
 }
 
 .embedded-content__item--active {
-  border-color: #2e8aea;
+  border-color: var(--primaryColor);
 }
 
 .embedded-content__item-content-header {
   padding: 20px;
-  background: #f8f8f8;
-  border-bottom: 1px solid #d9d9d9;
+  background: var(--lightColor);
+  border-bottom: 1px solid var(--borderColor);
 }
 
 .embedded-content__item-content-body {
@@ -65,8 +71,8 @@
 .embedded-content__section-title {
   padding: 10px;
   margin-bottom: 5px;
-  background: #f8f8f8;
-  border-bottom: 1px solid #d9d9d9;
+  background: var(--lightColor);
+  border-bottom: 1px solid var(--borderColor);
   font-weight: bold;
   color: #000;
   box-sizing: border-box;
@@ -78,16 +84,16 @@
   align-items: center;
   cursor: move;
   padding: 2px 5px;
-  background-color: #f8f8f8;
+  background-color: var(--lightColor);
 }
 
 .embedded-content__control-bar--colapsed {
-  background-color: #f8f8f8;
+  background-color: var(--lightColor);
   border: 1px solid transparent;
 }
 
 .embedded-content__control-bar--colapsed:hover {
-  border-color: #2e8aea;
+  border-color: var(--primaryColor);
 }
 
 .embedded-content__item-title {
@@ -105,6 +111,9 @@
 .embedded-content__item-title > small {
   margin-right: 5px;
   white-space: nowrap;
+}
+
+.embedded-content__item-title > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -122,7 +131,7 @@ input.embedded-content__item-name {
 }
 
 input.embedded-content__item-name--empty {
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed var(--borderColor);
 }
 
 .embedded-content__has-config {
@@ -145,10 +154,11 @@ input.embedded-content__item-name--empty {
   margin-right: 5px;
   font-size: 16px;
   cursor: pointer;
+  color: rgba(0, 0, 0, 0.23);
 }
 
 .embedded-content__tools-tool:hover {
-  color: #0064cd;
+  color: var(--primaryColor);
 }
 
 .embedded-content__placeholder {
@@ -156,8 +166,8 @@ input.embedded-content__item-name--empty {
   position: relative;
   min-height: 130px;
   margin: 10px 0;
-  background-color: #f8f8f8;
-  border-color: #d9d9d9;
+  background-color: var(--lightColor);
+  border-color: var(--borderColor);
   border-style: dashed;
   border-width: 2px;
   transition: border-color 100ms linear;
@@ -167,15 +177,16 @@ input.embedded-content__item-name--empty {
   text-align: center;
   min-height: inherit;
   padding: 5px;
+  border: 1px dashed #bbbabf;
 }
 
 .embedded-content__placeholder:hover {
   cursor: pointer;
-  border-color: #2e8aea;
+  border-color: var(--primaryColor);
 }
 
 .embedded-content__add {
-  color: #2e8aea;
+  color: var(--primaryColor);
   padding: 60px;
   text-align: center;
 }
@@ -183,7 +194,7 @@ input.embedded-content__item-name--empty {
 .embedded-content__sortable-placeholder {
   margin: 0;
   position: relative;
-  background-color: #2e8aea;
+  background-color: var(--primaryColor);
   height: 2px;
 }
 
@@ -193,7 +204,7 @@ input.embedded-content__item-name--empty {
   top: -9px;
   font-family: "icomoon";
   font-size: 18px;
-  color: #2e8aea;
+  color: var(--primaryColor);
 }
 
 .embedded-content__sortable-placeholder::before {
@@ -261,7 +272,7 @@ input.embedded-content__item-name--empty {
 }
 
 .embedded-content__switch input:checked ~ .embedded-content__switch-label {
-  background: #2e8aea;
+  background: var(--primaryColor);
 }
 
 .embedded-content__switch input:checked ~ .embedded-content__switch-label::before {
@@ -299,12 +310,12 @@ input.embedded-content__item-name--empty {
 }
 
 .embedded-content__item--active > .embedded-content__control-bar {
-  background-color: #2e8aea;
+  background-color: var(--primaryColor);
   cursor: default;
   color: #fff;
 }
 
-.embedded-content__item--active > .embedded-content__control-bar > .embedded-content__tools > .embedded-content__tools-tool:hover {
+.embedded-content__item--active > .embedded-content__control-bar > .embedded-content__tools > .embedded-content__tools-tool {
   color: #fff;
 }
 
@@ -353,7 +364,7 @@ input.embedded-content__item-name--empty {
 
 .embedded-content__item.ui-sortable-helper {
   position: absolute !important;
-  background-color: #2e8aea !important;
+  background-color: var(--primaryColor) !important;
   height: 42px !important;
   width: 42px !important;
   overflow: hidden;
