@@ -6,7 +6,7 @@
   @Model.Text
   @if(Model.Link != null) {
     <p class="lead">
-      <a class="btn btn-primary btn-lg" href="@Umbraco.NiceUrl((int)Model.Link)" role="button">Learn more</a>
+      <a class="btn btn-primary btn-lg" href="@Model.Link.Url" role="button">Learn more</a>
     </p>
   }
 </div>
