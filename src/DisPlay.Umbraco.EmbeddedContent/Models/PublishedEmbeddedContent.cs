@@ -12,15 +12,16 @@
 
     internal class PublishedEmbeddedContent : PublishedContentWithKeyBase
     {
-        private readonly IEnumerable<IPublishedProperty> _properties;
+        private readonly IList<IPublishedProperty> _properties;
         private readonly Lazy<string> _writerName;
         private readonly Lazy<string> _creatorName;
+        private string _urlName;
 
         public PublishedEmbeddedContent(IUserService userService,
-                                        EmbeddedContentItem item,
-                                        PublishedContentType contentType,
-                                        int sortOrder,
-                                        bool isPreview)
+            EmbeddedContentItem item,
+            PublishedContentType contentType,
+            int sortOrder,
+            bool isPreview)
         {
             Name = item.Name;
             Key = item.Key;
@@ -35,10 +36,11 @@
             _writerName = new Lazy<string>(() => userService.GetByProviderKey(WriterId).Name);
             _creatorName = new Lazy<string>(() => userService.GetByProviderKey(CreatorId).Name);
 
-            _properties = from property in item.Properties
+            _properties = (from property in item.Properties
                           let propType = contentType.GetPropertyType(property.Key)
                           where propType != null
-                          select new PublishedEmbeddedContentProperty(propType, property.Value, isPreview);
+                          select new PublishedEmbeddedContentProperty(propType, property.Value, isPreview)
+                          ).ToList<IPublishedProperty>();
         }
 
         public override int Id => 0;
@@ -48,12 +50,12 @@
         public override PublishedContentType ContentType { get; }
         public override string DocumentTypeAlias => ContentType.Alias;
         public override int DocumentTypeId => ContentType.Id;
-        public override ICollection<IPublishedProperty> Properties => _properties.ToArray();
+        public override ICollection<IPublishedProperty> Properties => _properties;
         public override IPublishedContent Parent { get; }
         public override IEnumerable<IPublishedContent> Children => Enumerable.Empty<IPublishedContent>();
         public override int TemplateId => 0;
         public override int SortOrder { get; }
-        public override string UrlName => Name.ToUrlSegment();
+        public override string UrlName => _urlName ?? (_urlName = Name.ToUrlSegment());
         public override string WriterName => _writerName.Value;
         public override string CreatorName => _creatorName.Value;
         public override int WriterId { get; }
