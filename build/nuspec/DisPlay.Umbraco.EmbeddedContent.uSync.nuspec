@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DisPlay.Umbraco.EmbeddedContent.uSync</id>
+    <title>Umbraco Embedded Content uSync mapper</title>
+    <description>DIS/PLAY Umbraco Embedded Content uSync mapper</description>
+    <authors>Rasmus John Pedersen</authors>
+    <version>$version$</version>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+        <dependency id="DisPlay.Umbraco.EmbeddedContent" version="0.6.1"/>
+        <dependency id="uSync.Core" version="[5.3.5, 6.0.0)"/>
+        <dependency id="UmbracoCms.Core" version="[7.4.0, 8.0.0)"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\artifacts\DisPlay.Umbraco.EmbeddedContent.uSync\bin\DisPlay.Umbraco.EmbeddedContent.uSync.dll" target="lib\net452"/>
+  </files>
+</package>

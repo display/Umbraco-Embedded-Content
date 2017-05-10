@@ -4,11 +4,12 @@ open Fake
 
 // Properties
 let solutionFile = FindFirstMatchingFile "*.sln" currentDirectory
-let nuspecFiles = filesInDirMatchingRecursive "*.nuspec" (directoryInfo "./build/nuspec/")
-let packageFiles =
-  subDirectories (directoryInfo "./src")
-  |> Seq.map (filesInDirMatching "package.json")
-  |> Seq.concat
+let projectName =
+  if hasBuildParam "project" then sprintf "DisPlay.Umbraco.EmbeddedContent.%s" (environVar "project")
+  else "DisPlay.Umbraco.EmbeddedContent"
+
+let uiDir = directoryInfo (sprintf "./src/%s.Web.UI" projectName)
+let nuspecFile = sprintf "./build/nuspec/%s.nuspec" projectName
 
 let version = environVarOrFail "release"
 let informationalVersion =
@@ -17,7 +18,7 @@ let informationalVersion =
 
 let nugetPath = FullName "./.nuget/nuget.exe"
 let artifactsDir = FullName "./artifacts/"
-let buildDir = artifactsDir @@ "bin"
+let buildDir = artifactsDir @@ projectName @@ "bin"
 let appPluginsDir = artifactsDir @@ "App_Plugins" @@ (fileNameWithoutExt solutionFile)
 
 let Exec command args workingDir =
@@ -45,53 +46,53 @@ Target "RestorePackages" (fun _ ->
 )
 
 Target "RestoreUiPackages" (fun _ ->
-  packageFiles
-  |> Seq.iter(fun f -> Exec yarnOrNpm "install" f.DirectoryName)
+  if uiDir.Exists then
+    Exec yarnOrNpm "install" uiDir.FullName
 )
 
 Target "AssemblyInfo" (fun _ ->
-  nuspecFiles
-  |> Seq.iter (fun path ->
   ReplaceAssemblyInfoVersions (fun f ->
-    { f with
-        AssemblyVersion = version
-        AssemblyInformationalVersion = informationalVersion
-        OutputFileName = "./src" @@ (fileNameWithoutExt path.Name) @@ "Properties" @@ "AssemblyInfo.cs" })
-  )
+  { f with
+      AssemblyVersion = version
+      AssemblyInformationalVersion = informationalVersion
+      OutputFileName = "./src" @@ projectName @@ "Properties" @@ "AssemblyInfo.cs" })
 )
 
 Target "Build" (fun _ ->
   !! solutionFile
-  |> MSBuildRelease buildDir "Build"
+  |> MSBuildRelease buildDir projectName
   |> ignore
 )
 
 Target "BuildUI" (fun _ ->
-  packageFiles
-  |> Seq.iter(fun f -> Exec yarnOrNpm (sprintf "run build -- --output-path %s" appPluginsDir) f.DirectoryName)
+  if uiDir.Exists then
+    Exec yarnOrNpm (sprintf "run build -- --output-path %s" appPluginsDir) uiDir.FullName
 )
 
 Target "Package" (fun _ ->
-  nuspecFiles
-  |> Seq.iter (fun path ->
-    path.FullName
-      |> NuGetPackDirectly (fun p ->
-          { p with
-              ToolPath = nugetPath
-              WorkingDir = currentDirectory
-              OutputPath = artifactsDir
-              Version = informationalVersion }))
+  nuspecFile
+  |> NuGetPackDirectly (fun p ->
+      { p with
+          ToolPath = nugetPath
+          WorkingDir = currentDirectory
+          OutputPath = artifactsDir
+          Version = informationalVersion })
 )
 
 Target "Default" DoNothing
 
 // Dependencies
-"Clean"
-  ==> "RestorePackages" <=> "RestoreUiPackages" <=> "AssemblyInfo"
-  ==> "Build" <=> "BuildUI"
+"Build" <=> "BuildUI"
   ==> "Default"
 
-"Build" <=> "BuildUi"
+"RestoreUiPackages"
+  ==> "BuildUI"
+
+"RestorePackages"
+  ==> "AssemblyInfo"
+  ==> "Build"
+
+"Build" <=> "BuildUI"
   ==> "Package"
 
 // start build

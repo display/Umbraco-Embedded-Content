@@ -12,7 +12,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\artifacts\bin\**" target="lib\net452"/>
+    <file src="..\..\artifacts\DisPlay.Umbraco.EmbeddedContent\bin\DisPlay.Umbraco.EmbeddedContent.dll" target="lib\net452"/>
     <file src="..\..\artifacts\App_Plugins\**" target="content\App_Plugins"/>
     <file src="tools\install.ps1" target="tools\install.ps1"/>
   </files>
