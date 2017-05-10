@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent", "src\DisPlay.Umbraco.EmbeddedContent\DisPlay.Umbraco.EmbeddedContent.csproj", "{1545C061-A049-41BF-B201-3A470FB96BCE}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent.uSync", "src\DisPlay.Umbraco.EmbeddedContent.uSync\DisPlay.Umbraco.EmbeddedContent.uSync.csproj", "{01DF07D9-5D68-4A76-9C40-E0B05C04B8B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent.Courier", "src\DisPlay.Umbraco.EmbeddedContent.Courier\DisPlay.Umbraco.EmbeddedContent.Courier.csproj", "{B05C0CC1-DDC5-441A-90AD-BED8472BA3CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisPlay.Umbraco.EmbeddedContent.Nexu", "src\DisPlay.Umbraco.EmbeddedContent.Nexu\DisPlay.Umbraco.EmbeddedContent.Nexu.csproj", "{1BC2B00A-5904-4098-9214-A160B7494C3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{B05C0CC1-DDC5-441A-90AD-BED8472BA3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B05C0CC1-DDC5-441A-90AD-BED8472BA3CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B05C0CC1-DDC5-441A-90AD-BED8472BA3CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BC2B00A-5904-4098-9214-A160B7494C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BC2B00A-5904-4098-9214-A160B7494C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BC2B00A-5904-4098-9214-A160B7494C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BC2B00A-5904-4098-9214-A160B7494C3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
