@@ -1,6 +1,6 @@
 {
   "name": "DisPlay.Umbraco.EmbeddedContent",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "umbracoPackage": {
     "umbracoVersion": "7.4.0",
     "name": "Embedded Content for Umbraco",

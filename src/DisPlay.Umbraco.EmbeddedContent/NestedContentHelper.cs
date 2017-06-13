@@ -34,7 +34,7 @@ namespace DisPlay.Umbraco.EmbeddedContent
                     ContentTypeAlias = ncContentTypeAlias.Value<string>(),
                     Key = Guid.NewGuid(),
                     Properties = token.ToDictionary(_ => _.Key, _ => (object) _.Value),
-                    Published = !token["ncDisabled"]?.Value<bool>() ?? true,
+                    Published = token["ncDisabled"]?.Value<string>() != "1",
                 };
 
                 result.Add(embeddedContentItem);
