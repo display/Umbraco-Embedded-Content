@@ -44,7 +44,7 @@
             ApplicationContext.Current.Services.UserService,
             PublishedContentModelFactoryResolver.HasCurrent
                 ? PublishedContentModelFactoryResolver.Current.Factory
-                : PassthroughPublishedContentModelFactory.Instance,
+                : null,
             ApplicationContext.Current.ProfilingLogger,
             () => UmbracoContext.Current)
         {
@@ -94,9 +94,9 @@
 
                     return Enumerable.Empty<IPublishedContent>();
                 }
-
-                var result = new List<IPublishedContent>();
+;
                 var items = ((JArray)source).ToObject<EmbeddedContentItem[]>();
+                var result = new List<IPublishedContent>(items.Length);
 
                 for (var i = 0; i < items.Length; i++)
                 {
@@ -127,9 +127,13 @@
                         continue;
                     }
 
-                    IPublishedContent content = _publishedContentModelFactory.CreateModel(
-                        new PublishedEmbeddedContent(_userService, item, contentType, i, preview)
-                    );
+                    IPublishedContent content =
+                        new PublishedEmbeddedContent(_userService, item, contentType, i, preview);
+
+                    if (_publishedContentModelFactory != null)
+                    {
+                        content = _publishedContentModelFactory.CreateModel(content);
+                    }
 
                     result.Add(content);
                 }
