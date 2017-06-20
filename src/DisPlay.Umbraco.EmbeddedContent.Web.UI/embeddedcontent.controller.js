@@ -110,12 +110,19 @@ class EmbdeddedContentController {
 
     $scope.$watch('model.value', () => {
       this.$scope.model.value.forEach(this.init.bind(this));
+
+      delete this.active;
     });
 
     $scope.$on('formSubmitting', this.validate.bind(this));
 
     $scope.$on('formSubmitted', () => {
       this.fileManager.setFiles(this.$scope.model.alias, []);
+
+      const active = this.$scope.model.value.find(x => x.active);
+      if (active) {
+        this.active = active.key;
+      }
     });
 
     $scope.$on('valStatusChanged', (evt, args) => {
@@ -228,6 +235,10 @@ class EmbdeddedContentController {
           return nameExpression(_.extend({}, properties, { '$index' : index + 1 }));
         }
       });
+    }
+
+    if(this.active === item.key) {
+      this.activate(item);
     }
 
     return item;
