@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.0 2017-06-20
+### Features
+- Ensure expanded item is still expanded after save
+- Use first property as name template if none is defined
+
+## 0.6.2 2017-06-13
+### Bugfixes
+- Fix title overflow (for real this time)
+- Fix bug when converting from Nested Content and a ncDisabled property exist
+
 ## 0.6.1 2017-01-02
 ### Bugfixes
 - Fix exception when property editor is null 
@@ -14,7 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Features
 - Merge property groups whith same name to a single section
 - Clean config UI
-- Add filtering support creating content
+- Add filtering support when creating content
 - Add item group support
 
 ### Bugfixes
