@@ -136,6 +136,21 @@
                         item["name"] = UmbracoDictionaryTranslate(contentType.Name);
                         item["description"] = UmbracoDictionaryTranslate(contentType.Description);
                         item["icon"] = contentType.Icon;
+
+                        if (string.IsNullOrEmpty(item.Value<string>("nameTemplate")))
+                        {
+                            PropertyType propertyType = contentType.CompositionPropertyGroups
+                                .OrderBy(x => x.SortOrder)
+                                .FirstOrDefault()
+                                ?.PropertyTypes
+                                .OrderBy(x => x.SortOrder)
+                                .FirstOrDefault();
+
+                            if (propertyType != null)
+                            {
+                                item["nameTemplate"] = $"{{{{{propertyType.Alias}}}}}";
+                            }
+                        }
                     }
 
                     configPreValue.Value = config.ToString();
