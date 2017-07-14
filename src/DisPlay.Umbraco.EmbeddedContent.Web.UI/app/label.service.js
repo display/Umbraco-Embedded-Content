@@ -3,9 +3,9 @@ export const resolvers = {
     const ids = property.value.split(',')
 
     return ids.map(id => cacheService.getEntityById(+id, 'Media'))
-    .filter(entity => entity)
-    .map(entity => entity.name)
-    .join(', ')
+      .filter(entity => entity)
+      .map(entity => entity.name)
+      .join(', ')
   },
   'Umbraco.MultiNodeTreePicker': (property, cacheService) => {
     const ids = property.value.split(',')
@@ -21,9 +21,9 @@ export const resolvers = {
     }
 
     return ids.map(id => cacheService.getEntityById(+id, type))
-    .filter(entity => entity)
-    .map(entity => entity.name)
-    .join(', ')
+      .filter(entity => entity)
+      .map(entity => entity.name)
+      .join(', ')
   },
   'Umbraco.TinyMCEv3': (property, cacheService) => String(property.value).replace(/<[^>]+>/gm, ''),
   'RJP.MultiUrlPicker': (property, cacheService) => property.value.map(link => link.name).join(', ')

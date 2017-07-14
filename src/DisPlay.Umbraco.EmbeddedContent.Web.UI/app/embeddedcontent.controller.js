@@ -178,23 +178,23 @@ export default class EmbdeddedContentController {
 
   add (documentType) {
     this.contentResource.getScaffold(this.editorState.current.id || -1, documentType.documentTypeAlias)
-    .then(data => {
-      const item = this.init({
-        key: data.key,
-        allowEditingName: documentType.allowEditingName === '1',
-        contentTypeAlias: data.contentTypeAlias,
-        contentTypeName: data.contentTypeName,
-        icon: documentType.icon,
-        published: true,
-        name: documentType.allowEditingName === '1' ? '' : documentType.name,
-        parentId: this.editorState.current.id,
-        // filter out Generic Propeties tab
-        tabs: data.tabs.filter(tab => tab.alias !== 'Generic properties')
+      .then(data => {
+        const item = this.init({
+          key: data.key,
+          allowEditingName: documentType.allowEditingName === '1',
+          contentTypeAlias: data.contentTypeAlias,
+          contentTypeName: data.contentTypeName,
+          icon: documentType.icon,
+          published: true,
+          name: documentType.allowEditingName === '1' ? '' : documentType.name,
+          parentId: this.editorState.current.id,
+          // filter out Generic Propeties tab
+          tabs: data.tabs.filter(tab => tab.alias !== 'Generic properties')
+        })
+        this.$scope.model.value.push(item)
+        this.currentForm.$setDirty()
+        this.activate(item)
       })
-      this.$scope.model.value.push(item)
-      this.currentForm.$setDirty()
-      this.activate(item)
-    })
   }
 
   init (item) {
@@ -220,16 +220,16 @@ export default class EmbdeddedContentController {
           }
 
           const properties = item.tabs
-          .reduce((cur, tab) => cur.concat(tab.properties), [])
-          .reduce((obj, property) => {
-            let alias = property.alias
-            if (alias.indexOf(`item-${item.key}-`) === 0) {
-              alias = alias.substring(`item-${item.key}-`.length)
-            }
+            .reduce((cur, tab) => cur.concat(tab.properties), [])
+            .reduce((obj, property) => {
+              let alias = property.alias
+              if (alias.indexOf(`item-${item.key}-`) === 0) {
+                alias = alias.substring(`item-${item.key}-`.length)
+              }
 
-            obj[alias] = this.embeddedContentLabelService.getPropertyLabel(property)
-            return obj
-          }, {})
+              obj[alias] = this.embeddedContentLabelService.getPropertyLabel(property)
+              return obj
+            }, {})
 
           return nameExpression(Object.assign({}, properties, { '$index': index + 1 }))
         }
@@ -333,12 +333,12 @@ export default class EmbdeddedContentController {
 
   get allowedDocumentTypes () {
     return this.config.documentTypes
-    .filter(docType => {
-      if (!docType.maxInstances || docType.maxInstances < 1) {
-        return true
-      }
-      return this.$scope.model.value.filter(item => item.contentTypeAlias === docType.documentTypeAlias).length < docType.maxInstances
-    })
+      .filter(docType => {
+        if (!docType.maxInstances || docType.maxInstances < 1) {
+          return true
+        }
+        return this.$scope.model.value.filter(item => item.contentTypeAlias === docType.documentTypeAlias).length < docType.maxInstances
+      })
   }
 
   static $inject = [

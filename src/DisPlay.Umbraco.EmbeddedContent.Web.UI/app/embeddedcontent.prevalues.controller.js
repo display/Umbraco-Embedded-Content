@@ -21,12 +21,12 @@ export default class EmbeddedContentPrevaluesController {
     }
 
     contentTypeResource.getAll()
-    .then(data => {
-      this.documentTypes = data
-      this.$scope.model.value.documentTypes = this.$scope.model.value.documentTypes.map(this.init.bind(this)).filter(item => item)
+      .then(data => {
+        this.documentTypes = data
+        this.$scope.model.value.documentTypes = this.$scope.model.value.documentTypes.map(this.init.bind(this)).filter(item => item)
 
-      this.ready = true
-    })
+        this.ready = true
+      })
   }
 
   hasSettings () {
@@ -150,15 +150,15 @@ export default class EmbeddedContentPrevaluesController {
 
   openContentTypeOverlay (event) {
     const availableItems = this.documentTypes
-    .filter(docType => !this.$scope.model.value.documentTypes.find(item => item.documentTypeAlias === docType.alias))
-    .map(docType => {
-      return {
-        alias: docType.alias,
-        name: docType.name,
-        description: docType.description,
-        icon: docType.icon
-      }
-    })
+      .filter(docType => !this.$scope.model.value.documentTypes.find(item => item.documentTypeAlias === docType.alias))
+      .map(docType => {
+        return {
+          alias: docType.alias,
+          name: docType.name,
+          description: docType.description,
+          icon: docType.icon
+        }
+      })
 
     this.contentTypeOverlay = {
       view: 'itempicker',
