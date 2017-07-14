@@ -278,7 +278,7 @@ class EmbdeddedContentController {
     item.deletePrompt = !item.deletePrompt;
   }
 
-  hidePrompt(item, $event) {
+  hidePrompt(item, event) {
     event.stopPropagation();
     item.deletePrompt = false;
   }
