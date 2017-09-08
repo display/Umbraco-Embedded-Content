@@ -28,3 +28,5 @@ export default function EmbeddedContentPropertyDirective (fileManager) {
     }
   }
 }
+
+EmbeddedContentPropertyDirective.$inject = ['fileManager']

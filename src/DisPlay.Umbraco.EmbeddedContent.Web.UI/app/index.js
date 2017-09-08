@@ -16,7 +16,7 @@ angular.module('umbraco')
   .value('DisPlay.Umbraco.EmbeddedContent.LabelResolvers', LabelResolvers)
   .factory('DisPlay.Umbraco.EmbeddedContent.CacheService', CacheService.factory)
   .factory('DisPlay.Umbraco.EmbeddedContent.LabelService', LabelService.factory)
-  .run(($injector) => {
+  .run(['$injector', ($injector) => {
     if (!$injector.has('formResource')) {
       return
     }
@@ -27,4 +27,4 @@ angular.module('umbraco')
       const fromCache = cacheService.getOrAdd('UmbracoForms.FormPicker', property.value, () => formResource.getByGuid(property.value))
       return fromCache ? fromCache.data.name : null
     }
-  })
+  }])

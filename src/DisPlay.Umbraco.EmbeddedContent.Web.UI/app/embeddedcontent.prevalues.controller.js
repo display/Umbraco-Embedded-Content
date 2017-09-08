@@ -4,8 +4,6 @@ import './embeddedcontent.prevalues.html'
 
 export default class EmbeddedContentPrevaluesController {
   constructor ($scope, $timeout, $interpolate, angularHelper, localizationService, contentTypeResource) {
-    'ngInject'
-
     this.$scope = $scope
     this.$interpolate = $interpolate
     this.localizationService = localizationService
@@ -174,4 +172,6 @@ export default class EmbeddedContentPrevaluesController {
       }
     }
   }
+
+  static $inject = ['$scope', '$timeout', '$interpolate', 'angularHelper', 'localizationService', 'contentTypeResource']
 }
