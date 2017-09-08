@@ -8,7 +8,7 @@
     <version>$version$</version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-        <dependency id="UmbracoCms.Core" version="[7.4.0, 8.0.0)"/>
+        <dependency id="UmbracoCms.Core" version="[7.6.0, 8.0.0)"/>
     </dependencies>
   </metadata>
   <files>

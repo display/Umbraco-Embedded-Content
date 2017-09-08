@@ -1,5 +1,5 @@
 :root {
-  --primaryColor: #03bfb3;
+  --primaryColor: #00aea2;
   --lightColor: #f3f3f5;
   --borderColor: #d8d7d9;
 }
@@ -183,6 +183,11 @@ input.embedded-content__item-name--empty {
 .embedded-content__placeholder:hover {
   cursor: pointer;
   border-color: var(--primaryColor);
+}
+
+.embedded-content__placeholder--small:hover {
+  border-color: var(--borderColor);
+  opacity: 0.77;
 }
 
 .embedded-content__add {
