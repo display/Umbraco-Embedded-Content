@@ -112,18 +112,22 @@ export default class EmbdeddedContentController {
     $scope.$watch('model.value', () => {
       this.$scope.model.value.forEach(this.init.bind(this))
 
+      console.log('model.value')
+
       delete this.active
     })
 
-    $scope.$on('formSubmitting', this.validate.bind(this))
-
-    $scope.$on('formSubmitted', () => {
-      this.fileManager.setFiles(this.$scope.model.alias, [])
+    $scope.$on('formSubmitting', () => {
+      this.validate.bind(this)
 
       const active = this.$scope.model.value.find(x => x.active)
       if (active) {
         this.active = active.key
       }
+    })
+
+    $scope.$on('formSubmitted', () => {
+      this.fileManager.setFiles(this.$scope.model.alias, [])
     })
 
     $scope.$on('valStatusChanged', (evt, args) => {

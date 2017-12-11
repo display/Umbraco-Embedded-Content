@@ -16,10 +16,10 @@ export default function EmbeddedContentPropertyDirective (fileManager) {
       const id = scope.editProperty.id
 
       // return the original alias and id when the property is serialized
-      scope.editProperty.toJSON = function () { return Object.assign({}, this, { alias: alias, id: id }) }
+      scope.property.toJSON = function () { return Object.assign({}, this, { alias: alias, id: id }) }
 
       // make sure the property alias and id is unique
-      scope.editProperty.alias = scope.editProperty.id = `item-${scope.embeddedContentItem.key}-${alias}`
+      scope.property.alias = scope.property.id = `item-${scope.embeddedContentItem.key}-${alias}`
 
       scope.ready = true
       scope.$on('filesSelected', (e, args) => {
