@@ -169,7 +169,9 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                     List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     List<EmbeddedContentItem> items = new List<EmbeddedContentItem>();
 
-                    foreach (EmbeddedContentItem item in JsonConvert.DeserializeObject<EmbeddedContentItem[]>(property.Value.ToString()))
+                    JArray source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
+
+                    foreach (EmbeddedContentItem item in source.ToObject<EmbeddedContentItem[]>())
                     {
                         if (!item.Published)
                         {
