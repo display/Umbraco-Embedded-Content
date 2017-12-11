@@ -1,4 +1,4 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
+namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 {
     using System;
     using System.Collections.Generic;
@@ -357,6 +357,8 @@
                                 {
                                     additionalData["files"] = files.Where(x => property.SelectedFiles.Contains(x.FileName));
                                 }
+                                additionalData["cuid"] = editorValue.AdditionalData["cuid"];
+                                additionalData["puid"] = editorValue.AdditionalData["puid"];
                             }
 
                             var propData = new ContentPropertyData(property.Value, preValues, additionalData);
