@@ -1,4 +1,4 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
+namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
 {
     using System;
     using System.Collections.Generic;
@@ -97,6 +97,7 @@
 ;
                 var items = ((JArray)source).ToObject<EmbeddedContentItem[]>();
                 var result = new List<IPublishedContent>(items.Length);
+                PublishedContentSet<IPublishedContent> contentSet = result.ToContentSet();
 
                 for (var i = 0; i < items.Length; i++)
                 {
@@ -128,7 +129,7 @@
                     }
 
                     IPublishedContent content =
-                        new PublishedEmbeddedContent(_userService, item, contentType, i, preview);
+                        new PublishedEmbeddedContent(_userService, item, contentType, contentSet, i, preview);
 
                     if (_publishedContentModelFactory != null)
                     {
@@ -143,7 +144,7 @@
                     return result.FirstOrDefault();
                 }
 
-                return result;
+                return contentSet;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
+namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
     using System;
     using System.Collections.Generic;
@@ -20,6 +20,7 @@
         public PublishedEmbeddedContent(IUserService userService,
             EmbeddedContentItem item,
             PublishedContentType contentType,
+            PublishedContentSet<IPublishedContent> contentSet,
             int sortOrder,
             bool isPreview)
         {
@@ -32,6 +33,7 @@
             IsDraft = isPreview;
             SortOrder = sortOrder;
             ContentType = contentType;
+            ContentSet = contentSet;
 
             _writerName = new Lazy<string>(() => userService.GetByProviderKey(WriterId).Name);
             _creatorName = new Lazy<string>(() => userService.GetByProviderKey(CreatorId).Name);
@@ -66,6 +68,7 @@
         public override Guid Version => Guid.Empty;
         public override int Level => 0;
         public override Guid Key { get; }
+        public override IEnumerable<IPublishedContent> ContentSet { get; }
 
         public override IPublishedProperty GetProperty(string alias)
         {
