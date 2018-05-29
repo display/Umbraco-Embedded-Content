@@ -118,6 +118,7 @@ export default class EmbdeddedContentController {
     })
 
     $scope.$on('formSubmitting', () => {
+      $scope.$broadcast('ecSync', { scope: $scope })
       this.validate.bind(this)
 
       const active = this.$scope.model.value.find(x => x.active)

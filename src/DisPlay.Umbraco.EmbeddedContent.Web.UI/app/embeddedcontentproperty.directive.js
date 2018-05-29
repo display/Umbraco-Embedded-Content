@@ -29,7 +29,8 @@ export default function EmbeddedContentPropertyDirective (fileManager) {
         scope.setFiles({ files: filesArray })
       })
 
-      scope.$on('formSubmitting', () => {
+      scope.$on('ecSync', () => {
+        scope.$broadcast('formSubmitting', { scope: scope })
         scope.property.value = scope.editProperty.value
       })
 
@@ -38,24 +39,6 @@ export default function EmbeddedContentPropertyDirective (fileManager) {
           scope.editProperty.value = newVal
         }
       })
-
-      // scope.$on('ecValueSync', (e, { items }) => {
-      //   if (items) {
-      //     items.forEach(item => {
-      //       if (item.key === scope.embeddedContentItem.key) {
-      //         [].concat(...item.tabs.map(t => t.properties))
-      //           .forEach(p => {
-      //             const propertyAlias = `item-${item.key}-${p.alias}`
-      //             if (propertyAlias === scope.property.alias) {
-      //               scope.property.value = p.value
-      //             }
-      //           })
-      //       }
-      //     })
-      //   }
-      //   console.log(scope.editProperty.value)
-      //   console.log(scope.property.value)
-      // })
     }
   }
 }
