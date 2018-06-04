@@ -2,11 +2,14 @@ import settingsOverlay from './overlays/settings.html'
 import groupsPropertyEditor from './groups.html'
 import './embeddedcontent.prevalues.html'
 
+// TODO: Needs optimisation
+
 export default class EmbeddedContentPrevaluesController {
   constructor ($scope, $timeout, $interpolate, angularHelper, localizationService, contentTypeResource) {
     this.$scope = $scope
     this.$interpolate = $interpolate
     this.localizationService = localizationService
+    this.contentTypeResource = contentTypeResource
 
     this.currentForm = angularHelper.getCurrentForm($scope)
 
@@ -22,7 +25,6 @@ export default class EmbeddedContentPrevaluesController {
       .then(data => {
         this.documentTypes = data
         this.$scope.model.value.documentTypes = this.$scope.model.value.documentTypes.map(this.init.bind(this)).filter(item => item)
-
         this.ready = true
       })
   }
@@ -38,20 +40,37 @@ export default class EmbeddedContentPrevaluesController {
     if (!documentType) {
       return
     }
+
     return {
+      documentTypeId: documentType.id,
       documentTypeAlias: documentType.alias,
       name: documentType.name,
       icon: documentType.icon,
       nameTemplate: item.nameTemplate,
       allowEditingName: item.allowEditingName,
       maxInstances: item.maxInstances,
-      group: item.group
+      group: item.group,
+      settingsTab: item.settingsTab
     }
   }
 
   activate (item) {
-    item.active = true
-    item.loaded = true
+    if (item.tabs) {
+      item.active = true
+      item.loaded = true
+      return
+    }
+    this.contentTypeResource.getById(item.documentTypeId)
+      .then((response) => {
+        item.tabs = response.groups.map((g) => {
+          return {
+            id: g.id,
+            name: g.name
+          }
+        })
+        item.active = true
+        item.loaded = true
+      })
   }
 
   deactivate (item) { item.active = false }

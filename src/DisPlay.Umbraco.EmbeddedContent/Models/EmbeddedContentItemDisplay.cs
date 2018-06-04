@@ -1,4 +1,4 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
+namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
     using System;
     using System.Collections.Generic;
@@ -47,6 +47,9 @@
 
         [DataMember(Name = "published")]
         public bool Published { get; set; }
+
+        [DataMember(Name = "settingsTab")]
+        public Tab<EmbeddedContentPropertyDisplay> SettingsTab { get; set; }
 
         [DataMember(Name = "tabs")]
         public IEnumerable<Tab<EmbeddedContentPropertyDisplay>> Tabs { get; set; }

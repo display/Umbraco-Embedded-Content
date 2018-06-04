@@ -157,6 +157,10 @@ input.embedded-content__item-name--empty {
   color: rgba(0, 0, 0, 0.23);
 }
 
+.embedded-content.item-has-settings .embedded-content__tools-tool {
+  min-width: 16px;
+}
+
 .embedded-content__tools-tool:hover {
   color: var(--primaryColor);
 }

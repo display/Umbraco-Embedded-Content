@@ -1,4 +1,4 @@
-<div class="embedded-content" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbdeddedContentController as ctrl" ng-show="ctrl.contentReady">
+<div class="embedded-content" ng-controller="DisPlay.Umbraco.EmbeddedContent.EmbdeddedContentController as ctrl" ng-show="ctrl.contentReady" ng-class="{'item-has-settings': ctrl.itemHasSettings}">
 
   <div class="embedded-content__title-bar">
     <div class="embedded-content__title-bar-title">{{ctrl.label}}</div>
@@ -50,6 +50,9 @@
               on-cancel="ctrl.hidePrompt(item)">
             </umb-confirm-action>
           </div>
+          <div class="embedded-content__tools-tool">
+            <i class="icon icon-settings" title="@embeddedContent_settings" localize="title" ng-if="item.settingsTab" ng-click="ctrl.editSettings(item, $event)"></i>
+          </div>
         </div>
       </div>
       <div ng-show="item.active || ctrl.config.enableCollapsing === '0'" ng-if="item.loaded || ctrl.config.enableCollapsing === '0'">
@@ -98,6 +101,13 @@
     model="ctrl.contentTypeOverlay"
     view="ctrl.contentTypeOverlay.view"
     position="{{ctrl.config.groups.length ? 'right' : 'target'}}">
+  </umb-overlay>
+
+  <umb-overlay
+    ng-if="ctrl.editSettingsOverlay.show"
+    model="ctrl.editSettingsOverlay"
+    view="ctrl.editSettingsOverlay.view"
+    position="right">
   </umb-overlay>
 </div>
 

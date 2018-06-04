@@ -1,5 +1,7 @@
 import $ from 'jquery'
+import angular from 'angular'
 
+import settingsOverlay from './overlays/settings.html'
 import contentTypePickerOverlay from './overlays/contenttypepicker.html'
 import './embeddedcontent.html'
 
@@ -112,6 +114,7 @@ export default class EmbdeddedContentController {
     $scope.$watch('model.value', () => {
       this.$scope.model.value.forEach(this.init.bind(this))
 
+      this.itemHasSettings = !this.$scope.model.value.find(item => item.hasSettings)
 
       delete this.active
     })
@@ -300,6 +303,30 @@ export default class EmbdeddedContentController {
       return false
     }
     return this.allowedDocumentTypes.length > 0
+  }
+
+  editSettings (item, event) {
+    event.stopPropagation()
+
+    this.editSettingsOverlay = {
+      view: settingsOverlay, // '/App_Plugins/EmbeddedContent/embeddedcontent.settings.overlay.html',
+      title: this.localizationService.localize('embeddedContent_settings'),
+      settings: angular.copy(item.settingsTab.properties),
+      event: event,
+      show: true,
+      submit: (model) => {
+        item.settingsTab.properties = model.settings
+
+        this.currentForm.$setDirty()
+
+        this.editSettingsOverlay.show = false
+        this.editSettingsOverlay = null
+      },
+      close: () => {
+        this.editSettingsOverlay.show = false
+        this.editSettingsOverlay = null
+      }
+    }
   }
 
   openContentTypeOverlay (event) {

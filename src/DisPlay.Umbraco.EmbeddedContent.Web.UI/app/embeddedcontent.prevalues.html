@@ -74,10 +74,25 @@
                 <div class="umb-el-wrap">
                   <label class="control-label" for="group-{{$index}}">
                     Group
-                    <small><small>
+                    <small></small>
                   </label>
                   <div class="controls">
                     <select id="grpup-{{$index}}" ng-options="group as group for group in model.value.groups" ng-model="item.group">
+                      <option value=""></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="umb-property">
+              <div class="control-group umb-control-group">
+                <div class="umb-el-wrap">
+                  <label class="control-label" for="settingsTab-{{$index}}">
+                    Settings tab
+                    <small><small>
+                  </label>
+                  <div class="controls">
+                    <select id="settingsTab-{{$index}}" ng-options="tab.id as tab.name for tab in item.tabs" ng-model="item.settingsTab">
                       <option value=""></option>
                     </select>
                   </div>

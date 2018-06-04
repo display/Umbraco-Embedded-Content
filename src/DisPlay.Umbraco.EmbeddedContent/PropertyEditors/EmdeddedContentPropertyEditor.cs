@@ -64,7 +64,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
         protected override PreValueEditor CreatePreValueEditor()
         {
-           return new EmbeddedContentPreValueEditor();
+            return new EmbeddedContentPreValueEditor();
         }
 
         protected override PropertyValueEditor CreateValueEditor()
@@ -233,44 +233,46 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                     var items = source.ToObject<EmbeddedContentItem[]>();
 
                     return (from indexedItem in items.Select((item, index) => new { item, index })
-                           let item = indexedItem.item
-                           let index = indexedItem.index
-                           let configDocType = config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
-                           where configDocType != null
-                           let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias)
-                           where contentType != null
-                           select new EmbeddedContentItemDisplay
-                           {
-                               Key = item.Key,
-                               AllowEditingName = configDocType.AllowEditingName == "1",
-                               ContentTypeAlias = item.ContentTypeAlias,
-                               ContentTypeName = UmbracoDictionaryTranslate(contentType.Name),
-                               Description = UmbracoDictionaryTranslate(contentType.Description),
-                               CreateDate = item.CreateDate,
-                               UpdateDate = item.UpdateDate,
-                               CreatorId = item.CreatorId,
-                               WriterId = item.WriterId,
-                               Icon = contentType.Icon,
-                               Name = item.Name,
-                               Published = item.Published,
-                               Tabs = from pg in contentType.CompositionPropertyGroups
-                                      orderby pg.SortOrder
-                                      group pg by pg.Name into groupedByTabName
-                                      let firstTab = groupedByTabName.First()
-                                      let propertyTypes = groupedByTabName.SelectMany(x => x.PropertyTypes)
-                                      select new Tab<EmbeddedContentPropertyDisplay>
-                                      {
-                                          Id = firstTab.Id,
-                                          Label = UmbracoDictionaryTranslate(firstTab.Name),
-                                          Alias = firstTab.Key.ToString(),
-                                          Properties = from pt in propertyTypes
-                                                       orderby pt.SortOrder
-                                                       let value = GetPropertyValue(item.Properties, pt.Alias)
-                                                       let p = GetProperty(pt, value)
-                                                       where p != null
-                                                       select p
-                                      }
-                           }).ToList();
+                            let item = indexedItem.item
+                            let index = indexedItem.index
+                            let configDocType = config.DocumentTypes.FirstOrDefault(x => x.DocumentTypeAlias == item.ContentTypeAlias)
+                            where configDocType != null
+                            let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.ContentTypeAlias)
+                            let tabs = (from pg in contentType.CompositionPropertyGroups
+                                        orderby pg.SortOrder
+                                        group pg by pg.Name into groupedByTabName
+                                        let firstTab = groupedByTabName.First()
+                                        let propertyTypes = groupedByTabName.SelectMany(x => x.PropertyTypes)
+                                        select new Tab<EmbeddedContentPropertyDisplay>
+                                        {
+                                            Id = firstTab.Id,
+                                            Label = UmbracoDictionaryTranslate(firstTab.Name),
+                                            Alias = firstTab.Key.ToString(),
+                                            Properties = from pt in propertyTypes
+                                                         orderby pt.SortOrder
+                                                         let value = GetPropertyValue(item.Properties, pt.Alias)
+                                                         let p = GetProperty(pt, value)
+                                                         where p != null
+                                                         select p
+                                        }).ToList()
+                            where contentType != null
+                            select new EmbeddedContentItemDisplay
+                            {
+                                Key = item.Key,
+                                AllowEditingName = configDocType.AllowEditingName == "1",
+                                ContentTypeAlias = item.ContentTypeAlias,
+                                ContentTypeName = UmbracoDictionaryTranslate(contentType.Name),
+                                Description = UmbracoDictionaryTranslate(contentType.Description),
+                                CreateDate = item.CreateDate,
+                                UpdateDate = item.UpdateDate,
+                                CreatorId = item.CreatorId,
+                                WriterId = item.WriterId,
+                                Icon = contentType.Icon,
+                                Name = item.Name,
+                                Published = item.Published,
+                                SettingsTab = tabs.FirstOrDefault(x => x.Id == configDocType.SettingsTab),
+                                Tabs = tabs.Where(x => x.Id != configDocType.SettingsTab)
+                            }).ToList();
                 }
             }
 
@@ -338,7 +340,13 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                         foreach (var propertyType in contentType.CompositionPropertyGroups.SelectMany(x => x.PropertyTypes))
                         {
-                            var property = itemDisplay.Tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);
+                            var tabs = itemDisplay.Tabs;
+                            if (itemDisplay.SettingsTab != null)
+                            {
+                                tabs = tabs.Concat(new[] {itemDisplay.SettingsTab});
+                            }
+
+                            var property = tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);
                             if (property == null)
                             {
                                 continue;
@@ -511,7 +519,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             {
                                 foreach (ValidationResult result in propertyEditor.ValueEditor.RequiredValidator.Validate(property.Value, "", propertyPreValues, editor))
                                 {
-                                    yield return new ValidationResult(result.ErrorMessage, result.MemberNames.Select(x =>$"item-{itemDisplay.Key}-{property.Alias}-{x}"));
+                                    yield return new ValidationResult(result.ErrorMessage, result.MemberNames.Select(x => $"item-{itemDisplay.Key}-{property.Alias}-{x}"));
                                 }
                             }
 
