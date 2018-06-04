@@ -112,7 +112,6 @@ export default class EmbdeddedContentController {
     $scope.$watch('model.value', () => {
       this.$scope.model.value.forEach(this.init.bind(this))
 
-      console.log('model.value')
 
       delete this.active
     })
@@ -268,6 +267,10 @@ export default class EmbdeddedContentController {
   deactivate (item) { item.active = false }
 
   toggle (item) {
+    if (this.deletePromptChanged) {
+      delete this.deletePromptChanged
+      return
+    }
     if (item.active) {
       this.deactivate(item)
     } else {
@@ -283,8 +286,10 @@ export default class EmbdeddedContentController {
   }
 
   hidePrompt (item, event) {
-    event.stopPropagation()
     item.deletePrompt = false
+
+    // Hack: umb-confirm-action => on-cancel does not expose $event, se we set deletePropmtChanged to true so we can stop the item toggle
+    this.deletePromptChanged = true
   }
 
   canAdd () {
