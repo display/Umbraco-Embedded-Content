@@ -64,7 +64,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
         protected override PreValueEditor CreatePreValueEditor()
         {
-            return new EmbeddedContentPreValueEditor();
+            return new EmbeddedContentPreValueEditor(_contentTypeService);
         }
 
         protected override PropertyValueEditor CreateValueEditor()
@@ -82,8 +82,92 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
         internal class EmbeddedContentPreValueEditor : PreValueEditor
         {
+            private readonly IContentTypeService _contentTypeService;
+
+            public EmbeddedContentPreValueEditor(IContentTypeService contentTypeService)
+            {
+                _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            }
+
             [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/EmbeddedContent/embeddedcontent.prevalues.html", HideLabel = true)]
             public EmbeddedContentConfig EmbeddedContentConfig { get; set; }
+
+            public override IDictionary<string, object> ConvertDbToEditor(IDictionary<string, object> defaultPreVals, PreValueCollection persistedPreVals)
+            {
+                if (persistedPreVals.PreValuesAsDictionary.TryGetValue("embeddedContentConfig",
+                        out PreValue preValue) && false == string.IsNullOrEmpty(preValue.Value))
+                {
+                    JObject jObject = JObject.Parse(preValue.Value);
+
+                    // HACK: If we are in the content editor don't convert
+                    if (jObject["configureForDisplay"] == null)
+                    {
+                        var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                        EmbeddedContentConfig config = jObject.ToObject<EmbeddedContentConfig>();
+                        var configDisplay = new EmbeddedContentConfigDisplay
+                        {
+                            EnableCollapsing = config.EnableCollapsing,
+                            EnableFiltering = config.EnableFiltering,
+                            DocumentTypes = from item in config.DocumentTypes
+                                            let contentType =
+                                                contentTypes.FirstOrDefault(x => x.Alias == item.DocumentTypeAlias)
+                                            where contentType != null
+                                            select new EmbeddedContentConfigDocumentTypeDisplay
+                                            {
+                                                AllowEditingName = item.AllowEditingName,
+                                                DocumentTypeAlias = item.DocumentTypeAlias,
+                                                Group = item.Group,
+                                                MaxInstances = item.MaxInstances,
+                                                NameTemplate = item.NameTemplate,
+                                                SettingsTab =
+                                                    item.SettingsTabKey.HasValue
+                                                        ? contentType.CompositionPropertyGroups
+                                                            .FirstOrDefault(x => x.Key == item.SettingsTabKey)?.Id
+                                                        : null
+                                            },
+                            Groups = config.Groups,
+                            MaxItems = config.MaxItems,
+                            MinItems = config.MinItems
+                        };
+
+                        preValue.Value = JsonConvert.SerializeObject(configDisplay);
+                    }
+                }
+
+                return base.ConvertDbToEditor(defaultPreVals, persistedPreVals);
+            }
+
+            public override IDictionary<string, PreValue> ConvertEditorToDb(IDictionary<string, object> editorValue, PreValueCollection currentValue)
+            {
+                if (editorValue.TryGetValue("embeddedContentConfig", out object value))
+                {
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    EmbeddedContentConfigDisplay configDisplay = JsonConvert.DeserializeObject<EmbeddedContentConfigDisplay>(value.ToString());
+                    var config = new EmbeddedContentConfig
+                    {
+                        EnableCollapsing = configDisplay.EnableCollapsing,
+                        EnableFiltering = configDisplay.EnableFiltering,
+                        DocumentTypes = from item in configDisplay.DocumentTypes
+                                        let contentType = contentTypes.FirstOrDefault(x => x.Alias == item.DocumentTypeAlias)
+                                        where contentType != null
+                                        select new EmbeddedContentConfigDocumentType
+                                        {
+                                            AllowEditingName = item.AllowEditingName,
+                                            DocumentTypeAlias = item.DocumentTypeAlias,
+                                            Group = item.Group,
+                                            MaxInstances = item.MaxInstances,
+                                            NameTemplate = item.NameTemplate,
+                                            SettingsTabKey = item.SettingsTab.HasValue ? contentType.CompositionPropertyGroups.FirstOrDefault(x => x.Id == item.SettingsTab)?.Key : null
+                                        },
+                        Groups = configDisplay.Groups,
+                        MaxItems = configDisplay.MaxItems,
+                        MinItems = configDisplay.MinItems
+                    };
+
+                    editorValue["embeddedContentConfig"] = JsonConvert.SerializeObject(config);
+                }
+                return base.ConvertEditorToDb(editorValue, currentValue);
+            }
         }
 
 
@@ -123,6 +207,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                     var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                     var config = JObject.Parse(configPreValue.Value);
+                    config["configureForDisplay"] = true;
 
                     foreach (var item in config["documentTypes"].ToList())
                     {
@@ -243,9 +328,10 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                                         group pg by pg.Name into groupedByTabName
                                         let firstTab = groupedByTabName.First()
                                         let propertyTypes = groupedByTabName.SelectMany(x => x.PropertyTypes)
-                                        select new Tab<EmbeddedContentPropertyDisplay>
+                                        select new TabWithKey<EmbeddedContentPropertyDisplay>()
                                         {
                                             Id = firstTab.Id,
+                                            Key = firstTab.Key,
                                             Label = UmbracoDictionaryTranslate(firstTab.Name),
                                             Alias = firstTab.Key.ToString(),
                                             Properties = from pt in propertyTypes
@@ -270,8 +356,8 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                                 Icon = contentType.Icon,
                                 Name = item.Name,
                                 Published = item.Published,
-                                SettingsTab = tabs.FirstOrDefault(x => x.Id == configDocType.SettingsTab),
-                                Tabs = tabs.Where(x => x.Id != configDocType.SettingsTab)
+                                SettingsTab = configDocType.SettingsTabKey.HasValue ? tabs.FirstOrDefault(x => x.Key == configDocType.SettingsTabKey) : null,
+                                Tabs = configDocType.SettingsTabKey.HasValue ? tabs.Where(x => x.Key != configDocType.SettingsTabKey) : tabs
                             }).ToList();
                 }
             }
@@ -343,7 +429,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             var tabs = itemDisplay.Tabs;
                             if (itemDisplay.SettingsTab != null)
                             {
-                                tabs = tabs.Concat(new[] {itemDisplay.SettingsTab});
+                                tabs = tabs.Concat(new[] { itemDisplay.SettingsTab });
                             }
 
                             var property = tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);

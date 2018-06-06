@@ -1,10 +1,9 @@
 namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
-    using System;
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class EmbeddedContentConfigDocumentType
+    internal class EmbeddedContentConfigDocumentTypeDisplay
     {
         [DataMember(Name = "allowEditingName")]
         public string AllowEditingName { get; set; }
@@ -21,7 +20,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.Models
         [DataMember(Name = "nameTemplate")]
         public string NameTemplate { get; set; }
 
-        [DataMember(Name = "settingsTabKey")]
-        public Guid? SettingsTabKey { get; set; }
+        [DataMember(Name = "settingsTab")]
+        public int? SettingsTab { get; set; }
     }
 }

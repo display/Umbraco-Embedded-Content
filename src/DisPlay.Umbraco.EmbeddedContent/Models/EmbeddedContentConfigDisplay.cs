@@ -1,13 +1,13 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Models
+namespace DisPlay.Umbraco.EmbeddedContent.Models
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class EmbeddedContentConfig
+    internal class EmbeddedContentConfigDisplay
     {
         [DataMember(Name = "documentTypes")]
-        public IEnumerable<EmbeddedContentConfigDocumentType> DocumentTypes { get; set; }
+        public IEnumerable<EmbeddedContentConfigDocumentTypeDisplay> DocumentTypes { get; set; }
 
         [DataMember(Name = "enableCollapsing")]
         public string EnableCollapsing { get; set; }

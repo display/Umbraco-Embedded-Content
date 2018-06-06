@@ -114,7 +114,7 @@ export default class EmbdeddedContentController {
     $scope.$watch('model.value', () => {
       this.$scope.model.value.forEach(this.init.bind(this))
 
-      this.itemHasSettings = !this.$scope.model.value.find(item => item.hasSettings)
+      this.itemHasSettings = this.$scope.model.value.find(item => item.settingsTab)
 
       delete this.active
     })
