@@ -64,7 +64,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
         protected override PreValueEditor CreatePreValueEditor()
         {
-            return new EmbeddedContentPreValueEditor(_contentTypeService);
+            return new EmbeddedContentPreValueEditor(_contentTypeService, _cultureDictionary);
         }
 
         protected override PropertyValueEditor CreateValueEditor()
@@ -83,10 +83,13 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
         internal class EmbeddedContentPreValueEditor : PreValueEditor
         {
             private readonly IContentTypeService _contentTypeService;
+            private readonly ICultureDictionary _cultureDictionary;
 
-            public EmbeddedContentPreValueEditor(IContentTypeService contentTypeService)
+            public EmbeddedContentPreValueEditor(IContentTypeService contentTypeService,
+                ICultureDictionary cultureDictionary)
             {
                 _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+                _cultureDictionary = cultureDictionary ?? throw new ArgumentNullException(nameof(cultureDictionary));
             }
 
             [PreValueField("embeddedContentConfig", "Config", "/App_Plugins/EmbeddedContent/embeddedcontent.prevalues.html", HideLabel = true)]
@@ -97,41 +100,38 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                 if (persistedPreVals.PreValuesAsDictionary.TryGetValue("embeddedContentConfig",
                         out PreValue preValue) && false == string.IsNullOrEmpty(preValue.Value))
                 {
-                    JObject jObject = JObject.Parse(preValue.Value);
-
-                    // HACK: If we are in the content editor don't convert
-                    if (jObject["configureForDisplay"] == null)
+                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    EmbeddedContentConfig config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(preValue.Value);
+                    var configDisplay = new EmbeddedContentConfigDisplay
                     {
-                        var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
-                        EmbeddedContentConfig config = jObject.ToObject<EmbeddedContentConfig>();
-                        var configDisplay = new EmbeddedContentConfigDisplay
-                        {
-                            EnableCollapsing = config.EnableCollapsing,
-                            EnableFiltering = config.EnableFiltering,
-                            DocumentTypes = from item in config.DocumentTypes
-                                            let contentType =
-                                                contentTypes.FirstOrDefault(x => x.Alias == item.DocumentTypeAlias)
-                                            where contentType != null
-                                            select new EmbeddedContentConfigDocumentTypeDisplay
-                                            {
-                                                AllowEditingName = item.AllowEditingName,
-                                                DocumentTypeAlias = item.DocumentTypeAlias,
-                                                Group = item.Group,
-                                                MaxInstances = item.MaxInstances,
-                                                NameTemplate = item.NameTemplate,
-                                                SettingsTab =
-                                                    item.SettingsTabKey.HasValue
-                                                        ? contentType.CompositionPropertyGroups
-                                                            .FirstOrDefault(x => x.Key == item.SettingsTabKey)?.Id
-                                                        : null
-                                            },
-                            Groups = config.Groups,
-                            MaxItems = config.MaxItems,
-                            MinItems = config.MinItems
-                        };
+                        EnableCollapsing = config.EnableCollapsing,
+                        EnableFiltering = config.EnableFiltering,
+                        DocumentTypes = from item in config.DocumentTypes
+                                        let contentType =
+                                            contentTypes.FirstOrDefault(x => x.Alias == item.DocumentTypeAlias)
+                                        where contentType != null
+                                        select new EmbeddedContentConfigDocumentTypeDisplay
+                                        {
+                                            AllowEditingName = item.AllowEditingName,
+                                            Description = UmbracoDictionaryTranslate(contentType.Description),
+                                            DocumentTypeAlias = item.DocumentTypeAlias,
+                                            Group = item.Group,
+                                            Icon = contentType.Icon,
+                                            MaxInstances = item.MaxInstances,
+                                            Name = UmbracoDictionaryTranslate(contentType.Name),
+                                            NameTemplate = item.NameTemplate,
+                                            SettingsTab =
+                                                item.SettingsTabKey.HasValue
+                                                    ? contentType.CompositionPropertyGroups
+                                                        .FirstOrDefault(x => x.Key == item.SettingsTabKey)?.Id
+                                                    : null
+                                        },
+                        Groups = config.Groups,
+                        MaxItems = config.MaxItems,
+                        MinItems = config.MinItems
+                    };
 
-                        preValue.Value = JsonConvert.SerializeObject(configDisplay);
-                    }
+                    preValue.Value = JsonConvert.SerializeObject(configDisplay);
                 }
 
                 return base.ConvertDbToEditor(defaultPreVals, persistedPreVals);
@@ -167,6 +167,17 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                     editorValue["embeddedContentConfig"] = JsonConvert.SerializeObject(config);
                 }
                 return base.ConvertEditorToDb(editorValue, currentValue);
+            }
+
+            private string UmbracoDictionaryTranslate(string text)
+            {
+                if (text == null || text.StartsWith("#") == false)
+                {
+                    return text;
+                }
+
+                text = text.Substring(1);
+                return _cultureDictionary[text].IfNullOrWhiteSpace(text);
             }
         }
 
@@ -217,10 +228,6 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             item.Remove();
                             continue;
                         }
-
-                        item["name"] = UmbracoDictionaryTranslate(contentType.Name);
-                        item["description"] = UmbracoDictionaryTranslate(contentType.Description);
-                        item["icon"] = contentType.Icon;
 
                         if (string.IsNullOrEmpty(item.Value<string>("nameTemplate")))
                         {

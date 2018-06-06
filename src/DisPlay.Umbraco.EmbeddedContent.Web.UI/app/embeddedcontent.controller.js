@@ -195,8 +195,9 @@ export default class EmbdeddedContentController {
           published: true,
           name: documentType.allowEditingName === '1' ? '' : documentType.name,
           parentId: this.editorState.current.id,
+          settingsTab: data.tabs.find(tab => tab.id === documentType.settingsTab),
           // filter out Generic Propeties tab
-          tabs: data.tabs.filter(tab => tab.alias !== 'Generic properties')
+          tabs: data.tabs.filter(tab => tab.alias !== 'Generic properties' && tab.id !== documentType.settingsTab)
         })
         this.$scope.model.value.push(item)
         this.currentForm.$setDirty()

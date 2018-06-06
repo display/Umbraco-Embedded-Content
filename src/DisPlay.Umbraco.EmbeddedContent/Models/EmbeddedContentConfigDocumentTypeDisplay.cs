@@ -8,14 +8,23 @@ namespace DisPlay.Umbraco.EmbeddedContent.Models
         [DataMember(Name = "allowEditingName")]
         public string AllowEditingName { get; set; }
 
+        [DataMember(Name = "description")]
+        public string Description { get; set; }
+
         [DataMember(Name = "documentTypeAlias")]
         public string DocumentTypeAlias { get; set; }
 
         [DataMember(Name = "group")]
         public string Group { get; set; }
 
+        [DataMember(Name = "icon")]
+        public string Icon { get; set; }
+
         [DataMember(Name = "maxInstances")]
         public int? MaxInstances { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
 
         [DataMember(Name = "nameTemplate")]
         public string NameTemplate { get; set; }
