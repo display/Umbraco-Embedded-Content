@@ -1,6 +1,7 @@
 namespace DisPlay.Umbraco.EmbeddedContent.uSync
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Jumoo.uSync.Core.Mappers;
@@ -8,37 +9,25 @@ namespace DisPlay.Umbraco.EmbeddedContent.uSync
     using Newtonsoft.Json;
 
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Models;
     using global::Umbraco.Core.Services;
+
+    using Jumoo.uSync.Core;
 
     using Models;
 
     public class EmbeddedContentMapper : IContentMapper
     {
-        private readonly IEntityService _entityService;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
 
-        public EmbeddedContentMapper(IEntityService entityService, IContentTypeService contentTypeService, IDataTypeService dataTypeService)
+        public EmbeddedContentMapper(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
         {
-            if (entityService == null)
-            {
-                throw new ArgumentNullException(nameof(entityService));
-            }
-            if (contentTypeService == null)
-            {
-                throw new ArgumentNullException(nameof(contentTypeService));
-            }
-            if (dataTypeService == null)
-            {
-                throw new ArgumentNullException(nameof(dataTypeService));
-            }
-            _entityService = entityService;
-            _contentTypeService = contentTypeService;
-            _dataTypeService = dataTypeService;
+            _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            _dataTypeService = dataTypeService ?? throw new ArgumentNullException(nameof(dataTypeService));
         }
 
         public EmbeddedContentMapper() : this(
-            ApplicationContext.Current.Services.EntityService,
             ApplicationContext.Current.Services.ContentTypeService,
             ApplicationContext.Current.Services.DataTypeService)
         {
@@ -64,24 +53,24 @@ namespace DisPlay.Umbraco.EmbeddedContent.uSync
 
             var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(value);
 
-            foreach (var item in items)
+            foreach (EmbeddedContentItem item in items)
             {
-                var contentType = _contentTypeService.GetContentType(item.ContentTypeAlias);
+                IContentType contentType = _contentTypeService.GetContentType(item.ContentTypeAlias);
                 if (contentType == null)
                 {
                     continue;
                 }
 
-                foreach (var property in item.Properties.ToList())
+                foreach (KeyValuePair<string, object> property in item.Properties.ToList())
                 {
-                    var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(_ => _.Alias == property.Key);
+                    PropertyType propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(_ => _.Alias == property.Key);
                     if (propertyType == null)
                     {
                         continue;
                     }
-                    var dataType = _dataTypeService.GetDataTypeDefinitionById(propertyType.DataTypeDefinitionId);
+                    IDataTypeDefinition dataType = _dataTypeService.GetDataTypeDefinitionById(propertyType.DataTypeDefinitionId);
 
-                    IContentMapper mapper = ContentMapperFactory.GetMapper(new Jumoo.uSync.Core.uSyncContentMapping() { EditorAlias = dataType.PropertyEditorAlias });
+                    IContentMapper mapper = ContentMapperFactory.GetMapper(new uSyncContentMapping { EditorAlias = dataType.PropertyEditorAlias });
                     if (mapper != null)
                     {
                         string newValue;

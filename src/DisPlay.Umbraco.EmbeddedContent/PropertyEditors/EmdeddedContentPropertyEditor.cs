@@ -100,7 +100,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                 if (persistedPreVals.PreValuesAsDictionary.TryGetValue("embeddedContentConfig",
                         out PreValue preValue) && false == string.IsNullOrEmpty(preValue.Value))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     EmbeddedContentConfig config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(preValue.Value);
                     var configDisplay = new EmbeddedContentConfigDisplay
                     {
@@ -141,7 +141,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
             {
                 if (editorValue.TryGetValue("embeddedContentConfig", out object value))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     EmbeddedContentConfigDisplay configDisplay = JsonConvert.DeserializeObject<EmbeddedContentConfigDisplay>(value.ToString());
                     var config = new EmbeddedContentConfig
                     {
@@ -214,10 +214,10 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
             {
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>("ConfigureForDisplay()"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
 
-                    var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
-                    var config = JObject.Parse(configPreValue.Value);
+                    PreValue configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
+                    JObject config = JObject.Parse(configPreValue.Value);
                     config["configureForDisplay"] = true;
 
                     foreach (var item in config["documentTypes"].ToList())
@@ -259,7 +259,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertDbToString({property.Alias})"))
                 {
                     List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
-                    List<EmbeddedContentItem> items = new List<EmbeddedContentItem>();
+                    var items = new List<EmbeddedContentItem>();
 
                     JArray source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
 
@@ -277,8 +277,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                         }
                         foreach (PropertyType propType in contentType.CompositionPropertyGroups.SelectMany(_ => _.PropertyTypes))
                         {
-                            object value;
-                            item.Properties.TryGetValue(propType.Alias, out value);
+                            item.Properties.TryGetValue(propType.Alias, out object value);
                             PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propType.PropertyEditorAlias);
 
                             if (propertyEditor == null)
@@ -314,12 +313,12 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                 using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertDbToEditor({property.Alias})"))
                 {
-                    var source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
+                    JArray source = NestedContentHelper.ConvertFromNestedContent(JArray.Parse(property.Value.ToString()));
 
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
-                    var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    PreValueCollection preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
 
-                    var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
+                    PreValue configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                     var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
 
                     var items = source.ToObject<EmbeddedContentItem[]>();
@@ -376,22 +375,21 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                     return null;
                 }
 
-                using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>($"ConvertEditorToDb()"))
+                using (_profilingLogger.DebugDuration<EmbeddedContentPropertyEditor>("ConvertEditorToDb()"))
                 {
-                    var contentTypes = _contentTypeService.GetAllContentTypes().ToList();
+                    List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
                     var itemsDisplay = JsonConvert.DeserializeObject<EmbeddedContentItemDisplay[]>(editorValue.Value.ToString());
                     var currentItems = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(currentValue?.ToString() ?? "[]");
                     var items = new List<EmbeddedContentItem>();
 
                     IEnumerable<ContentItemFile> files = null;
 
-                    object tmp;
-                    if (editorValue.AdditionalData.TryGetValue("files", out tmp))
+                    if (editorValue.AdditionalData.TryGetValue("files", out object tmp))
                     {
                         files = tmp as IEnumerable<ContentItemFile>;
                     }
 
-                    foreach (var itemDisplay in itemsDisplay)
+                    foreach (EmbeddedContentItemDisplay itemDisplay in itemsDisplay)
                     {
                         var item = new EmbeddedContentItem
                         {
@@ -405,7 +403,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             WriterId = itemDisplay.WriterId
                         };
 
-                        var contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
+                        IContentType contentType = contentTypes.FirstOrDefault(x => x.Alias == itemDisplay.ContentTypeAlias);
 
                         if (contentType == null)
                         {
@@ -422,7 +420,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             }
                         }
 
-                        var currentItem = currentItems.FirstOrDefault(x => x.Key == itemDisplay.Key);
+                        EmbeddedContentItem currentItem = currentItems.FirstOrDefault(x => x.Key == itemDisplay.Key);
                         if (currentItem != null)
                         {
                             item.CreateDate = currentItem.CreateDate;
@@ -431,15 +429,15 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                             item.WriterId = currentItem.WriterId;
                         }
 
-                        foreach (var propertyType in contentType.CompositionPropertyGroups.SelectMany(x => x.PropertyTypes))
+                        foreach (PropertyType propertyType in contentType.CompositionPropertyGroups.SelectMany(x => x.PropertyTypes))
                         {
-                            var tabs = itemDisplay.Tabs;
+                            IEnumerable<Tab<EmbeddedContentPropertyDisplay>> tabs = itemDisplay.Tabs;
                             if (itemDisplay.SettingsTab != null)
                             {
                                 tabs = tabs.Concat(new[] { itemDisplay.SettingsTab });
                             }
 
-                            var property = tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);
+                            EmbeddedContentPropertyDisplay property = tabs.SelectMany(x => x.Properties).FirstOrDefault(x => x.Alias == propertyType.Alias);
                             if (property == null)
                             {
                                 continue;
@@ -447,7 +445,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                             PropertyEditor propertyEditor = _propertyEditorResolver.GetByAlias(propertyType.PropertyEditorAlias);
 
-                            var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
+                            PreValueCollection preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeDefinitionId);
                             var additionalData = new Dictionary<string, object>();
 
                             if (files != null)
@@ -534,8 +532,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
             private object GetPropertyValue(IDictionary<string, object> properties, string alias)
             {
-                object value;
-                if (properties.TryGetValue(alias, out value))
+                if (properties.TryGetValue(alias, out object value))
                 {
                     return value;
                 }
@@ -560,16 +557,8 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                 public EmbeddedContentValidator(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
                 {
-                    if (contentTypeService == null)
-                    {
-                        throw new ArgumentNullException(nameof(contentTypeService));
-                    }
-                    if (dataTypeService == null)
-                    {
-                        throw new ArgumentNullException(nameof(dataTypeService));
-                    }
-                    _contentTypeService = contentTypeService;
-                    _dataTypeService = dataTypeService;
+                    _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+                    _dataTypeService = dataTypeService ?? throw new ArgumentNullException(nameof(dataTypeService));
                 }
 
                 public IEnumerable<ValidationResult> Validate(object value, PreValueCollection preValues, PropertyEditor editor)
@@ -580,7 +569,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
                     }
 
                     List<IContentType> contentTypes = _contentTypeService.GetAllContentTypes().ToList();
-                    var itemsDisplay = JsonConvert.DeserializeObject<IEnumerable<EmbeddedContentItemDisplay>>(value.ToString()).ToList();
+                    List<EmbeddedContentItemDisplay> itemsDisplay = JsonConvert.DeserializeObject<IEnumerable<EmbeddedContentItemDisplay>>(value.ToString()).ToList();
 
                     foreach (EmbeddedContentItemDisplay itemDisplay in itemsDisplay)
                     {
@@ -618,7 +607,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.PropertyEditors
 
                             if (false == propertyType.ValidationRegExp.IsNullOrWhiteSpace())
                             {
-                                string str = property.Value as string;
+                                var str = property.Value as string;
                                 if (property.Value != null && false == str.IsNullOrWhiteSpace() || propertyType.Mandatory)
                                 {
                                     foreach (ValidationResult result in propertyEditor.ValueEditor.RegexValidator.Validate(property.Value, propertyType.ValidationRegExp, propertyPreValues, editor))

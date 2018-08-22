@@ -1,6 +1,5 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Courier
+namespace DisPlay.Umbraco.EmbeddedContent.Courier
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -15,16 +14,15 @@
 
     public class EmbeddedContentDataResolverProvider : PropertyDataResolverProvider
     {
-
         public override string EditorAlias => Constants.PropertyEditorAlias;
 
         public override void PackagingDataType(DataType item)
         {
-            var preValue = item.Prevalues.FirstOrDefault(_ => _.Alias == "embeddedContentConfig");
+            DataTypePrevalue preValue = item.Prevalues.FirstOrDefault(_ => _.Alias == "embeddedContentConfig");
             if(preValue != null)
             {
                 var config = JsonConvert.DeserializeObject<EmbeddedContentConfig>(preValue.Value);
-                foreach(var docTypeConfig in config.DocumentTypes)
+                foreach(EmbeddedContentConfigDocumentType docTypeConfig in config.DocumentTypes)
                 {
                     var contentType = ExecutionContext.DatabasePersistence.RetrieveItem<DocumentType>(
                          new ItemIdentifier(docTypeConfig.DocumentTypeAlias, ItemProviderIds.documentTypeItemProviderGuid)
@@ -50,13 +48,13 @@
 
         private void ProcessProperty(Item item, ContentProperty propertyData, bool packaging)
         {
-            var propertyItemProvider = ItemProviderCollection.Instance.GetProvider(ItemProviderIds.propertyDataItemProviderGuid, ExecutionContext);
+            ItemProvider propertyItemProvider = ItemProviderCollection.Instance.GetProvider(ItemProviderIds.propertyDataItemProviderGuid, ExecutionContext);
 
             if (propertyData.Value != null)
             {
                 var items = JsonConvert.DeserializeObject<EmbeddedContentItem[]>(propertyData.Value.ToString());
 
-                foreach (var embeddedContent in items)
+                foreach (EmbeddedContentItem embeddedContent in items)
                 {
                     var contentType = ExecutionContext.DatabasePersistence.RetrieveItem<DocumentType>(
                         new ItemIdentifier(embeddedContent.ContentTypeAlias, ItemProviderIds.documentTypeItemProviderGuid)
@@ -72,9 +70,9 @@
                         item.Dependencies.Add(contentType.UniqueId.ToString(), ItemProviderIds.documentTypeItemProviderGuid);
                     }
 
-                    foreach (var property in embeddedContent.Properties.ToList())
+                    foreach (KeyValuePair<string, object> property in embeddedContent.Properties.ToList())
                     {
-                        var propertyType = contentType.Properties.FirstOrDefault(_ => _.Alias == property.Key);
+                        ContentTypeProperty propertyType = contentType.Properties.FirstOrDefault(_ => _.Alias == property.Key);
                         if (propertyType == null)
                         {
                             continue;
@@ -117,7 +115,7 @@
                             ResolutionManager.Instance.ExtractingItem(fakeItem, propertyItemProvider);
                         }
 
-                        var data = fakeItem.Data?.FirstOrDefault();
+                        ContentProperty data = fakeItem.Data?.FirstOrDefault();
                         if (data != null)
                         {
                             embeddedContent.Properties[property.Key] = data.Value;

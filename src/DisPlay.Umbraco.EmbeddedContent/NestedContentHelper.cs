@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DisPlay.Umbraco.EmbeddedContent.Models;
@@ -15,7 +15,7 @@ namespace DisPlay.Umbraco.EmbeddedContent
                 return null;
             }
 
-            List<EmbeddedContentItem> result = new List<EmbeddedContentItem>();
+            var result = new List<EmbeddedContentItem>();
 
             // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
             foreach (IDictionary<string, JToken> token in input)

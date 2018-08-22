@@ -48,7 +48,6 @@ namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
             ApplicationContext.Current.ProfilingLogger,
             () => UmbracoContext.Current)
         {
-
         }
 
         public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
@@ -58,7 +57,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
 
         public Type GetPropertyValueType(PublishedPropertyType propertyType)
         {
-            var config = GetConfig(propertyType.DataTypeId);
+            EmbeddedContentConfig config = GetConfig(propertyType.DataTypeId);
 
             if(config.MaxItems == 1)
             {
@@ -80,8 +79,7 @@ namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-
-            var config = GetConfig(propertyType.DataTypeId);
+            EmbeddedContentConfig config = GetConfig(propertyType.DataTypeId);
 
             using (_profilingLogger.DebugDuration<EmbeddedContentValueConverter>($"ConvertSourceToObject({propertyType.PropertyTypeAlias})"))
             {
@@ -157,8 +155,8 @@ namespace DisPlay.Umbraco.EmbeddedContent.ValueConverters
         {
             using (_profilingLogger.DebugDuration<EmbeddedContentValueConverter>($"GetConfig({dataTypeId})"))
             {
-                var preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(dataTypeId);
-                var configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
+                PreValueCollection preValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(dataTypeId);
+                PreValue configPreValue = preValues.PreValuesAsDictionary["embeddedContentConfig"];
                 return JsonConvert.DeserializeObject<EmbeddedContentConfig>(configPreValue.Value);
             }
         }

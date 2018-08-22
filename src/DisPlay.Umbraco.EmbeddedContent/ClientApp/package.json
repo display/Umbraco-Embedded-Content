@@ -21,13 +21,13 @@
   "scripts": {
     "lint:js": "eslint .",
     "lint:style": "stylelint src/**/*.css",
-    "lint": "yarn run flow && yarn run lint:js && yarn run lint:style",
+    "lint": "npm run flow && npm run lint:js && npm run lint:style",
     "fix:js": "eslint . --fix",
     "fix:style": "stylelint src/**/*.css --fix",
-    "fix": "yarn fix:js && yarn fix:style",
+    "fix": "npm fix:js && npm fix:style",
     "clean": "rimraf build",
     "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --env development --progress\"",
-    "build": "yarn run clean && webpack --env production --progress",
+    "build": "npm run clean && webpack --env production --progress",
     "stats": "webpack --env production --profile --json > stats.json"
   },
   "devDependencies": {

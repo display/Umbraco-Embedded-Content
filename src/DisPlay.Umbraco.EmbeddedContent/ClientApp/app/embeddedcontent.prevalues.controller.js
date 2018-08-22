@@ -76,6 +76,10 @@ export default class EmbeddedContentPrevaluesController {
   deactivate (item) { item.active = false }
 
   toggle (item) {
+    if (this.deletePromptChanged) {
+      delete this.deletePromptChanged
+      return
+    }
     if (item.active) {
       this.deactivate(item)
     } else {
@@ -107,8 +111,10 @@ export default class EmbeddedContentPrevaluesController {
   }
 
   hidePrompt (item, event) {
-    event.stopPropagation()
     item.deletePrompt = false
+
+    // Hack: umb-confirm-action => on-cancel does not expose $event, se we set deletePropmtChanged to true so we can stop the item toggle
+    this.deletePromptChanged = true
   }
 
   editSettings (event) {

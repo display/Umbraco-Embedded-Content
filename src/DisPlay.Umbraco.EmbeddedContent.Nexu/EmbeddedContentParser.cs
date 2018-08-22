@@ -1,4 +1,4 @@
-﻿namespace DisPlay.Umbraco.EmbeddedContent.Nexu
+namespace DisPlay.Umbraco.EmbeddedContent.Nexu
 {
     using System;
     using System.Collections.Generic;
@@ -16,26 +16,21 @@
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
+        private readonly ILogger _logger;
 
         public EmbeddedContentParser()
             : this(
                 ApplicationContext.Current.Services.ContentTypeService,
-                ApplicationContext.Current.Services.DataTypeService)
+                ApplicationContext.Current.Services.DataTypeService,
+                ApplicationContext.Current.ProfilingLogger.Logger)
         {
         }
 
-        public EmbeddedContentParser(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
+        public EmbeddedContentParser(IContentTypeService contentTypeService, IDataTypeService dataTypeService, ILogger logger)
         {
-            if (contentTypeService == null)
-            {
-                throw new ArgumentNullException(nameof(contentTypeService));
-            }
-            if (dataTypeService == null)
-            {
-                throw new ArgumentNullException(nameof(dataTypeService));
-            }
-            _contentTypeService = contentTypeService;
-            _dataTypeService = dataTypeService;
+            _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            _dataTypeService = dataTypeService ?? throw new ArgumentNullException(nameof(dataTypeService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public bool IsParserFor(IDataTypeDefinition dataTypeDefinition)
@@ -60,8 +55,7 @@
 
                 foreach (EmbeddedContentItem item in items)
                 {
-                    IContentType contentType;
-                    if (!contentTypes.TryGetValue(item.ContentTypeAlias, out contentType))
+                    if (false == contentTypes.TryGetValue(item.ContentTypeAlias, out IContentType contentType))
                     {
                         contentTypes[item.ContentTypeAlias] = contentType = _contentTypeService.GetContentType(item.ContentTypeAlias);
                     }
@@ -71,14 +65,12 @@
                     }
                     foreach (PropertyType propertyType in contentType.PropertyTypes)
                     {
-                        object value;
-                        if (!item.Properties.TryGetValue(propertyType.Alias, out value))
+                        if (false == item.Properties.TryGetValue(propertyType.Alias, out object value))
                         {
                             continue;
                         }
 
-                        IDataTypeDefinition dataTypeDefinition;
-                        if (!dataTypes.TryGetValue(propertyType.DataTypeDefinitionId, out dataTypeDefinition))
+                        if (false ==dataTypes.TryGetValue(propertyType.DataTypeDefinitionId, out IDataTypeDefinition dataTypeDefinition))
                         {
                             dataTypes[propertyType.DataTypeDefinitionId] = dataTypeDefinition = _dataTypeService.GetDataTypeDefinitionById(propertyType.DataTypeDefinitionId);
                         }
@@ -97,8 +89,7 @@
             }
             catch (Exception exception)
             {
-                ApplicationContext.Current.ProfilingLogger.Logger.Error<EmbeddedContentParser>(
-                    "Error parsing embedded content", exception);
+                _logger.Error<EmbeddedContentParser>("Error parsing embedded content", exception);
             }
             return entities;
         }

@@ -41,7 +41,6 @@
 
 .embedded-content__item,
 .embedded-content-config__item {
-  position: relative;
   margin: 10px 0;
   border: 1px solid transparent;
 }
