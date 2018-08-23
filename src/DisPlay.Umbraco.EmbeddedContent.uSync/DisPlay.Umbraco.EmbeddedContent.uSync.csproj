@@ -2,10 +2,13 @@
     <PropertyGroup>
         <title>Umbraco Embedded Content uSync mapper</title>
         <authors>Rasmus John Pedersen</authors>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>DIS/PLAY Umbraco Embedded Content uSync mapper</description>
+        <description>uSync content mapper for DIS/PLAY Umbraco Embedded Content.</description>
+        <packageLicenseUrl>https://github.com/display/umbraco-embedded-content/raw/develop/LICENSE</packageLicenseUrl>
+        <packageProjectUrl>https://github.com/display/umbraco-embedded-content</packageProjectUrl>
+        <packageTags>umbraco umbracocms property-editor usync</packageTags>
         <copyright>Copyright © DIS/PLAY 2016</copyright>
-        <versionPrefix>0.2.0</versionPrefix>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <versionPrefix>0.3.0</versionPrefix>
     </PropertyGroup>
 
     <PropertyGroup>

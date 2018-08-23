@@ -2,10 +2,13 @@
     <PropertyGroup>
         <title>Umbraco Embedded Content Nexu parser</title>
         <authors>Rasmus John Pedersen</authors>
+        <description>Nexu parser for DIS/PLAY Umbraco Embedded Content.</description>
+        <packageLicenseUrl>https://github.com/display/umbraco-embedded-content/raw/develop/LICENSE</packageLicenseUrl>
+        <packageProjectUrl>https://github.com/display/umbraco-embedded-content</packageProjectUrl>
+        <packageTags>umbraco umbracocms property-editor nexu</packageTags>
+        <copyright>Copyright © DIS/PLAY 2016</copyright>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>DIS/PLAY Umbraco Embedded Content Nexu parser</description>
-        <copyright>Copyright © DIS/PLAY 2017</copyright>
-        <versionPrefix>0.2.0</versionPrefix>
+        <versionPrefix>0.3.0</versionPrefix>
     </PropertyGroup>
 
     <PropertyGroup>
