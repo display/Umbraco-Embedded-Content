@@ -1,7 +1,7 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<FrontPage>
 
-@foreach(var ribbon in Model.Ribbons) {
-	<div class="ribbon">
-		@Html.Partial("Ribbons/" + ribbon.DocumentTypeAlias, ribbon)
+@foreach(var block in Model.Blocks) {
+	<div class="block">
+		@Html.Partial("Blocks/" + block.DocumentTypeAlias, block)
 	</div>
 }
