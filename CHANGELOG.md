@@ -2,9 +2,48 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 1.0.0
+## 1.2.3 - 2018-08-23
+- Public release
+
+## 1.2.2 - 2018-06-06
+### Bugfixes
+- Fix settings button not being shown when adding a new item
+
+## 1.2.1 - 2018-06-06
 ### Features
-- Update colors to match Umbraco 7.6
+- Store settings tab as Guid so Courier transfers get's easier
+
+## 1.2.0 - 2018-06-06
+### Features
+- Add settings dialog based on a document type tab
+
+### Bugfixes
+- Don't toggle item if deletion is cancelled
+
+## 1.1.1 - 2018-05-29
+### Bugfixes
+- Fix property values not always being synced
+
+## 1.1.0 - 2018-01-17
+### Features
+- Value converter now returns a `CollectionSet`. This enables ExtensionMethods like `Index()`, `First()`, `Last()` etc. work
+
+## 1.0.3 - 2017-12-11
+### Bugfixes
+- Ensure `ConvertFromNestedContent` is called in `ConvertDbToString`
+
+## 1.0.2 - 2017-12-11
+### Bugfixes
+- Fix upload, cuid and puid additionalData is now required
+- Fix validation and expanding active on error
+
+## 1.0.1 - 2017-12-08
+### Bugfixes
+- Manually update property values instead of using two way binding
+
+## 1.0.0 - 2017-09-08
+### Features
+- Update colours to match Umbraco 7.6
 
 ### Breaking
 - Upgrade to Umbraco 7.6
@@ -28,7 +67,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Remove Parent support
 
 ### Features
-- Merge property groups whith same name to a single section
+- Merge property groups with same name to a single section
 - Clean config UI
 - Add filtering support when creating content
 - Add item group support
@@ -52,14 +91,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.4.0 - 2016-09-20
 ### Features
 - Labels for media picker, multi node tree picker and multi url picker
-- Show property description (#3)
-- Toggle expanded when clicking on item control bar (#5)
+- Show property description
+- Toggle expanded when clicking on item control bar
 
 ### Bugfixes
-- Sort styling is inherited by other property editors (#9)
-- Item not expanded when allow expanding is false (#10)
-- Fix error when adding item to new page (#11)
-- Fix property editor settings could not be opened in Firefix (#11)
+- Sort styling is inherited by other property editors
+- Item not expanded when allow expanding is false
+- Fix error when adding item to new page
+- Fix property editor settings could not be opened in Firefox
 
 ## 0.3.0 - 2016-08-29
 ### Features
