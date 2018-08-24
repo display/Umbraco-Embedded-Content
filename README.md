@@ -1,8 +1,9 @@
 # Umbraco Embedded Content
 
 [![NuGet release](https://img.shields.io/nuget/v/DisPlay.Umbraco.EmbeddedContent.svg)](https://www.nuget.org/packages/DisPlay.Umbraco.EmbeddedContent)
+[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/projects/backoffice-extensions/embedded-content-blocks)
 
-An Umbraco property that uses document types for content blocks.
+An Umbraco property editor that uses document types for content blocks.
 
 ![Demo](assets/demo.gif)
 
@@ -12,6 +13,10 @@ An Umbraco property that uses document types for content blocks.
 
 ## Installation
 
+The preferred way to install Embedded Content is through NuGet
+
+### Option 1: NuGet
+
 Embedded Content is available as a NuGet [package](https://www.nuget.org/packages/DisPlay.Umbraco.EmbeddedContent).
 
 To install run the following command in the [Package Manager Console](https://docs.nuget.org/docs/start-here/using-the-package-manager-console)
@@ -19,6 +24,10 @@ To install run the following command in the [Package Manager Console](https://do
 ```powershell
 PM> Install-Package DisPlay.Umbraco.EmbeddedContent
 ```
+
+### Option 2: Our Umbraco
+
+Embedded Content is available as a package on [Our Umbraco](https://our.umbraco.com/projects/backoffice-extensions/embedded-content-blocks)
 
 ## Usage
 
