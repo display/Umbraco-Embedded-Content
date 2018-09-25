@@ -2,6 +2,8 @@ import path from 'path'
 import webpack from 'webpack'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import StyleLintPlugin from 'stylelint-webpack-plugin'
 
 const pkg = require('./package.json')
@@ -31,7 +33,15 @@ module.exports = (env, options) => {
     cache: isDebug,
     optimization: {
       runtimeChunk: false,
-      splitChunks: false
+      splitChunks: false,
+      minimizer: [
+        new UglifyJsPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true // set to true if you want JS source maps
+        }),
+        new OptimizeCSSAssetsPlugin({})
+      ]
     },
     devServer: {
       contentBase: PATHS.public,
@@ -69,7 +79,6 @@ module.exports = (env, options) => {
                 importLoaders: true,
                 localIdentName: '[local]',
                 modules: true,
-                minimize: !isDebug,
                 sourceMap: true
               }
             },
