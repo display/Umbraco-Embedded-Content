@@ -75,7 +75,6 @@ module.exports = (env, options) => {
               loader: 'css-loader',
               options: {
                 camelCase: true,
-                discardComments: { removeAll: true },
                 importLoaders: true,
                 localIdentName: '[local]',
                 modules: true,
